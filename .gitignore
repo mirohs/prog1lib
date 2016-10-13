@@ -29,5 +29,10 @@
 *.hex
 
 # Debug files
-*.dSYM/
+*.dSYM
 *.su
+
+# Project-specific files
+.DS_Store
+doc
+
