@@ -7,7 +7,8 @@ make point && ./point
 #include "base.h"
 
 /*
-Objects are located somewhere on a 2D plane. Design a function that computes the distance of the center of an object to the origin of the coordinate system.
+Objects are located somewhere on a 2D plane. Design a function that computes
+the distance of the center of an object to the origin of the coordinate system.
 */
 
 struct Point {
@@ -58,7 +59,8 @@ int main(void) {
 
 /*
 1. Problem statement (given)
-Objects are located somewhere on a 2D plane. Design a function that computes the distance of the center of an object to the origin of the coordinate system.
+Objects are located somewhere on a 2D plane. Design a function that computes
+the distance of the center of an object to the origin of the coordinate system.
 
 2. Write a data definition
 struct Point {

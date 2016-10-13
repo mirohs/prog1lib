@@ -7,7 +7,14 @@ make move_train && ./move_train
 #include "base.h"
 
 /*
-A critical section of a railway track has a length of 10 km. Trains pass through the cricital sections in both directions. At most one train is allowed on this critical section at any one time. A control system is to be implemented that provides the position of a train in that section (if there is one) or an indication that there is no train in that section. Define a data definition for this information. Define a function takes this data definition and advances the train's position by a given amount (in km). This may result in the train leaving the critical section.
+A critical section of a railway track has a length of 10 km. Trains pass
+through the cricital sections in both directions. At most one train is allowed
+on this critical section at any one time. A control system is to be
+implemented that provides the position of a train in that section (if there is
+one) or an indication that there is no train in that section. Define a data
+definition for this information. Define a function takes this data definition
+and advances the train's position by a given amount (in km). This may result
+in the train leaving the critical section.
 */
 
 enum TrainTag {
@@ -133,7 +140,14 @@ int main(void) {
 
 /*
 1. Problem statement (given)
-A critical section of a railway track has a length of 10 km. Trains pass through the cricital sections in both directions. At most one train is allowed on this critical section at any one time. A control system is to be implemented that provides the position of a train in that section (if there is one) or an indication that there is no train in that section. Define a data definition for this information. Define a function takes this data definition and advances the train's position by a given amount (in km). This may result in the train leaving the critical section.
+A critical section of a railway track has a length of 10 km. Trains pass
+through the cricital sections in both directions. At most one train is allowed
+on this critical section at any one time. A control system is to be
+implemented that provides the position of a train in that section (if there is
+one) or an indication that there is no train in that section. Define a data
+definition for this information. Define a function takes this data definition
+and advances the train's position by a given amount (in km). This may result
+in the train leaving the critical section.
 
 2. Write a data definition
 enum TrainTag {
@@ -169,11 +183,17 @@ Advance the train by the given amount. Consider the case
 that the train enters or leaves the critical section.
 
 5. Give examples and expected results
-Advancing a train that is not in the critical section (make_train_none()) by 3.0 km results in a train that is still not in the critical section (make_train_none()).
+Advancing a train that is not in the critical section (make_train_none()) by
+3.0 km results in a train that is still not in the critical section
+(make_train_none()).
  
-Advancing a train that is at the start of the critical section (make_train_at(0.0)) by 0.0 km results in a train that is still at the start of the critical section (make_train_at(0.0)).
+Advancing a train that is at the start of the critical section
+(make_train_at(0.0)) by 0.0 km results in a train that is still at the start
+of the critical section (make_train_at(0.0)).
  
-Advancing a train that is at position 1.0 km of the critical section (make_train_at(1.0)) by -1.0 km results in a train that is at the start of the critical section (make_train_at(0.0)).
+Advancing a train that is at position 1.0 km of the critical section
+(make_train_at(1.0)) by -1.0 km results in a train that is at the start of the
+critical section (make_train_at(0.0)).
  
 etc.
 

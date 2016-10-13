@@ -23,8 +23,6 @@ void keep_strings(void) {
     printf("%d filtered words\n", l_length(filtered));
     sl_println(filtered);
     
-    
-
     l_free(filtered);
     sl_free(words);
     s_free(data);

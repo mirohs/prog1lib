@@ -7,7 +7,9 @@ make wages && ./wages
 #include "base.h"
 
 /*
-Design a function that computes weekly wages with overtime from hours worked. The hourly rate is €10/hour. Regular working time is 40 hours/week. Overtime is paid 150% of the normal rate of pay.
+Design a function that computes weekly wages with overtime from hours worked.
+The hourly rate is €10/hour. Regular working time is 40 hours/week. Overtime
+is paid 150% of the normal rate of pay.
 */
 
 typedef int Hours; // represents hours worked

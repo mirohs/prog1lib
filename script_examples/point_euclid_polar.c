@@ -7,7 +7,9 @@ make point_euclid_polar && ./point_euclid_polar
 #include "base.h"
 
 /*
-Points on the 2D plane may be given either in Euclidean coordinates or in polar coordinates. Design a function that computes the distance of such a point to the origin of the coordinate system.
+Points on the 2D plane may be given either in Euclidean coordinates or in
+polar coordinates. Design a function that computes the distance of such a
+point to the origin of the coordinate system.
 */
 
 enum PointTag {
@@ -97,7 +99,9 @@ int main(void) {
 
 /*
 1. Problem statement (given)
-Points on the 2D plane may be given either in Euclidean coordinates or in polar coordinates. Design a function that computes the distance of such a point to the origin of the coordinate system.
+Points on the 2D plane may be given either in Euclidean coordinates or in
+polar coordinates. Design a function that computes the distance of such a
+point to the origin of the coordinate system.
 
 2. Write a data definition
 enum PointTag {

@@ -7,7 +7,10 @@ make tax && ./tax
 #include "base.h"
 
 /*
-A fictitious country has decided to introduce a three-stage sales tax. Cheap items below 1 k€ are not taxed. Luxury goods of more than 10 k€ are taxed at 10%. Items in between are taxed at a rate of 5%. Give a data definition and define a function that computes the amount of tax for a given item price.
+A fictitious country has decided to introduce a three-stage sales tax. Cheap
+items below 1 k€ are not taxed. Luxury goods of more than 10 k€ are taxed at
+10%. Items in between are taxed at a rate of 5%. Give a data definition and
+define a function that computes the amount of tax for a given item price.
 */
 
 enum TaxStage {
@@ -78,7 +81,10 @@ int main(void) {
 
 /*
 1. Problem statement (given)
-A fictitious country has decided to introduce a three-stage sales tax. Cheap items below 1 k€ are not taxed. Luxury goods of more than 10 k€ are taxed at 10%. Items in between are taxed at a rate of 5%. Give a data definition and define a function that computes the amount of tax for a given item price.
+A fictitious country has decided to introduce a three-stage sales tax. Cheap
+items below 1 k€ are not taxed. Luxury goods of more than 10 k€ are taxed at
+10%. Items in between are taxed at a rate of 5%. Give a data definition and
+define a function that computes the amount of tax for a given item price.
 
 2. Write a data definition
 enum TaxStage {
