@@ -62,7 +62,7 @@ void element_destructor(Any element) { }
 @param[in] element_destructor function called for each element to destruct it, i.e., to release its memory
 @see l_free
 */
-void pl_free_with_destructor(List list, AnyToVoid element_destructor);
+void pl_free_with_destructor(List list, AnyFn element_destructor);
 
 /**
 Return list element at index.
@@ -110,7 +110,7 @@ void print_element(Any element) {}
 @param[in] list pointer list
 @param[in] print_element function called for each element to print it
 */
-void pl_print(List list, AnyToVoid print_element);
+void pl_print(List list, AnyFn print_element);
 
 /**
 Print the list using the function to print each element,
@@ -121,7 +121,7 @@ void print_element(Any element) {}
 @param[in] list pointer list
 @param[in] print_element function called for each element to print it
 */
-void pl_println(List list, AnyToVoid print_element);
+void pl_println(List list, AnyFn print_element);
 
 /**
 Return true iff list contains value. Compares pointers.
@@ -162,7 +162,7 @@ bool predicate(Any element, int index, Any x) {}
 @param[in] x given to each invocation of predicate
 @return index or -1
 */
-int pl_index_fn(List list, AnyIntAnyToBool predicate, Any x);
+int pl_index_fn(List list, AnyFn predicate, Any x);
 
 /**
 Return the first element for which the predicate function returns true.
@@ -175,7 +175,7 @@ bool predicate(Any element, int index, Any x) {}
 @param[in] x given to each invocation of predicate
 @return element or \c NULL
 */
-Any pl_find(List list, AnyIntAnyToBool predicate, Any x);
+Any pl_find(List list, AnyFn predicate, Any x);
 
 /**
 Insert value at index in list. 
@@ -213,7 +213,7 @@ list[n-1] := f(list[n-1], n-1, x)
 
 @see l_each
 */
-void pl_each(List list, AnyIntAnyToAny f, Any x);
+void pl_each(List list, AnyFn f, Any x);
 
 /**
 Apply function f to each element of list. 
@@ -230,7 +230,7 @@ Any f(Any element, int index, Any x) {}
 
 @see l_map
 */
-List pl_map(List list, AnyIntAnyToAny f, Any x);
+List pl_map(List list, AnyFn f, Any x);
 
 /**
 Fold list from left to right, i.e., compute f(... f(f(init, l0), l1) ... ln).
@@ -251,7 +251,7 @@ state := f(state, list[n-1], n-1)
 
 @see l_foldl
 */
-Any pl_foldl(List list, AnyAnyIntToAny f, Any state);
+Any pl_foldl(List list, AnyFn f, Any state);
 
 /**
 Fold list from right to left. I.e., compute f(l0, f(l1,... f(ln, init)...)).
@@ -272,7 +272,7 @@ state := f(list[0], state, 0)
 
 @see l_foldr
 */
-Any pl_foldr(List list, AnyAnyIntToAny f, Any state);
+Any pl_foldr(List list, AnyFn f, Any state);
 #if 0
 /** 
 Predicates
@@ -313,7 +313,7 @@ bool predicate(Any element, int index, Any x) {}
 @param[in] x given to each invocation of predicate
 @return filtered list
 */
-List pl_filter(List list, AnyIntAnyToBool predicate, Any x);
+List pl_filter(List list, AnyFn predicate, Any x);
 
 #if 0
 /**
@@ -348,7 +348,7 @@ List b = sl_choose(a, ends_width_0_append, "x");
 // b is Any list ["10x", "30x", "50x"]
 @endcode
 */
-List pl_choose(List list, AnyIntAnyToAny f, Any x);
+List pl_choose(List list, AnyFn f, Any x);
 
 /**
 Returns true iff there is at least one element that satisfies the predicate.
@@ -361,7 +361,7 @@ bool predicate(Any element, int index, Any x) {}
 @param[in] x given to each invocation of predicate
 @return true iff at least one element satisfies predicate
 */
-bool pl_exists(List list, AnyIntAnyToBool predicate, Any x);
+bool pl_exists(List list, AnyFn predicate, Any x);
 
 /**
 Returns true iff all the elements satisfy the predicate.
@@ -374,7 +374,7 @@ bool predicate(Any element, int index, Any x) {}
 @param[in] x given to each invocation of predicate
 @return true iff at all the elements satisfy predicate
 */
-bool pl_forall(List list, AnyIntAnyToBool predicate, Any x);
+bool pl_forall(List list, AnyFn predicate, Any x);
 
 /**
 Test for pointer lists.

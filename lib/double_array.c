@@ -8,8 +8,6 @@
 #include "array.h"
 #include "double_array.h"
 
-Array da_create(int n, double init);
-
 static void da_create_test(void) {
     printsln((String)__func__);
     Array array;
@@ -50,9 +48,6 @@ Array da_create(int n, double init) {
     result->a = a;
     return result;
 }
-
-
-Array da_range(double a, double b, double step);
 
 static void da_range_test(void) {
     printsln((String)__func__);
@@ -129,8 +124,6 @@ Array da_range(double a, double b, double step) {
     
     return result;
 }
-
-Array da_of_string(String s);
 
 static void da_of_string_test(void) {
     printsln((String)__func__);
@@ -210,6 +203,7 @@ static void da_of_string_test(void) {
 }
 
 Array da_of_string(String s) {
+    assert_argument_not_null(s);
     // count number of ints in s
     int n = 0; // array length
     char *t = s;
@@ -250,8 +244,6 @@ Array da_of_string(String s) {
     return result;
 }
 
-Array da_fn(int n, IntDoubleToDouble init, double x);
-
 static double two_i_plus_x(int i, double x) {
     return 2.0 * i + x;
 }
@@ -278,6 +270,7 @@ static void da_fn_test(void) {
 }
 
 Array da_fn(int n, IntDoubleToDouble init, double x) {
+    assert_function_not_null(init);
     if (n < 0) {
         printf("da_fn: n cannot be negative (is %d)\n", n);
         exit(EXIT_FAILURE);
@@ -294,8 +287,6 @@ Array da_fn(int n, IntDoubleToDouble init, double x) {
     return result;
 }
 
-Array da_of_ia(Array array);
-
 static void da_of_ia_test(void) {
     printsln((String)__func__);
     Array ia;
@@ -310,6 +301,7 @@ static void da_of_ia_test(void) {
 }
 
 Array da_of_ia(Array array) {
+    assert_argument_not_null(array);
     ia_assert_element_size(array);
     int n = a_length(array);
     Array result = da_create(n, 0.0);
@@ -323,6 +315,7 @@ Array da_of_ia(Array array) {
 
 #ifdef A_GET_SET
 double da_get(Array array, int i) {
+    assert_argument_not_null(array);
     da_assert_element_size(array);
     if (i < 0 || i >= array->n) {
         printf("da_get: index %d is out of range "
@@ -337,6 +330,7 @@ double da_get(Array array, int i) {
 
 #ifdef A_GET_SET
 void da_set(Array array, int i, double v) {
+    assert_argument_not_null(array);
     da_assert_element_size(array);
     if (i < 0 || i >= array->n) {
         printf("da_set: index %d is out of range "
@@ -350,6 +344,7 @@ void da_set(Array array, int i, double v) {
 #endif
 
 void da_print(Array array) {
+    assert_argument_not_null(array);
     da_assert_element_size(array);
     double *a = array->a;
     printf("[");
@@ -363,15 +358,13 @@ void da_print(Array array) {
 }
 
 void da_println(Array array) {
+    assert_argument_not_null(array);
     da_assert_element_size(array);
     da_print(array);
     printf("\n");
 }
 
 /////////////////////////////////////////////////////////////////////////////
-
-// @decision: keep delta in interface. inconvenient, but explicit.
-bool da_contains(Array array, double value, double delta);
 
 static void da_contains_test(void) {
     printsln((String)__func__);
@@ -383,6 +376,7 @@ static void da_contains_test(void) {
 }
 
 bool da_contains(Array array, double value, double delta) {
+    assert_argument_not_null(array);
     da_assert_element_size(array);
     double *a = array->a;
     for (int i = 0; i < array->n; i++) {
@@ -392,8 +386,6 @@ bool da_contains(Array array, double value, double delta) {
     }
     return false;
 }
-
-void da_fill(Array array, double value);
 
 static void da_fill_test(void) {
     printsln((String)__func__);
@@ -419,14 +411,13 @@ static void da_fill_test(void) {
 }
 
 void da_fill(Array array, double value) {
+    assert_argument_not_null(array);
     da_assert_element_size(array);
     double *a = array->a;
     for (int i = 0; i < array->n; i++) {
         a[i] = value;
     }
 }
-
-void da_fill_from_to(Array array, double value, int from, int to);
 
 static void da_fill_from_to_test(void) {
     printsln((String)__func__);
@@ -482,6 +473,7 @@ static void da_fill_from_to_test(void) {
 }
 
 void da_fill_from_to(Array array, double value, int from, int to) {
+    assert_argument_not_null(array);
     da_assert_element_size(array);
     double *a = array->a;
     if (from < 0) from = 0;
@@ -490,8 +482,6 @@ void da_fill_from_to(Array array, double value, int from, int to) {
         a[i] = value;
     }
 }
-
-int da_index(Array array, double value, double delta);
 
 static void da_index_test(void) {
     printsln((String)__func__);
@@ -519,6 +509,7 @@ static void da_index_test(void) {
 }
 
 int da_index(Array array, double value, double delta) {
+    assert_argument_not_null(array);
     da_assert_element_size(array);
     double *a = array->a;
     for (int i = 0; i < array->n; i++) {
@@ -528,8 +519,6 @@ int da_index(Array array, double value, double delta) {
     }
     return -1;
 }
-
-int da_index_from(Array array, double value, int from, double delta);
 
 static void da_index_from_test(void) {
     printsln((String)__func__);
@@ -544,6 +533,7 @@ static void da_index_from_test(void) {
 }
 
 int da_index_from(Array array, double value, int from, double delta) {
+    assert_argument_not_null(array);
     da_assert_element_size(array);
     double *a = array->a;
     if (from < 0) from = 0;
@@ -555,8 +545,6 @@ int da_index_from(Array array, double value, int from, double delta) {
     return -1;
 }
 
-int da_index_fn(Array array, DoubleIntDoubleToBool predicate, double x);
-
 static void da_index_fn_test(void) {
     printsln((String)__func__);
     Array a = da_of_string("1 2 3 -4 5");
@@ -566,6 +554,7 @@ static void da_index_fn_test(void) {
 }
 
 int da_index_fn(Array array, DoubleIntDoubleToBool predicate, double x) {
+    assert_argument_not_null(array);
     assert_function_not_null(predicate);
     da_assert_element_size(array);
     double *a = array->a;
@@ -577,8 +566,6 @@ int da_index_fn(Array array, DoubleIntDoubleToBool predicate, double x) {
     return -1;
 }
 
-int da_last_index(Array array, double value, double delta);
-
 static void da_last_index_test(void) {
     printsln((String)__func__);
     Array a = da_of_string("10 20 30 10 20 30");
@@ -589,6 +576,7 @@ static void da_last_index_test(void) {
 }
 
 int da_last_index(Array array, double value, double delta) {
+    assert_argument_not_null(array);
     da_assert_element_size(array);
     double *a = array->a;
     for (int i = array->n - 1; i >= 0; i--) {
@@ -598,8 +586,6 @@ int da_last_index(Array array, double value, double delta) {
     }
     return -1;
 }
-
-int da_last_index_from(Array array, double value, int from, double delta);
 
 static void da_last_index_from_test(void) {
     printsln((String)__func__);
@@ -613,6 +599,7 @@ static void da_last_index_from_test(void) {
 }
 
 int da_last_index_from(Array array, double value, int from, double delta) {
+    assert_argument_not_null(array);
     da_assert_element_size(array);
     double *a = array->a;
     if (from >= array->n) from = array->n - 1;
@@ -624,8 +611,6 @@ int da_last_index_from(Array array, double value, int from, double delta) {
     return -1;
 }
 
-int da_last_index_fn(Array array, DoubleIntDoubleToBool predicate, double x);
-
 static void da_last_index_fn_test(void) {
     printsln((String)__func__);
     Array a = da_of_string("1 2 2 3 -3 5");
@@ -635,6 +620,7 @@ static void da_last_index_fn_test(void) {
 }
 
 int da_last_index_fn(Array array, DoubleIntDoubleToBool predicate, double x) {
+    assert_argument_not_null(array);
     assert_function_not_null(predicate);
     da_assert_element_size(array);
     double *a = array->a;
@@ -647,8 +633,6 @@ int da_last_index_fn(Array array, DoubleIntDoubleToBool predicate, double x) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-
-void da_sort(Array array);
 
 static void da_sort_test(void) {
     printsln((String)__func__);
@@ -684,12 +668,15 @@ static void da_sort_test(void) {
 }
 
 static CmpResult double_compare(ConstAny a, ConstAny b) {
+    assert_argument_not_null(a);
+    assert_argument_not_null(b);
     double x = *(double*)a;
     double y = *(double*)b;
     return (x == y) ? EQ : (x < y ? LT : GT);
 }
 
 void da_sort(Array array) {
+    assert_argument_not_null(array);
     da_assert_element_size(array);
     qsort(array->a, array->n, sizeof(double), double_compare);
 }
@@ -728,16 +715,20 @@ static void da_sort_dec_test(void) {
 }
 
 static CmpResult double_compare_dec(ConstAny a, ConstAny b) {
+    assert_argument_not_null(a);
+    assert_argument_not_null(b);
     double x = *(double*)b;
     double y = *(double*)a;
     return (x == y) ? EQ : (x < y ? LT : GT);
 }
 
 void da_sort_dec(Array array) {
+    assert_argument_not_null(array);
     da_assert_element_size(array);
     qsort(array->a, array->n, sizeof(double), double_compare_dec);
 }
 
+#if 0
 void da_insert(Array array, int i, double v);
 
 static void da_insert_test(void) {
@@ -788,6 +779,7 @@ static void da_insert_test(void) {
 }
 
 void da_insert(Array array, int i, double v) {
+    assert_argument_not_null(array);
     da_assert_element_size(array);
     double *a = array->a;
     if (i < 0 || i >= array->n) return;
@@ -856,6 +848,7 @@ static void da_remove_test(void) {
 }
 
 void da_remove(Array array, int i, double v) {
+    assert_argument_not_null(array);
     da_assert_element_size(array);
     double *a = array->a;
     if (i < 0 || i >= array->n) return;
@@ -866,6 +859,7 @@ void da_remove(Array array, int i, double v) {
     // set value at n-1 to v
     a[array->n - 1] = v;
 }
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -923,8 +917,6 @@ double double_div(double x, double y, int index) {
     return x / y;
 }
 
-void da_each(Array array, DoubleIntDoubleToDouble f, double x);
-
 static void da_each_test(void) {
     printsln((String)__func__);
     Array a, ex;
@@ -945,6 +937,7 @@ static void da_each_test(void) {
 }
 
 void da_each(Array array, DoubleIntDoubleToDouble f, double x) {
+    assert_argument_not_null(array);
     assert_function_not_null(f);
     da_assert_element_size(array);
     double *a = array->a;
@@ -956,6 +949,7 @@ void da_each(Array array, DoubleIntDoubleToDouble f, double x) {
 
 // @todo: add tests
 void da_each_state(Array array, DoubleIntDoubleAnyToDouble f, double x, Any state) {
+    assert_argument_not_null(array);
     assert_function_not_null(f);
     da_assert_element_size(array);
     double *a = array->a;
@@ -967,6 +961,7 @@ void da_each_state(Array array, DoubleIntDoubleAnyToDouble f, double x, Any stat
 // @todo: add tests
 
 Array da_map(Array array, DoubleIntDoubleToDouble f, double x) {
+    assert_argument_not_null(array);
     assert_function_not_null(f);
     da_assert_element_size(array);
     double *a = array->a;
@@ -984,6 +979,7 @@ Array da_map(Array array, DoubleIntDoubleToDouble f, double x) {
 // @todo: add tests
 
 Array da_map_state(Array array, DoubleIntDoubleAnyToDouble f, double x, Any state) {
+    assert_argument_not_null(array);
     assert_function_not_null(f);
     da_assert_element_size(array);
     double *a = array->a;
@@ -997,8 +993,6 @@ Array da_map_state(Array array, DoubleIntDoubleAnyToDouble f, double x, Any stat
     result->a = b;
     return result;
 }
-
-double da_foldl(Array array, DoubleDoubleIntToDouble f, double init);
 
 static void da_foldl_test(void) {
     printsln((String)__func__);
@@ -1014,6 +1008,7 @@ static void da_foldl_test(void) {
 }
 
 double da_foldl(Array array, DoubleDoubleIntToDouble f, double init) {
+    assert_argument_not_null(array);
     assert_function_not_null(f);
     da_assert_element_size(array);
     double *a = array->a;
@@ -1022,8 +1017,6 @@ double da_foldl(Array array, DoubleDoubleIntToDouble f, double init) {
     }
     return init;
 }
-
-double da_foldr(Array array, DoubleDoubleIntToDouble f, double init);
 
 static void da_foldr_test(void) {
     printsln((String)__func__);
@@ -1039,6 +1032,7 @@ static void da_foldr_test(void) {
 }
 
 double da_foldr(Array array, DoubleDoubleIntToDouble f, double init) {
+    assert_argument_not_null(array);
     assert_function_not_null(f);
     da_assert_element_size(array);
     double *a = array->a;
@@ -1047,8 +1041,6 @@ double da_foldr(Array array, DoubleDoubleIntToDouble f, double init) {
     }
     return init;
 }
-
-Array da_filter(Array array, DoubleIntDoubleToBool predicate, double x);
 
 static void da_filter_test(void) {
     printsln((String)__func__);
@@ -1076,6 +1068,7 @@ static void da_filter_test(void) {
 }
 
 Array da_filter(Array array, DoubleIntDoubleToBool predicate, double x) {
+    assert_argument_not_null(array);
     assert_function_not_null(predicate);
     da_assert_element_size(array);
     bool *ps = xmalloc(array->n * sizeof(bool));
@@ -1101,6 +1094,7 @@ Array da_filter(Array array, DoubleIntDoubleToBool predicate, double x) {
 
 // @todo: add tests
 Array da_filter_state(Array array, DoubleIntDoubleAnyToBool predicate, double x, Any state) {
+    assert_argument_not_null(array);
     assert_function_not_null(predicate);
     da_assert_element_size(array);
     bool *ps = xmalloc(array->n * sizeof(bool));
@@ -1124,8 +1118,6 @@ Array da_filter_state(Array array, DoubleIntDoubleAnyToBool predicate, double x,
     return result;
 }
 
-bool da_exists(Array array, DoubleIntDoubleToBool predicate, double x);
-
 static void da_exists_test(void) {
     printsln((String)__func__);
     Array a = da_of_string("1, 2, 3, 4, 5, 6");
@@ -1136,6 +1128,7 @@ static void da_exists_test(void) {
 }
 
 bool da_exists(Array array, DoubleIntDoubleToBool predicate, double x) {
+    assert_argument_not_null(array);
     assert_function_not_null(predicate);
     da_assert_element_size(array);
     double *a = array->a;
@@ -1148,6 +1141,7 @@ bool da_exists(Array array, DoubleIntDoubleToBool predicate, double x) {
 }
 
 bool da_exists_state(Array array, DoubleIntDoubleAnyToBool predicate, double x, Any state) {
+    assert_argument_not_null(array);
     assert_function_not_null(predicate);
     da_assert_element_size(array);
     double *a = array->a;
@@ -1159,8 +1153,6 @@ bool da_exists_state(Array array, DoubleIntDoubleAnyToBool predicate, double x, 
     return false;
 }
 
-bool da_forall(Array array, DoubleIntDoubleToBool predicate, double x);
-
 static void da_forall_test(void) {
     printsln((String)__func__);
     Array a = da_of_string("1, 2, 3, 4, 5, 6");
@@ -1171,6 +1163,7 @@ static void da_forall_test(void) {
 }
     
 bool da_forall(Array array, DoubleIntDoubleToBool predicate, double x) {
+    assert_argument_not_null(array);
     assert_function_not_null(predicate);
     da_assert_element_size(array);
     double *a = array->a;
@@ -1183,6 +1176,7 @@ bool da_forall(Array array, DoubleIntDoubleToBool predicate, double x) {
 }
 
 bool da_forall_state(Array array, DoubleIntDoubleAnyToBool predicate, double x, Any state) {
+    assert_argument_not_null(array);
     assert_function_not_null(predicate);
     da_assert_element_size(array);
     double *a = array->a;
@@ -1245,8 +1239,6 @@ bool da_check_within_file_line(const char *file, const char *function, int line,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-DoubleOption da_index_option(Array array, double value, double delta);
-
 static void da_index_option_test(void) {
     printsln((String)__func__);
     Array array;
@@ -1307,8 +1299,8 @@ void da_test_all(void) {
     da_last_index_fn_test();
     da_sort_test();
     da_sort_dec_test();
-    da_insert_test();
-    da_remove_test();
+//    da_insert_test();
+//    da_remove_test();
     da_each_test();
     da_foldl_test();
     da_foldr_test();

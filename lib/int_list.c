@@ -177,6 +177,7 @@ static void il_of_string_test(void) {
 }
 
 List il_of_string(String s) {
+    assert_argument_not_null(s);
     ListHead *list = xcalloc(1, sizeof(ListHead));
     list->s = sizeof(int); // content size
 

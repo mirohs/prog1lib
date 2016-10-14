@@ -11,8 +11,6 @@
 
 
 
-Array a_create(int n, int s);
-
 typedef struct Address {
     String firstname;
     String lastname;
@@ -81,8 +79,6 @@ Array a_create(int n, int s) {
     return result;
 }
 
-Array a_of_buffer(Any buffer, int n, int s);
-
 static void a_of_buffer_test(void) {
     printsln((String)__func__);
     Address addr[] = {
@@ -126,8 +122,6 @@ Array a_of_buffer(Any buffer, int n, int s) {
     memcpy(result->a, buffer, n * s);
     return result;
 }
-
-Array a_fn(int n, int s, AnyFn init, Any state);
 
 static void x_and_xsquare(Any element, int index, Any state) {
     IntPair *ip = element;
@@ -180,8 +174,6 @@ Array a_fn(int n, int s, AnyFn init, Any state) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-
-Array a_copy(Array array);
 
 static void a_copy_test(void) {
     printsln((String)__func__);
@@ -249,6 +241,7 @@ static void a_copy_test(void) {
 }
 
 Array a_copy(Array array) {
+    assert_argument_not_null(array);
     int n = array->n * array->s;
     Any a = xmalloc(n);
     memcpy(a, array->a, n);
@@ -259,11 +252,8 @@ Array a_copy(Array array) {
     return result;
 }
 
-Array a_sub(Array array, int i, int j);
-
-static void print_int_pair(Any element) {
-    IntPair *ip = element;
-    printf("(%d, %d)", ip->i, ip->j);
+static void print_int_pair(IntPair *element) {
+    printf("(%d, %d)", element->i, element->j);
 }
 
 static void a_sub_test(void) {
@@ -377,6 +367,7 @@ static void a_sub_test(void) {
 }
 
 Array a_sub(Array array, int i, int j) {
+    assert_argument_not_null(array);
     if (i >= j || i >= array->n || j <= 0) {
         Array result = xmalloc(sizeof(ArrayHead));
         result->n = 0;
@@ -409,9 +400,6 @@ Array a_of_l(List list) {
     }
     return result;
 }
-
-
-void a_blit(Array source, int source_index, Array destination, int destination_index, int count);
 
 static void a_blit_test(void) {
     printsln((String)__func__);
@@ -509,6 +497,8 @@ static void a_blit_test(void) {
 }
 
 void a_blit(Array source, int source_index, Array destination, int destination_index, int count) {
+    assert_argument_not_null(source);
+    assert_argument_not_null(destination);
     if (count <= 0) return;
     if (source_index < 0 || source_index >= source->n) {
         printf("a_blit: source_index %d is out of range "
@@ -558,6 +548,7 @@ void a_free(Array array) {
 }
 
 Any a_get(Array array, int index) {
+    assert_argument_not_null(array);
     if (index < 0 || index >= array->n) {
         printf("a_get: index %d is out of range "
             "(array length: %d, allowed indices: 0..%d)\n", 
@@ -568,6 +559,7 @@ Any a_get(Array array, int index) {
 }
 
 void a_set(Array array, int index, Any value) {
+    assert_argument_not_null(array);
     if (index < 0 || index >= array->n) {
         printf("a_set: index %d is out of range "
             "(array length: %d, allowed indices: 0..%d)\n", 
@@ -578,14 +570,17 @@ void a_set(Array array, int index, Any value) {
 }
 
 int a_length(Array array) {
+    assert_argument_not_null(array);
     return array->n;
 }
 
 int a_element_size(Array array) {
+    assert_argument_not_null(array);
     return array->s;
 }
 
 void a_print(Array array, AnyFn print_element) {
+    assert_argument_not_null(array);
     assert_function_not_null(print_element);
     AnyToVoid f = print_element;
     printf("[");
@@ -600,12 +595,15 @@ void a_print(Array array, AnyFn print_element) {
 }
 
 void a_println(Array array, AnyFn print_element) {
+    assert_argument_not_null(array);
     assert_function_not_null(print_element);
     a_print(array, print_element);
     printf("\n");
 }
 
 bool a_equals(Array a, Array b) {
+    assert_argument_not_null(a);
+    assert_argument_not_null(b);
     if (a->n != b->n || a->s != b->s) return false;
     if (a->a == NULL && b->a == NULL) return true;
     if (a->a == NULL || b->a == NULL) return false;
@@ -613,8 +611,6 @@ bool a_equals(Array a, Array b) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-
-Array a_concat(Array x, Array y);
 
 static void a_concat_test(void) {
     printsln((String)__func__);
@@ -758,6 +754,8 @@ static void a_concat_test(void) {
 }
 
 Array a_concat(Array x, Array y) {
+    assert_argument_not_null(x);
+    assert_argument_not_null(y);
     if (x->s != y->s) {
         printf("%s: element sizes are not equal (%d and %d)\n", __func__, x->s, y->s);
         exit(EXIT_FAILURE);
@@ -778,8 +776,6 @@ Array a_concat(Array x, Array y) {
 ///////////////////////////////////////////////////////////////////////////////
 
 
-
-int a_index_fn(Array array, AnyFn predicate, Any state);
 
 static bool j_is_gt(IntPair *element, int index, int *state) {
     return element->j > *state;
@@ -806,6 +802,7 @@ static void a_index_fn_test(void) {
 }
 
 int a_index_fn(Array array, AnyFn predicate, Any state) {
+    assert_argument_not_null(array);
     assert_function_not_null(predicate);
     AnyIntAnyToBool f = predicate;
     for (int i = 0; i < array->n; i++) {
@@ -815,8 +812,6 @@ int a_index_fn(Array array, AnyFn predicate, Any state) {
     }
     return -1;
 }
-
-int a_last_index_fn(Array array, AnyFn predicate, Any state);
 
 static void a_last_index_fn_test(void) {
     printsln((String)__func__);
@@ -839,6 +834,7 @@ static void a_last_index_fn_test(void) {
 }
 
 int a_last_index_fn(Array array, AnyFn predicate, Any state) {
+    assert_argument_not_null(array);
     assert_function_not_null(predicate);
     AnyIntAnyToBool f = predicate;
     for (int i = array->n - 1; i >= 0; i--) {
@@ -850,8 +846,6 @@ int a_last_index_fn(Array array, AnyFn predicate, Any state) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-
-void a_reverse(Array array);
 
 static void a_reverse_test(void) {
     printsln((String)__func__);
@@ -887,6 +881,7 @@ static void a_reverse_test(void) {
 }
 
 void a_reverse(Array array) {
+    assert_argument_not_null(array);
     if (array->n <= 1) return;
     Byte *tmp = xmalloc(array->s);
     for (int i = 0, j = array->n - 1; i < j; i++, j--) {
@@ -896,8 +891,6 @@ void a_reverse(Array array) {
     }
     free(tmp);
 }
-
-void a_shuffle(Array array);
 
 static void a_shuffle_test(void) {
     printsln((String)__func__);
@@ -909,6 +902,7 @@ static void a_shuffle_test(void) {
 }
 
 void a_shuffle(Array array) {
+    assert_argument_not_null(array);
     Byte *tmp = xmalloc(array->s);
     for (int i = array->n - 1; i > 0; i--) {
         int r = i_rnd(i + 1); // random number between [0,i]
@@ -921,12 +915,12 @@ void a_shuffle(Array array) {
 }
 
 static CmpResult a_compare_i(ConstAny a, ConstAny b) {
+    assert_argument_not_null(a);
+    assert_argument_not_null(b);
     int x = *(int*)a;
     int y = *(int*)b;
     return (x < y) ? LT : ((x > y) ? GT : EQ);
 }
-
-void a_sort(Array array, Comparator c);
 
 static void a_sort_test(void) {
     printsln((String)__func__);
@@ -974,8 +968,6 @@ void a_sort(Array array, Comparator c) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-
-Array a_map(Array array, AnyFn f, int mapped_element_size, Any state);
 
 static void a_inc(IntPair *element, int index, Any state, IntPair *mapped_element) {
     mapped_element->i = element->i + 1;
@@ -1035,6 +1027,7 @@ static void a_map_test(void) {
 }
 
 Array a_map(Array array, AnyFn f, int mapped_element_size, Any state) {
+    assert_argument_not_null(array);
     assert_function_not_null(f);
     AnyIntAnyAnyToVoid ff = f;
     Byte *a = xcalloc(array->n, mapped_element_size);
@@ -1050,6 +1043,7 @@ Array a_map(Array array, AnyFn f, int mapped_element_size, Any state) {
     return result;
 }
 
+#if 0
 Array a_map2(Array a1, Array a2, AnyFn f, int mapped_element_size, Any state);
 
 static void pair_i_j(int *element1, int *element2, int index, Any state, IntPair *mapped_element) {
@@ -1084,6 +1078,8 @@ static void a_map2_test(void) {
 }
 
 Array a_map2(Array a1, Array a2, AnyFn f, int mapped_element_size, Any state) {
+    assert_argument_not_null(a1);
+    assert_argument_not_null(a2);
     assert_function_not_null(f);
     AnyAnyIntAnyAnyToVoid ff = f;
     int n = (a1->n < a2->n) ? a1->n : a2->n;
@@ -1148,6 +1144,9 @@ static void a_map3_test(void) {
 // @todo: add tests
 
 Array a_map3(Array a1, Array a2, Array a3, AnyFn f, int mapped_element_size, Any state) {
+    assert_argument_not_null(a1);
+    assert_argument_not_null(a2);
+    assert_argument_not_null(a3);
     assert_function_not_null(f);
     AnyAnyAnyIntAnyAnyToVoid ff = f;
     int n = (a1->n < a2->n && a1->n < a3->n) ? a1->n : ((a2->n < a1->n && a2->n < a3->n) ? a2->n : a3->n);
@@ -1164,8 +1163,7 @@ Array a_map3(Array a1, Array a2, Array a3, AnyFn f, int mapped_element_size, Any
     result->a = a;
     return result;
 }
-
-void a_each(Array array, AnyFn f, Any state);
+#endif
 
 static void a_inc_in_place(IntPair *element, int index, Any state) {
     element->i += 1;
@@ -1204,6 +1202,7 @@ static void a_each_test(void) {
 }
 
 void a_each(Array array, AnyFn f, Any state) {
+    assert_argument_not_null(array);
     assert_function_not_null(f);
     AnyIntAnyToVoid ff = f;
     for (int i = 0; i < array->n; i++) {
@@ -1211,9 +1210,12 @@ void a_each(Array array, AnyFn f, Any state) {
     }
 }
 
+#if 0
 // @todo: add tests
 
 void a_each2(Array a1, Array a2, AnyFn f, Any state) {
+    assert_argument_not_null(a1);
+    assert_argument_not_null(a2);
     assert_function_not_null(f);
     AnyAnyIntAnyToVoid ff = f;
     int n = (a1->n < a2->n) ? a1->n : a2->n;
@@ -1225,6 +1227,9 @@ void a_each2(Array a1, Array a2, AnyFn f, Any state) {
 // @todo: add tests
 
 void a_each3(Array a1, Array a2, Array a3, AnyFn f, Any state) {
+    assert_argument_not_null(a1);
+    assert_argument_not_null(a2);
+    assert_argument_not_null(a3);
     assert_function_not_null(f);
     AnyAnyAnyIntAnyToVoid ff = f;
     int n = (a1->n < a2->n && a1->n < a3->n) ? a1->n : ((a2->n < a1->n && a2->n < a3->n) ? a2->n : a3->n);
@@ -1232,8 +1237,7 @@ void a_each3(Array a1, Array a2, Array a3, AnyFn f, Any state) {
         ff((Byte*)a1->a + i * a1->s, (Byte*)a2->a + i * a2->s, (Byte*)a3->a + i * a3->s, i, state);
     }
 }
-
-void a_foldl(Array array, AnyFn f, Any state);
+#endif
 
 static void a_sum_j(int *state, IntPair *element, int index) {
     *state += element->j;
@@ -1261,6 +1265,7 @@ static void a_foldl_test(void) {
 }
 
 void a_foldl(Array array, AnyFn f, Any state) {
+    assert_argument_not_null(array);
     assert_function_not_null(f);
     AnyAnyIntToVoid ff = f;
     for (int i = 0; i < array->n; i++) {
@@ -1268,9 +1273,12 @@ void a_foldl(Array array, AnyFn f, Any state) {
     }
 }
 
+#if 0
 // @todo: add tests
 
 void a_foldl2(Array a1, Array a2, AnyFn f, Any state) {
+    assert_argument_not_null(a1);
+    assert_argument_not_null(a2);
     assert_function_not_null(f);
     AnyAnyAnyIntToVoid ff = f;
     int n = (a1->n < a2->n) ? a1->n : a2->n;
@@ -1282,6 +1290,9 @@ void a_foldl2(Array a1, Array a2, AnyFn f, Any state) {
 // @todo: add tests
 
 void a_foldl3(Array a1, Array a2, Array a3, AnyFn f, Any state) {
+    assert_argument_not_null(a1);
+    assert_argument_not_null(a2);
+    assert_argument_not_null(a3);
     assert_function_not_null(f);
     AnyAnyAnyAnyIntToVoid ff = f;
     int n = (a1->n < a2->n && a1->n < a3->n) ? a1->n : ((a2->n < a1->n && a2->n < a3->n) ? a2->n : a3->n);
@@ -1289,8 +1300,7 @@ void a_foldl3(Array a1, Array a2, Array a3, AnyFn f, Any state) {
         ff(state, (Byte*)a1->a + i * a1->s, (Byte*)a2->a + i * a2->s, (Byte*)a3->a + i * a3->s, i);
     }
 }
-
-void a_foldr(Array array, AnyFn f, Any state);
+#endif
 
 static void a_minus_j(IntPair *element, int *state, int index) {
     *state = element->j - *state;
@@ -1318,15 +1328,13 @@ static void a_foldr_test(void) {
 }
 
 void a_foldr(Array array, AnyFn f, Any state) {
+    assert_argument_not_null(array);
     assert_function_not_null(f);
     AnyAnyIntToVoid ff = f;
     for (int i = array->n - 1; i >= 0; i--) {
         ff((Byte*)array->a + i * array->s, state, i);
     }
 }
-
-
-Array a_filter(Array array, AnyFn predicate, Any state);
 
 static bool a_eq2(IntPair *element, int index, Any state) {
     return element->i == 2;
@@ -1359,6 +1367,7 @@ static void a_filter_test(void) {
 }
 
 Array a_filter(Array array, AnyFn predicate, Any state) {
+    assert_argument_not_null(array);
     assert_function_not_null(predicate);
     AnyIntAnyToBool f = predicate;
     bool *ps = xmalloc(array->n * sizeof(bool));
@@ -1381,8 +1390,6 @@ Array a_filter(Array array, AnyFn predicate, Any state) {
     result->a = a;
     return result;
 }
-
-bool a_exists(Array array, AnyFn predicate, Any state);
 
 static void a_exists_test(void) {
     printsln((String)__func__);
@@ -1407,6 +1414,7 @@ static void a_exists_test(void) {
 }
 
 bool a_exists(Array array, AnyFn predicate, Any state) {
+    assert_argument_not_null(array);
     assert_function_not_null(predicate);
     AnyIntAnyToBool f = predicate;
     for (int i = 0; i < array->n; i++) {
@@ -1416,9 +1424,6 @@ bool a_exists(Array array, AnyFn predicate, Any state) {
     }
     return false;
 }
-
-
-bool a_forall(Array array, AnyFn predicate, Any state);
 
 static void a_forall_test(void) {
     printsln((String)__func__);
@@ -1443,6 +1448,7 @@ static void a_forall_test(void) {
 }
 
 bool a_forall(Array array, AnyFn predicate, Any state) {
+    assert_argument_not_null(array);
     assert_function_not_null(predicate);
     AnyIntAnyToBool f = predicate;
     for (int i = 0; i < array->n; i++) {
@@ -1513,8 +1519,8 @@ void a_test_all(void) {
     a_shuffle_test();
     a_sort_test();
     a_map_test();
-    a_map2_test();
-    a_map3_test();
+//    a_map2_test();
+//    a_map3_test();
     a_each_test();
     a_foldl_test();
     a_foldr_test();

@@ -24,8 +24,7 @@ List dl_of_buffer(Any buffer, int n) {
     return l_of_buffer(buffer, n, sizeof(double));
 }
 
-List dl_repeat(int n, double value);
-
+#if 0
 static void dl_repeat_test(void) {
     printsln((String)__func__);
     List list;
@@ -58,8 +57,7 @@ List dl_repeat(int n, double value) {
     }
     return lh;
 }
-
-List dl_range(double a, double b, double step);
+#endif
 
 static void dl_range_test(void) {
     printsln((String)__func__);
@@ -114,8 +112,6 @@ List dl_range(double a, double b, double step) {
     }
     return list;
 }
-
-List dl_of_string(String s);
 
 static void dl_of_string_test(void) {
     printsln((String)__func__);
@@ -195,6 +191,7 @@ static void dl_of_string_test(void) {
 }
 
 List dl_of_string(String s) {
+    assert_argument_not_null(s);
     ListHead *list = xcalloc(1, sizeof(ListHead));
     list->s = sizeof(double); // content size
     char *t = s;
@@ -212,9 +209,6 @@ List dl_of_string(String s) {
     }
     return list;
 }
-
-List dl_fn(int n, IntDoubleToDouble init, double x);
-
 
 static double two_d_plus_1(int index, double x) {
     return 2 * index + 1;
@@ -261,8 +255,6 @@ List dl_fn(int n, IntDoubleToDouble init, double x) {
     }
     return result;
 }
-
-List dl_of_il(List list);
 
 static void dl_of_il_test(void) {
     printsln((String)__func__);
@@ -438,8 +430,6 @@ void dl_println(List list) {
     printf("\n");
 }
 
-bool dl_contains(List list, double value, double epsilon);
-
 static void dl_contains_test(void) {
     printsln((String)__func__);
     List list = dl_of_string("10, 20, 30");
@@ -460,27 +450,25 @@ bool dl_contains(List list, double value, double epsilon) {
     return false;
 }
 
-void dl_fill(List list, double value);
-
 static void dl_fill_test(void) {
     printsln((String)__func__);
     List ex, ac;
 
-    ac = dl_repeat(3, 0);
+    ac = dl_of_string("1, 1, 1");
     dl_fill(ac, -1);
     ex = dl_of_string("-1, -1, -1");
     dl_check_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
-    ac = dl_repeat(2, 0);
+    ac = dl_of_string("1, 1");
     dl_fill(ac, 2);
     ex = dl_of_string("2, 2");
     dl_check_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
-    ac = dl_repeat(0, 0);
+    ac = dl_of_string("");
     dl_fill(ac, 2);
     ex = dl_create();
     dl_check_within(ac, ex);
@@ -496,62 +484,60 @@ void dl_fill(List list, double value) {
     }
 }
 
-void dl_fill_from_to(List list, double value, int from, int to);
-
 static void dl_fill_from_to_test(void) {
     printsln((String)__func__);
     List ac, ex;
 
-    ac = dl_repeat(3, 0);
+    ac = dl_of_string("0, 0, 0");
     dl_fill_from_to(ac, -1, 0, 3);
     ex = dl_of_string("-1, -1, -1");
     dl_check_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
-    ac = dl_repeat(3, 0);
+    ac = dl_of_string("0, 0, 0");
     dl_fill_from_to(ac, -1, -1, 4);
     ex = dl_of_string("-1, -1, -1");
     dl_check_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
-    ac = dl_repeat(3, 0);
+    ac = dl_of_string("0, 0, 0");
     dl_fill_from_to(ac, -1, 0, 0);
     ex = dl_of_string("0, 0, 0");
     dl_check_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
-    ac = dl_repeat(3, 0);
+    ac = dl_of_string("0, 0, 0");
     dl_fill_from_to(ac, -1, 0, 1);
     ex = dl_of_string("-1, 0, 0");
     dl_check_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
-    ac = dl_repeat(3, 0);
+    ac = dl_of_string("0, 0, 0");
     dl_fill_from_to(ac, -1, 2, 2);
     ex = dl_of_string("0, 0, 0");
     dl_check_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
-    ac = dl_repeat(3, 0);
+    ac = dl_of_string("0, 0, 0");
     dl_fill_from_to(ac, -1, 2, 3);
     ex = dl_of_string("0, 0, -1");
     dl_check_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
-    ac = dl_repeat(3, 0);
+    ac = dl_of_string("0, 0, 0");
     dl_fill_from_to(ac, -1, 2, 1);
     ex = dl_of_string("0, 0, 0");
     dl_check_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
-    ac = dl_repeat(3, 0);
+    ac = dl_of_string("0, 0, 0");
     dl_fill_from_to(ac, -1, 1, 3);
     ex = dl_of_string("0, -1, -1");
     dl_check_within(ac, ex);
@@ -570,8 +556,6 @@ void dl_fill_from_to(List list, double value, int from, int to) {
         }
     }
 }
-
-int dl_index(List list, double value, double epsilon);
 
 static void dl_index_test(void) {
     printsln((String)__func__);
@@ -610,8 +594,6 @@ int dl_index(List list, double value, double epsilon) {
     return -1;
 }
 
-int dl_index_from(List list, double value, int from, double epsilon);
-
 static void dl_index_from_test(void) {
     printsln((String)__func__);
     List a = dl_of_string("10 20 30 40 50");
@@ -636,8 +618,6 @@ int dl_index_from(List list, double value, int from, double epsilon) {
     }
     return -1;
 }
-
-int dl_index_fn(List list, DoubleIntDoubleToBool predicate, double x);
 
 static void dl_index_fn_test(void) {
     printsln((String)__func__);
@@ -667,8 +647,6 @@ static CmpResult double_compare(ConstAny a, ConstAny b) {
     double y = *(double*)b;
     return (x == y) ? EQ : (x < y ? LT : GT);
 }
-
-List dl_sort(List list);
 
 static void dl_sort_test(void) {
     printsln((String)__func__);
@@ -719,8 +697,6 @@ static CmpResult double_compare_dec(ConstAny a, ConstAny b) {
     return (x == y) ? EQ : (x < y ? LT : GT);
 }
 
-List dl_sort_dec(List list);
-
 static void dl_sort_dec_test(void) {
     printsln((String)__func__);
     List ac, ex, as;
@@ -763,8 +739,6 @@ List dl_sort_dec(List list) {
     dl_assert_element_size(list);
     return l_sort(list, double_compare_dec);
 }
-
-void dl_insert(List list, int index, double value);
 
 static void dl_insert_test(void) {
     printsln((String)__func__);
@@ -818,8 +792,6 @@ void dl_insert(List list, int index, double value) {
     dl_assert_element_size(list);
     l_insert(list, index, &value);
 }
-
-void dl_remove(List list, int index);
 
 static void dl_remove_test(void) {
     printsln((String)__func__);
@@ -936,8 +908,6 @@ double dl_times(double value, int index, double x) {
     return value * x;
 }
 
-void dl_each(List list, DoubleIntDoubleToDouble f, double x);
-
 static void dl_each_test(void) {
     printsln((String)__func__);
     List ac, ex;
@@ -967,8 +937,6 @@ void dl_each(List list, DoubleIntDoubleToDouble f, double x) {
     }
 }
 
-void dl_each_state(List list, DoubleIntDoubleAnyToDouble f, double x, Any state);
-
 static void dl_each_state_test(void) {
     printsln((String)__func__);
     // @todo: add tests
@@ -983,8 +951,6 @@ void dl_each_state(List list, DoubleIntDoubleAnyToDouble f, double x, Any state)
         node->value = f(node->value, i, x, state);
     }
 }
-
-List dl_map(List list, DoubleIntDoubleToDouble f, double x);
 
 static void dl_map_test(void) {
     printsln((String)__func__);
@@ -1019,8 +985,6 @@ List dl_map(List list, DoubleIntDoubleToDouble f, double x) {
     return result;
 }
 
-List dl_map_state(List list, DoubleIntDoubleAnyToDouble f, double x, Any state);
-
 static void dl_map_state_test(void) {
     printsln((String)__func__);
     // @todo: add tests
@@ -1037,8 +1001,6 @@ List dl_map_state(List list, DoubleIntDoubleAnyToDouble f, double x, Any state) 
     }
     return result;
 }
-
-double dl_foldl(List list, DoubleDoubleIntToDouble f, double init);
 
 static void dl_foldl_test(void) {
     printsln((String)__func__);
@@ -1063,8 +1025,6 @@ double dl_foldl(List list, DoubleDoubleIntToDouble f, double init) {
     }
     return init;
 }
-
-double dl_foldr(List list, DoubleDoubleIntToDouble f, double init);
 
 static void dl_foldr_test(void) {
     printsln((String)__func__);
@@ -1091,8 +1051,6 @@ double dl_foldr(List list, DoubleDoubleIntToDouble f, double init) {
     l_free(rev);
     return init;
 }
-
-List dl_filter(List list, DoubleIntDoubleToBool predicate, double x);
 
 static void dl_filter_test(void) {
     printsln((String)__func__);
@@ -1133,8 +1091,6 @@ List dl_filter(List list, DoubleIntDoubleToBool predicate, double x) {
     return result;
 }
 
-List dl_filter_state(List list, DoubleIntDoubleAnyToBool predicate, double x, Any state);
-
 static void dl_filter_state_test(void) {
     printsln((String)__func__);
     // @todo: add tests
@@ -1153,8 +1109,6 @@ List dl_filter_state(List list, DoubleIntDoubleAnyToBool predicate, double x, An
     }
     return result;
 }
-
-List dl_choose(List list, DoubleIntDoubleToDoubleOption f, double x);
 
 DoubleOption gt3_times_x(double element, int index, double x) {
     if (element > 3) {
@@ -1191,8 +1145,6 @@ List dl_choose(List list, DoubleIntDoubleToDoubleOption f, double x) {
     }
     return result;
 }
-
-List dl_choose_state(List list, DoubleIntDoubleAnyToDoubleOption f, double x, Any state);
 
 DoubleOption gt_x_times_y(double element, int index, double x, Any state) {
     double y = *(double*)state;
@@ -1232,8 +1184,6 @@ List dl_choose_state(List list, DoubleIntDoubleAnyToDoubleOption f, double x, An
     return result;
 }
 
-bool dl_exists(List list, DoubleIntDoubleToBool predicate, double x);
-
 static void dl_exists_test(void) {
     printsln((String)__func__);
     List a = dl_of_string("1, 2, 3, 4, 5, 6");
@@ -1256,8 +1206,6 @@ bool dl_exists(List list, DoubleIntDoubleToBool predicate, double x) {
     return false;
 }
 
-bool dl_exists_state(List list, DoubleIntDoubleAnyToBool predicate, double x, Any state);
-
 static void dl_exists_state_test(void) {
     printsln((String)__func__);
     // @todo: add tests
@@ -1275,8 +1223,6 @@ bool dl_exists_state(List list, DoubleIntDoubleAnyToBool predicate, double x, An
     }
     return false;
 }
-
-bool dl_forall(List list, DoubleIntDoubleToBool predicate, double x);
 
 static void dl_forall_test(void) {
     printsln((String)__func__);
@@ -1299,8 +1245,6 @@ bool dl_forall(List list, DoubleIntDoubleToBool predicate, double x) {
     }
     return true;
 }
-
-bool dl_forall_state(List list, DoubleIntDoubleAnyToBool predicate, double x, Any state);
 
 static void dl_forall_state_test(void) {
     printsln((String)__func__);
@@ -1372,7 +1316,7 @@ bool dl_check_within_file_line(const char *file, const char *function, int line,
 ///////////////////////////////////////////////////////////////////////////////
 
 void dl_test_all(void) {
-    dl_repeat_test();
+//    dl_repeat_test();
     dl_range_test();
     dl_of_string_test();
     dl_fn_test();

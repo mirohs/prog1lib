@@ -287,6 +287,7 @@ void ba_set(Array array, int index, Byte value) {
 #endif
 
 void ba_print(Array array) {
+    assert_argument_not_null(array);
     ba_assert_element_size(array);
     Byte *a = array->a;
     printf("[");
@@ -300,6 +301,7 @@ void ba_print(Array array) {
 }
 
 void ba_println(Array array) {
+    assert_argument_not_null(array);
     ba_assert_element_size(array);
     ba_print(array);
     printf("\n");
@@ -316,6 +318,7 @@ static void ba_contains_test(void) {
 }
 
 bool ba_contains(Array array, Byte value) {
+    assert_argument_not_null(array);
     ba_assert_element_size(array);
     Byte *a = array->a;
     for (int i = 0; i < array->n; i++) {
@@ -350,6 +353,7 @@ static void ba_fill_test(void) {
 }
 
 void ba_fill(Array array, Byte value) {
+    assert_argument_not_null(array);
     ba_assert_element_size(array);
     Byte *a = array->a;
     for (int i = 0; i < array->n; i++) {
@@ -411,6 +415,7 @@ static void ba_fill_from_to_test(void) {
 }
 
 void ba_fill_from_to(Array array, Byte value, int from, int to) {
+    assert_argument_not_null(array);
     ba_assert_element_size(array);
     if (from < 0) from = 0;
     if (to > array->n) to = array->n;
@@ -446,6 +451,7 @@ static void ba_index_test(void) {
 }
 
 int ba_index(Array array, Byte value) {
+    assert_argument_not_null(array);
     ba_assert_element_size(array);
     Byte *a = array->a;
     for (int i = 0; i < array->n; i++) {
@@ -469,6 +475,7 @@ static void ba_index_from_test(void) {
 }
 
 int ba_index_from(Array array, Byte value, int from) {
+    assert_argument_not_null(array);
     ba_assert_element_size(array);
     if (from < 0) from = 0;
     Byte *a = array->a;
@@ -489,6 +496,7 @@ static void ba_index_fn_test(void) {
 }
 
 int ba_index_fn(Array array, ByteIntByteToBool predicate, Byte x) {
+    assert_argument_not_null(array);
     assert_function_not_null(predicate);
     ba_assert_element_size(array);
     Byte *a = array->a;
@@ -510,6 +518,7 @@ static void ba_last_index_test(void) {
 }
 
 int ba_last_index(Array array, Byte value) {
+    assert_argument_not_null(array);
     ba_assert_element_size(array);
     Byte *a = array->a;
     for (int i = array->n - 1; i >= 0; i--) {
@@ -532,6 +541,7 @@ static void ba_last_index_from_test(void) {
 }
 
 int ba_last_index_from(Array array, Byte value, int from) {
+    assert_argument_not_null(array);
     ba_assert_element_size(array);
     if (from >= array->n) from = array->n - 1;
     Byte *a = array->a;
@@ -552,6 +562,7 @@ static void ba_last_index_fn_test(void) {
 }
 
 int ba_last_index_fn(Array array, ByteIntByteToBool predicate, Byte x) {
+    assert_argument_not_null(array);
     assert_function_not_null(predicate);
     ba_assert_element_size(array);
     Byte *a = array->a;
@@ -566,6 +577,8 @@ int ba_last_index_fn(Array array, ByteIntByteToBool predicate, Byte x) {
 ///////////////////////////////////////////////////////////////////////////////
 
 static CmpResult byte_compare(ConstAny a, ConstAny b) {
+    assert_argument_not_null(a);
+    assert_argument_not_null(b);
     Byte x = *(Byte*)a;
     Byte y = *(Byte*)b;
     return (x == y) ? 0 : (x < y ? -1 : 1);
@@ -606,11 +619,14 @@ static void ba_sort_test(void) {
 }
 
 void ba_sort(Array array) {
+    assert_argument_not_null(array);
     ba_assert_element_size(array);
     qsort(array->a, array->n, array->s, byte_compare);
 }
 
 static CmpResult byte_compare_dec(ConstAny a, ConstAny b) {
+    assert_argument_not_null(a);
+    assert_argument_not_null(b);
     Byte x = *(Byte*)b;
     Byte y = *(Byte*)a;
     return (x == y) ? 0 : (x < y ? -1 : 1);
@@ -653,6 +669,7 @@ static void ba_sort_dec_test(void) {
 }
 
 void ba_sort_dec(Array array) {
+    assert_argument_not_null(array);
     ba_assert_element_size(array);
     qsort(array->a, array->n, array->s, byte_compare_dec);
 }
@@ -705,6 +722,7 @@ static void ba_insert_test(void) {
 }
 
 void ba_insert(Array array, int i, Byte v) {
+    assert_argument_not_null(array);
     ba_assert_element_size(array);
     if (i < 0 || i >= array->n) return;
     // make space at i
@@ -771,6 +789,7 @@ static void ba_remove_test(void) {
 }
 
 void ba_remove(Array array, int i, Byte v) {
+    assert_argument_not_null(array);
     ba_assert_element_size(array);
     if (i < 0 || i >= array->n) return;
     // shift down, starting from i
@@ -878,6 +897,7 @@ static void ba_each_test(void) {
 }
 
 void ba_each(Array array, ByteIntByteToByte f, Byte x) {
+    assert_argument_not_null(array);
     assert_function_not_null(f);
     ba_assert_element_size(array);
     Byte *a = array->a;
@@ -892,6 +912,7 @@ static void ba_each_state_test(void) {
 }
 
 void ba_each_state(Array array, ByteIntByteAnyToByte f, Byte x, Any state) {
+    assert_argument_not_null(array);
     assert_function_not_null(f);
     assert_argument_not_null(array);
     ba_assert_element_size(array);
@@ -903,6 +924,7 @@ void ba_each_state(Array array, ByteIntByteAnyToByte f, Byte x, Any state) {
 
 // @todo: add tests
 Array ba_map(Array array, ByteIntByteToByte f, Byte x) {
+    assert_argument_not_null(array);
     assert_function_not_null(f);
     ba_assert_element_size(array);
     Byte *a = array->a;
@@ -919,6 +941,7 @@ Array ba_map(Array array, ByteIntByteToByte f, Byte x) {
 
 // @todo: add tests
 Array ba_map_state(Array array, ByteIntByteAnyToByte f, Byte x, Any state) {
+    assert_argument_not_null(array);
     assert_function_not_null(f);
     ba_assert_element_size(array);
     Byte *a = array->a;
@@ -947,6 +970,7 @@ static void ba_foldl_test(void) {
 }
 
 int ba_foldl(Array array, ByteByteIntToByte f, Byte init) {
+    assert_argument_not_null(array);
     assert_function_not_null(f);
     ba_assert_element_size(array);
     Byte *a = array->a;
@@ -970,6 +994,7 @@ static void ba_foldr_test(void) {
 }
 
 int ba_foldr(Array array, ByteByteIntToByte f, Byte init) {
+    assert_argument_not_null(array);
     assert_function_not_null(f);
     ba_assert_element_size(array);
     Byte *a = array->a;
@@ -1005,6 +1030,7 @@ static void ba_filter_test(void) {
 }
 
 Array ba_filter(Array array, ByteIntByteToBool predicate, Byte x) {
+    assert_argument_not_null(array);
     assert_function_not_null(predicate);
     ba_assert_element_size(array);
     Byte *a = array->a;
@@ -1031,6 +1057,7 @@ Array ba_filter(Array array, ByteIntByteToBool predicate, Byte x) {
 // @todo: add tests
 
 Array ba_filter_state(Array array, ByteIntByteAnyToBool predicate, Byte x, Any state) {
+    assert_argument_not_null(array);
     assert_function_not_null(predicate);
     ba_assert_element_size(array);
     Byte *a = array->a;
@@ -1076,6 +1103,7 @@ static void ba_choose_test(void) {
 }
 
 Array ba_choose(Array array, ByteIntByteToByteOption f, Byte x) {
+    assert_argument_not_null(array);
     assert_function_not_null(f);
     ba_assert_element_size(array);
     Byte *a = array->a;
@@ -1100,6 +1128,7 @@ Array ba_choose(Array array, ByteIntByteToByteOption f, Byte x) {
 // @todo: add tests
 
 Array ba_choose_state(Array array, ByteIntByteAnyToByteOption f, Byte x, Any state) {
+    assert_argument_not_null(array);
     assert_function_not_null(f);
     ba_assert_element_size(array);
     Byte *a = array->a;
@@ -1131,6 +1160,7 @@ static void ba_exists_test(void) {
 }
 
 bool ba_exists(Array array, ByteIntByteToBool predicate, Byte x) {
+    assert_argument_not_null(array);
     assert_function_not_null(predicate);
     ba_assert_element_size(array);
     Byte *a = array->a;
@@ -1145,6 +1175,7 @@ bool ba_exists(Array array, ByteIntByteToBool predicate, Byte x) {
 // @todo: add tests
 
 bool ba_exists_state(Array array, ByteIntByteAnyToBool predicate, Byte x, Any state) {
+    assert_argument_not_null(array);
     assert_function_not_null(predicate);
     ba_assert_element_size(array);
     Byte *a = array->a;
@@ -1166,6 +1197,7 @@ static void ba_forall_test(void) {
 }
 
 bool ba_forall(Array array, ByteIntByteToBool predicate, Byte x) {
+    assert_argument_not_null(array);
     assert_function_not_null(predicate);
     ba_assert_element_size(array);
     Byte *a = array->a;
@@ -1178,6 +1210,7 @@ bool ba_forall(Array array, ByteIntByteToBool predicate, Byte x) {
 }
 
 bool ba_forall_state(Array array, ByteIntByteAnyToBool predicate, Byte x, Any state) {
+    assert_argument_not_null(array);
     assert_function_not_null(predicate);
     ba_assert_element_size(array);
     Byte *a = array->a;

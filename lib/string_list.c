@@ -100,6 +100,7 @@ static void sl_of_string_test(void) {
 }
 
 List sl_of_string(String s) {
+    assert_argument_not_null(s);
     List list = sl_create();
     char *t = s;
     char *start = s;
@@ -153,6 +154,7 @@ static void sl_split_test(void) {
 }
 
 List sl_split(String s, char separator) {
+    assert_argument_not_null(s);
     List list = sl_create();
     char *t = s;
     char *start = s;

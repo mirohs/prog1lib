@@ -103,7 +103,7 @@ bool predicate(Any element, int index, Any x) {}
 @param[in] x given to each invocation of predicate
 @return index or -1
 */
-int pa_index_fn(Array array, AnyIntAnyToBool predicate, Any x);
+int pa_index_fn(Array array, AnyFn predicate, Any x);
 
 /**
 Return index of last occurrence of value in array. Compares pointers.
@@ -135,7 +135,7 @@ bool predicate(int element, int index, Any x) {}
 @param[in] x given to each invocation of predicate
 @return index or -1
 */
-int pa_last_index_fn(Array array, AnyIntAnyToBool predicate, Any x);
+int pa_last_index_fn(Array array, AnyFn predicate, Any x);
 
 /**
 Apply function f to each element of array. The original array is modified (if f modifies the element).
@@ -154,7 +154,7 @@ array[1] := f(array[1], 1, x)<br/>
 ...<br/>
 array[n-1] := f(array[n-1], n-1, x)
 */
-void pa_each(Array array, AnyIntAnyToAny f, Any x); 
+void pa_each(Array array, AnyFn f, Any x); 
 
 /**
 Apply function f to each element of array. 
@@ -169,7 +169,7 @@ int f(int element, int index, int x) {}
 @param[in] x provided to each invocation of f
 @return the mapped array
 */
-Array pa_map(Array array, AnyIntAnyToAny f, Any x);
+Array pa_map(Array array, AnyFn f, Any x);
 
 /**
 Fold array from left to right, i.e., compute f(... f(f(init, a0), a1) ... an).
@@ -188,7 +188,7 @@ state := f(state, array[1], 1)<br/>
 ... <br/>
 state := f(state, array[n-1], n-1)
 */
-Any pa_foldl(Array array, AnyAnyIntToAny f, Any state);
+Any pa_foldl(Array array, AnyFn f, Any state);
 
 /**
 Fold array from right to left. I.e., compute f(l0, f(l1,... f(ln, init)...)).
@@ -207,7 +207,7 @@ state := f(array[n-1], state, n-1)<br/>
 state := f(array[1], state, 1)<br/>
 state := f(array[0], state, 0)
 */
-Any pa_foldr(Array array, AnyAnyIntToAny f, Any state);
+Any pa_foldr(Array array, AnyFn f, Any state);
 
 /**
 Predicates
@@ -233,7 +233,7 @@ bool predicate(Any element, int index, Any x) {}
 @param[in] x given to each invocation of predicate
 @return filtered array
 */
-Array pa_filter(Array array, AnyIntAnyToBool predicate, Any x);
+Array pa_filter(Array array, AnyFn predicate, Any x);
 
 /**
 Create a new array with only those elements of array that satisfy the predicate.
@@ -248,7 +248,7 @@ bool predicate(Any element, int index, Any x, Any state) {}
 @param[in] state given to each invocation of predicate (may be NULL)
 @return filtered array
 */
-Array pa_filter_state(Array array, AnyIntAnyAnyToBool predicate, Any x, Any state);
+Array pa_filter_state(Array array, AnyFn predicate, Any x, Any state);
 
 /**
 Filter and map array using f. The original array is not modified.
@@ -276,7 +276,7 @@ Array b = pa_choose(a, starts_with_toupper, "a");
 // b is ["A1", "A2", "A5"]
 @endcode
 */
-Array pa_choose(Array array, AnyIntAnyToAny f, Any x);
+Array pa_choose(Array array, AnyFn f, Any x);
 
 // @todo: add tests
 
@@ -292,7 +292,7 @@ Any f(Any element, int index, Any x, Any state) {}
 @param[in] state given to each invocation of predicate (may be NULL)
 @return filtered and mapped array
 */
-Array pa_choose_state(Array array, AnyIntAnyAnyToAny f, Any x, Any state);
+Array pa_choose_state(Array array, AnyFn f, Any x, Any state);
 
 /**
 Returns true iff there is at least one element that satisfies the predicate.
@@ -305,7 +305,7 @@ bool predicate(Any element, int index, Any x) {}
 @param[in] x given to each invocation of predicate
 @return true iff at least one element satisfies predicate
 */
-bool pa_exists(Array array, AnyIntAnyToBool predicate, Any x);
+bool pa_exists(Array array, AnyFn predicate, Any x);
 
 /**
 Returns true iff there is at least one element that satisfies the predicate.
@@ -319,7 +319,7 @@ bool predicate(Any element, int index, Any x, Any state) {}
 @param[in] state given to each invocation of predicate (may be NULL)
 @return true iff at least one element satisfies predicate
 */
-bool pa_exists_state(Array array, AnyIntAnyAnyToBool predicate, Any x, Any state);
+bool pa_exists_state(Array array, AnyFn predicate, Any x, Any state);
 
 /**
 Returns true iff all the elements satisfy the predicate.
@@ -332,7 +332,7 @@ bool predicate(Any element, int index, Any x) {}
 @param[in] x given to each invocation of predicate
 @return true iff at all the elements satisfy predicate
 */    
-bool pa_forall(Array array, AnyIntAnyToBool predicate, Any x);
+bool pa_forall(Array array, AnyFn predicate, Any x);
 
 /**
 Returns true iff all the elements satisfy the predicate.
@@ -346,7 +346,7 @@ bool predicate(Any element, int index, Any x, Any state) {}
 @param[in] state given to each invocation of predicate (may be NULL)
 @return true iff at all the elements satisfy predicate
 */
-bool pa_forall_state(Array array, AnyIntAnyAnyToBool predicate, Any x, Any state);
+bool pa_forall_state(Array array, AnyFn predicate, Any x, Any state);
 
 /*
 Test for pointer arrays.

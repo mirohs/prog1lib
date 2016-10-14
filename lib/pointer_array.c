@@ -11,8 +11,6 @@
 
 
 
-Array pa_create(int n, Any value);
-
 static void pa_create_test(void) {
     printsln((Any)__func__);
     Array array;
@@ -53,7 +51,6 @@ Array pa_create(int n, Any value) {
     result->a = a;
     return result;
 }
-
 
 static void a_copy_test(void) {
     printsln((Any)__func__);
@@ -143,6 +140,7 @@ void pa_free(Array array) {
 
 #ifdef A_GET_SET
 Any pa_get(Array array, int index) {
+    assert_argument_not_null(array);
     pa_assert_element_size(array);
     if (index < 0 || index >= array->n) {
         printf("pa_get: index %d is out of range "
@@ -157,6 +155,7 @@ Any pa_get(Array array, int index) {
 
 #ifdef A_GET_SET
 void pa_set(Array array, int index, Any value) {
+    assert_argument_not_null(array);
     pa_assert_element_size(array);
     if (index < 0 || index >= array->n) {
         printf("pa_set: index %d is out of range "
@@ -171,6 +170,7 @@ void pa_set(Array array, int index, Any value) {
 
 #if 0
 void pa_print(Array array) {
+    assert_argument_not_null(array);
     pa_assert_element_size(array);
     Any *a = array->a;
     printf("[");
@@ -184,6 +184,7 @@ void pa_print(Array array) {
 }
 
 void pa_println(Array array) {
+    assert_argument_not_null(array);
     pa_assert_element_size(array);
     pa_print(array);
     printf("\n");
@@ -236,8 +237,6 @@ static void a_concat_test(void) {
     a_free(ex);
 }
 
-bool pa_contains(Array array, Any value);
-
 static void pa_contains_test(void) {
     printsln((Any)__func__);
     Array array;
@@ -249,6 +248,7 @@ static void pa_contains_test(void) {
 }
 
 bool pa_contains(Array array, Any value) {
+    assert_argument_not_null(array);
     pa_assert_element_size(array);
     Any *a = array->a;
     for (int i = 0; i < array->n; i++) {
@@ -258,8 +258,6 @@ bool pa_contains(Array array, Any value) {
     }
     return false;
 }
-
-int pa_index(Array array, Any value);
 
 static void pa_index_test(void) {
     printsln((Any)__func__);
@@ -282,6 +280,7 @@ static void pa_index_test(void) {
 }
 
 int pa_index(Array array, Any value) {
+    assert_argument_not_null(array);
     pa_assert_element_size(array);
     Any *a = array->a;
     for (int i = 0; i < array->n; i++) {
@@ -291,8 +290,6 @@ int pa_index(Array array, Any value) {
     }
     return -1;
 }
-
-int pa_index_from(Array array, Any value, int from);
 
 static void pa_index_from_test(void) {
     printsln((Any)__func__);
@@ -306,6 +303,7 @@ static void pa_index_from_test(void) {
 }
 
 int pa_index_from(Array array, Any value, int from) {
+    assert_argument_not_null(array);
     pa_assert_element_size(array);
     Any *a = array->a;
     if (from < 0) from = 0;
@@ -317,9 +315,7 @@ int pa_index_from(Array array, Any value, int from) {
     return -1;
 }
 
-int pa_index_fn(Array array, AnyIntAnyToBool predicate, Any x);
-
-static bool is_equal_to(Any s, int index, Any x) {
+static bool is_equal_to(String s, int index, String x) {
     return s_equals(s, x);
 }
 
@@ -330,18 +326,19 @@ static void pa_index_fn_test(void) {
     pa_free(a);
 }
 
-int pa_index_fn(Array array, AnyIntAnyToBool predicate, Any x) {
+int pa_index_fn(Array array, AnyFn predicate, Any x) {
+    assert_argument_not_null(array);
     pa_assert_element_size(array);
+    assert_function_not_null(predicate);
+    AnyIntAnyToBool f = predicate;
     Any *a = array->a;
     for (int i = 0; i < array->n; i++) {
-        if (predicate(a[i], i, x)) {
+        if (f(a[i], i, x)) {
             return i;
         }
     }
     return -1;
 }
-
-int pa_last_index(Array array, Any value);
 
 static void pa_last_index_test(void) {
     printsln((Any)__func__);
@@ -353,6 +350,7 @@ static void pa_last_index_test(void) {
 }
 
 int pa_last_index(Array array, Any value) {
+    assert_argument_not_null(array);
     pa_assert_element_size(array);
     Any *a = array->a;
     for (int i = array->n - 1; i >= 0; i--) {
@@ -362,8 +360,6 @@ int pa_last_index(Array array, Any value) {
     }
     return -1;
 }
-
-int pa_last_index_from(Array array, Any value, int from);
 
 static void pa_last_index_from_test(void) {
     printsln((Any)__func__);
@@ -377,6 +373,7 @@ static void pa_last_index_from_test(void) {
 }
 
 int pa_last_index_from(Array array, Any value, int from) {
+    assert_argument_not_null(array);
     pa_assert_element_size(array);
     Any *a = array->a;
     if (from >= array->n) from = array->n - 1;
@@ -388,8 +385,6 @@ int pa_last_index_from(Array array, Any value, int from) {
     return -1;
 }
 
-int pa_last_index_fn(Array array, AnyIntAnyToBool predicate, Any x);
-
 static void pa_last_index_fn_test(void) {
     printsln((Any)__func__);
     Array a = sa_of_string("no, dog, test, dog, a, cat");
@@ -397,12 +392,14 @@ static void pa_last_index_fn_test(void) {
     pa_free(a);
 }
 
-int pa_last_index_fn(Array array, AnyIntAnyToBool predicate, Any x) {
-    assert_function_not_null(predicate);
+int pa_last_index_fn(Array array, AnyFn predicate, Any x) {
+    assert_argument_not_null(array);
     pa_assert_element_size(array);
+    assert_function_not_null(predicate);
+    AnyIntAnyToBool f = predicate;
     Any *a = array->a;
     for (int i = array->n - 1; i >= 0; i--) {
-        if (predicate(a[i], i, x)) {
+        if (f(a[i], i, x)) {
             return i;
         }
     }
@@ -603,12 +600,14 @@ void pa_sort_dec_ignore_case(Array array) {
 
 // @todo: pa_each_test
 
-void pa_each(Array array, AnyIntAnyToAny f, Any x) {
-    assert_function_not_null(f);
+void pa_each(Array array, AnyFn f, Any x) {
+    assert_argument_not_null(array);
     pa_assert_element_size(array);
+    assert_function_not_null(f);
+    AnyIntAnyToAny ff = f;
     Any *a = array->a;
     for (int i = 0; i < array->n; i++) {
-        a[i] = f(a[i], i, x);
+        a[i] = ff(a[i], i, x);
     }
 }
 
@@ -652,14 +651,16 @@ Array pa_map(Array array, AnyIntToAny f) {
 
 // @todo: pa_map_test
 
-Array pa_map(Array array, AnyIntAnyToAny f, Any x) {
-    assert_function_not_null(f);
+Array pa_map(Array array, AnyFn f, Any x) {
+    assert_argument_not_null(array);
     pa_assert_element_size(array);
+    assert_function_not_null(f);
+    AnyIntAnyToAny ff = f;
     int n = array->n;
     Any *a = array->a;
     Any *b = xmalloc(n * sizeof(Any));
     for (int i = 0; i < n; i++) {
-        b[i] = f(a[i], i, x);
+        b[i] = ff(a[i], i, x);
     }
     Array result = xmalloc(sizeof(ArrayHead));
     result->n = n;
@@ -667,8 +668,6 @@ Array pa_map(Array array, AnyIntAnyToAny f, Any x) {
     result->a = b;
     return result;
 }
-
-Any pa_foldl(Array array, AnyAnyIntToAny f, Any state);
 
 static Any pa_concat(Any state, Any element, int index) {
     Any c = s_concat(state, element);
@@ -694,12 +693,14 @@ static void pa_foldl_test(void) {
     pa_free(a);
 }
 
-Any pa_foldl(Array array, AnyAnyIntToAny f, Any state) {
-    assert_function_not_null(f);
+Any pa_foldl(Array array, AnyFn f, Any state) {
+    assert_argument_not_null(array);
     pa_assert_element_size(array);
+    assert_function_not_null(f);
+    AnyAnyIntToAny ff = f;
     Any *a = array->a;
     for (int i = 0; i < array->n; i++) {
-        state = f(state, a[i], i);
+        state = ff(state, a[i], i);
     }
     return state;
 }
@@ -759,10 +760,8 @@ void pa_foldl_state(Array array, AnyAnyIntToVoid f, Any state) {
 }
 #endif
 
-Any pa_foldr(Array array, AnyAnyIntToAny f, Any state);
-
-static Any pa_concat_r(Any element, Any state, int index) {
-    Any c = s_concat(element, state);
+static String pa_concat_r(String element, String state, int index) {
+    String c = s_concat(element, state);
     s_free(state);
     return c;
 }
@@ -786,12 +785,14 @@ static void pa_foldr_test(void) {
     pa_free(a);
 }
 
-Any pa_foldr(Array array, AnyAnyIntToAny f, Any state) {
-    assert_function_not_null(f);
+Any pa_foldr(Array array, AnyFn f, Any state) {
+    assert_argument_not_null(array);
     pa_assert_element_size(array);
+    assert_function_not_null(f);
+    AnyAnyIntToAny ff = f;
     Any *a = array->a;
     for (int i = array->n - 1; i >= 0; i--) {
-        state = f(a[i], state, i);
+        state = ff(a[i], state, i);
     }
     return state;
 }
@@ -810,9 +811,7 @@ bool pa_element_empty(Any value, int index) {
     return s_length(value) <= 0;
 }
 
-Array pa_filter(Array array, AnyIntAnyToBool predicate, Any x);
-
-static bool f_ends_width(Any element, int index, Any start) {
+static bool f_ends_width(String element, int index, String start) {
     return s_ends_with(element, start);
 }
 
@@ -829,14 +828,16 @@ static void pa_filter_test(void) {
     pa_free(ex);
 }
 
-Array pa_filter(Array array, AnyIntAnyToBool predicate, Any x) {
-    assert_function_not_null(predicate);
+Array pa_filter(Array array, AnyFn predicate, Any x) {
+    assert_argument_not_null(array);
     pa_assert_element_size(array);
+    assert_function_not_null(predicate);
+    AnyIntAnyToBool f = predicate;
     bool *ps = xmalloc(array->n * sizeof(bool));
     int n = 0;
     Any *a = array->a;
     for (int i = 0; i < array->n; i++) {
-        ps[i] = predicate(a[i], i, x);
+        ps[i] = f(a[i], i, x);
         if (ps[i]) n++;
     }
     Any *b = xmalloc(n * sizeof(Any));
@@ -855,14 +856,16 @@ Array pa_filter(Array array, AnyIntAnyToBool predicate, Any x) {
 
 // @todo: add tests
 
-Array pa_filter_state(Array array, AnyIntAnyAnyToBool predicate, Any x, Any state) {
-    assert_function_not_null(predicate);
+Array pa_filter_state(Array array, AnyFn predicate, Any x, Any state) {
+    assert_argument_not_null(array);
     pa_assert_element_size(array);
+    assert_function_not_null(predicate);
+    AnyIntAnyAnyToBool f = predicate;
     bool *ps = xmalloc(array->n * sizeof(bool));
     int n = 0;
     Any *a = array->a;
     for (int i = 0; i < array->n; i++) {
-        ps[i] = predicate(a[i], i, x, state);
+        ps[i] = f(a[i], i, x, state);
         if (ps[i]) n++;
     }
     Any *b = xmalloc(n * sizeof(Any));
@@ -879,7 +882,7 @@ Array pa_filter_state(Array array, AnyIntAnyAnyToBool predicate, Any x, Any stat
     return result;
 }
 
-static Any starts_with_toupper(Any element, int index, Any x) {
+static String starts_with_toupper(String element, int index, String x) {
     if (s_starts_with(element, x)) {
         return s_upper_case(element);
     }
@@ -900,14 +903,16 @@ static void pa_choose_test(void) {
     pa_free(a);
 }
 
-Array pa_choose(Array array, AnyIntAnyToAny f, Any x) {
-    assert_function_not_null(f);
+Array pa_choose(Array array, AnyFn f, Any x) {
+    assert_argument_not_null(array);
     pa_assert_element_size(array);
+    assert_function_not_null(f);
+    AnyIntAnyToAny ff = f;
     Any *a = array->a;
     Any *b = xmalloc(array->n * sizeof(Any));
     int n = 0;
     for (int i = 0; i < array->n; i++) {
-        Any op = f(a[i], i, x);
+        Any op = ff(a[i], i, x);
         if (op != NULL) {
             b[n++] = op;
         }
@@ -922,14 +927,16 @@ Array pa_choose(Array array, AnyIntAnyToAny f, Any x) {
     return result;
 }
 
-Array pa_choose_state(Array array, AnyIntAnyAnyToAny f, Any x, Any state) {
-    assert_function_not_null(f);
+Array pa_choose_state(Array array, AnyFn f, Any x, Any state) {
+    assert_argument_not_null(array);
     pa_assert_element_size(array);
+    assert_function_not_null(f);
+    AnyIntAnyAnyToAny ff = f;
     Any *a = array->a;
     Any *b = xmalloc(array->n * sizeof(Any));
     int n = 0;
     for (int i = 0; i < array->n; i++) {
-        Any op = f(a[i], i, x, state);
+        Any op = ff(a[i], i, x, state);
         if (op != NULL) {
             b[n++] = op;
         }
@@ -944,13 +951,11 @@ Array pa_choose_state(Array array, AnyIntAnyAnyToAny f, Any x, Any state) {
     return result;
 }
 
-bool pa_exists(Array array, AnyIntAnyToBool predicate, Any x);
-
-static bool pa_element_eq(Any element, int index, Any x) {
+static bool pa_element_eq(String element, int index, String x) {
     return s_equals(element, x);
 }
 
-static bool pa_element_ne(Any element, int index, Any x) {
+static bool pa_element_ne(String element, int index, String x) {
     return !s_equals(element, x);
 }
 
@@ -963,31 +968,33 @@ static void pa_exists_test(void) {
     pa_free(a);
 }
 
-bool pa_exists(Array array, AnyIntAnyToBool predicate, Any x) {
-    assert_function_not_null(predicate);
+bool pa_exists(Array array, AnyFn predicate, Any x) {
+    assert_argument_not_null(array);
     pa_assert_element_size(array);
+    assert_function_not_null(predicate);
+    AnyIntAnyToBool f = predicate;
     Any *a = array->a;
     for (int i = 0; i < a_length(array); i++) {
-        if (predicate(a[i], i, x)) {
+        if (f(a[i], i, x)) {
             return true;
         }
     }
     return false;
 }
 
-bool pa_exists_state(Array array, AnyIntAnyAnyToBool predicate, Any x, Any state) {
-    assert_function_not_null(predicate);
+bool pa_exists_state(Array array, AnyFn predicate, Any x, Any state) {
+    assert_argument_not_null(array);
     pa_assert_element_size(array);
+    assert_function_not_null(predicate);
+    AnyIntAnyAnyToBool f = predicate;
     Any *a = array->a;
     for (int i = 0; i < a_length(array); i++) {
-        if (predicate(a[i], i, x, state)) {
+        if (f(a[i], i, x, state)) {
             return true;
         }
     }
     return false;
 }
-
-bool pa_forall(Array array, AnyIntAnyToBool predicate, Any x);
 
 static void pa_forall_test(void) {
     printsln((Any)__func__);
@@ -997,12 +1004,14 @@ static void pa_forall_test(void) {
     pa_free(a);
 }
 
-bool pa_forall(Array array, AnyIntAnyToBool predicate, Any x) {
-    assert_function_not_null(predicate);
+bool pa_forall(Array array, AnyFn predicate, Any x) {
+    assert_argument_not_null(array);
     pa_assert_element_size(array);
+    assert_function_not_null(predicate);
+    AnyIntAnyToBool f = predicate;
     Any *a = array->a;
     for (int i = 0; i < a_length(array); i++) {
-        if (!predicate(a[i], i, x)) {
+        if (!f(a[i], i, x)) {
             return false;
         }
     }
@@ -1011,12 +1020,14 @@ bool pa_forall(Array array, AnyIntAnyToBool predicate, Any x) {
 
 // @todo: add tests
 
-bool pa_forall_state(Array array, AnyIntAnyAnyToBool predicate, Any x, Any state) {
-    assert_function_not_null(predicate);
+bool pa_forall_state(Array array, AnyFn predicate, Any x, Any state) {
+    assert_argument_not_null(array);
     pa_assert_element_size(array);
+    assert_function_not_null(predicate);
+    AnyIntAnyAnyToBool f = predicate;
     Any *a = array->a;
     for (int i = 0; i < a_length(array); i++) {
-        if (!predicate(a[i], i, x, state)) {
+        if (!f(a[i], i, x, state)) {
             return false;
         }
     }

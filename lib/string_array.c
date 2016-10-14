@@ -249,6 +249,7 @@ void sa_free(Array array) {
 
 #ifdef A_GET_SET
 String sa_get(Array array, int index) {
+    assert_argument_not_null(array);
     sa_assert_element_size(array);
     if (index < 0 || index >= array->n) {
         printf("sa_get: index %d is out of range "
@@ -263,6 +264,7 @@ String sa_get(Array array, int index) {
 
 #ifdef A_GET_SET
 void sa_set(Array array, int index, String value) {
+    assert_argument_not_null(array);
     sa_assert_element_size(array);
     if (index < 0 || index >= array->n) {
         printf("sa_set: index %d is out of range "
@@ -276,6 +278,7 @@ void sa_set(Array array, int index, String value) {
 #endif
 
 void sa_print(Array array) {
+    assert_argument_not_null(array);
     sa_assert_element_size(array);
     String *a = array->a;
     printf("[");
@@ -289,6 +292,7 @@ void sa_print(Array array) {
 }
 
 void sa_println(Array array) {
+    assert_argument_not_null(array);
     sa_assert_element_size(array);
     sa_print(array);
     printf("\n");
@@ -353,6 +357,7 @@ static void sa_contains_test(void) {
 }
 
 bool sa_contains(Array array, String value) {
+    assert_argument_not_null(array);
     sa_assert_element_size(array);
     String *a = array->a;
     for (int i = 0; i < array->n; i++) {
@@ -386,6 +391,7 @@ static void sa_index_test(void) {
 }
 
 int sa_index(Array array, String value) {
+    assert_argument_not_null(array);
     sa_assert_element_size(array);
     String *a = array->a;
     for (int i = 0; i < array->n; i++) {
@@ -410,6 +416,7 @@ static void sa_index_from_test(void) {
 }
 
 int sa_index_from(Array array, String value, int from) {
+    assert_argument_not_null(array);
     sa_assert_element_size(array);
     String *a = array->a;
     if (from < 0) from = 0;
@@ -435,6 +442,7 @@ static void sa_index_fn_test(void) {
 }
 
 int sa_index_fn(Array array, StringIntStringToBool predicate, String x) {
+    assert_argument_not_null(array);
     sa_assert_element_size(array);
     String *a = array->a;
     for (int i = 0; i < array->n; i++) {
@@ -457,6 +465,7 @@ static void sa_last_index_test(void) {
 }
 
 int sa_last_index(Array array, String value) {
+    assert_argument_not_null(array);
     sa_assert_element_size(array);
     String *a = array->a;
     for (int i = array->n - 1; i >= 0; i--) {
@@ -481,6 +490,7 @@ static void sa_last_index_from_test(void) {
 }
 
 int sa_last_index_from(Array array, String value, int from) {
+    assert_argument_not_null(array);
     sa_assert_element_size(array);
     String *a = array->a;
     if (from >= array->n) from = array->n - 1;
@@ -502,6 +512,7 @@ static void sa_last_index_fn_test(void) {
 }
 
 int sa_last_index_fn(Array array, StringIntStringToBool predicate, String x) {
+    assert_argument_not_null(array);
     assert_function_not_null(predicate);
     sa_assert_element_size(array);
     String *a = array->a;
@@ -558,6 +569,8 @@ static void sa_shuffle_test(void) {
 }
 
 static CmpResult string_compare(ConstAny a, ConstAny b) {
+    assert_argument_not_null(a);
+    assert_argument_not_null(b);
     String x = *(String*)a;
     String y = *(String*)b;
     return s_compare(x, y);
@@ -600,11 +613,14 @@ static void sa_sort_test(void) {
 }
 
 void sa_sort(Array array) {
+    assert_argument_not_null(array);
     sa_assert_element_size(array);
     qsort(array->a, array->n, sizeof(String), string_compare);
 }
 
 static CmpResult string_compare_ignore_case(ConstAny a, ConstAny b) {
+    assert_argument_not_null(a);
+    assert_argument_not_null(b);
     String x = *(String*)a;
     String y = *(String*)b;
     return s_compare_ignore_case(x, y);
@@ -625,6 +641,7 @@ static void sa_sort_ignore_case_test(void) {
 }
 
 void sa_sort_ignore_case(Array array) {
+    assert_argument_not_null(array);
     sa_assert_element_size(array);
     qsort(array->a, array->n, sizeof(String), string_compare_ignore_case);
 }
@@ -672,11 +689,14 @@ static void sa_sort_dec_test(void) {
 }
 
 void sa_sort_dec(Array array) {
+    assert_argument_not_null(array);
     sa_assert_element_size(array);
     qsort(array->a, array->n, sizeof(String), string_compare_dec);
 }
 
 static CmpResult string_compare_dec_ignore_case(ConstAny a, ConstAny b) {
+    assert_argument_not_null(a);
+    assert_argument_not_null(b);
     String x = *(String*)a;
     String y = *(String*)b;
     return s_compare_ignore_case(y, x);
@@ -697,6 +717,7 @@ static void sa_sort_dec_ignore_case_test(void) {
 }
 
 void sa_sort_dec_ignore_case(Array array) {
+    assert_argument_not_null(array);
     sa_assert_element_size(array);
     qsort(array->a, array->n, sizeof(String), string_compare_dec_ignore_case);
 }
@@ -714,6 +735,7 @@ void sa_remove(Array array, int i, int v);
 // @todo: sa_each_test
 
 void sa_each(Array array, StringIntStringToString f, String x) {
+    assert_argument_not_null(array);
     assert_function_not_null(f);
     sa_assert_element_size(array);
     String *a = array->a;
@@ -725,6 +747,7 @@ void sa_each(Array array, StringIntStringToString f, String x) {
 // @todo: sa_map_test
 
 Array sa_map(Array array, StringIntStringToString f, String x) {
+    assert_argument_not_null(array);
     assert_function_not_null(f);
     sa_assert_element_size(array);
     int n = array->n;
@@ -765,6 +788,7 @@ static void sa_foldl_test(void) {
 }
 
 String sa_foldl(Array array, StringStringIntToString f, String state) {
+    assert_argument_not_null(array);
     assert_function_not_null(f);
     sa_assert_element_size(array);
     String *a = array->a;
@@ -820,6 +844,7 @@ static void sa_foldl_state_test(void) {
 }
 
 void sa_foldl_state(Array array, AnyStringIntToVoid f, Any state) {
+    assert_argument_not_null(array);
     assert_function_not_null(f);
     sa_assert_element_size(array);
     String *a = array->a;
@@ -857,6 +882,7 @@ static void sa_foldr_test(void) {
 }
 
 String sa_foldr(Array array, StringStringIntToString f, String state) {
+    assert_argument_not_null(array);
     assert_function_not_null(f);
     sa_assert_element_size(array);
     String *a = array->a;
@@ -900,6 +926,7 @@ static void sa_filter_test(void) {
 }
 
 Array sa_filter(Array array, StringIntStringToBool predicate, String x) {
+    assert_argument_not_null(array);
     assert_function_not_null(predicate);
     sa_assert_element_size(array);
     bool *ps = xmalloc(array->n * sizeof(bool));
@@ -926,6 +953,7 @@ Array sa_filter(Array array, StringIntStringToBool predicate, String x) {
 // @todo: add tests
 
 Array sa_filter_state(Array array, StringIntStringAnyToBool predicate, String x, Any state) {
+    assert_argument_not_null(array);
     assert_function_not_null(predicate);
     sa_assert_element_size(array);
     bool *ps = xmalloc(array->n * sizeof(bool));
@@ -972,6 +1000,7 @@ static void sa_choose_test(void) {
 }
 
 Array sa_choose(Array array, StringIntStringToStringOption f, String x) {
+    assert_argument_not_null(array);
     assert_function_not_null(f);
     sa_assert_element_size(array);
     String *a = array->a;
@@ -994,6 +1023,7 @@ Array sa_choose(Array array, StringIntStringToStringOption f, String x) {
 }
 
 Array sa_choose_state(Array array, StringIntStringAnyToStringOption f, String x, Any state) {
+    assert_argument_not_null(array);
     assert_function_not_null(f);
     sa_assert_element_size(array);
     String *a = array->a;
@@ -1035,6 +1065,7 @@ static void sa_exists_test(void) {
 }
 
 bool sa_exists(Array array, StringIntStringToBool predicate, String x) {
+    assert_argument_not_null(array);
     assert_function_not_null(predicate);
     sa_assert_element_size(array);
     String *a = array->a;
@@ -1047,6 +1078,7 @@ bool sa_exists(Array array, StringIntStringToBool predicate, String x) {
 }
 
 bool sa_exists_state(Array array, StringIntStringAnyToBool predicate, String x, Any state) {
+    assert_argument_not_null(array);
     assert_function_not_null(predicate);
     sa_assert_element_size(array);
     String *a = array->a;
@@ -1069,6 +1101,7 @@ static void sa_forall_test(void) {
 }
 
 bool sa_forall(Array array, StringIntStringToBool predicate, String x) {
+    assert_argument_not_null(array);
     assert_function_not_null(predicate);
     sa_assert_element_size(array);
     String *a = array->a;
@@ -1083,6 +1116,7 @@ bool sa_forall(Array array, StringIntStringToBool predicate, String x) {
 // @todo: add tests
 
 bool sa_forall_state(Array array, StringIntStringAnyToBool predicate, String x, Any state) {
+    assert_argument_not_null(array);
     assert_function_not_null(predicate);
     sa_assert_element_size(array);
     String *a = array->a;

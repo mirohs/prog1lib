@@ -16,6 +16,7 @@ List pl_create() {
     return lh;
 }
 
+#if 0
 List pl_repeat(int n, Any value);
 
 static void pl_repeat_test(void) {
@@ -51,6 +52,7 @@ List pl_repeat(int n, Any value) {
     }
     return list;
 }
+#endif
 
 void pl_free(List list) {
     if (list != NULL) {
@@ -62,11 +64,13 @@ void pl_free(List list) {
     }
 }
 
-void pl_free_with_destructor(List list, AnyToVoid element_destructor) {
+void pl_free_with_destructor(List list, AnyFn element_destructor) {
     if (list != NULL) {
         pl_assert_element_size(list);
+        assert_function_not_null(element_destructor);
+        AnyToVoid f = element_destructor;
         for (PointerListNode *node = list->first; node != NULL; node = node->next) {
-            element_destructor(node->value);
+            f(node->value);
         }
         l_free(list);
     }
@@ -205,9 +209,8 @@ void pl_prepend(List list, Any value) {
     }
 }
 
-static void print_elem(Any elem) {
-    String s = elem;
-    prints(s);
+static void print_elem(String elem) {
+    prints(elem);
 }
 
 static void pl_print_test(void) {
@@ -224,23 +227,25 @@ static void pl_print_test(void) {
     l_free(ac);
 }
 
-void pl_print(List list, AnyToVoid print_element) {
+void pl_print(List list, AnyFn print_element) {
     assert_argument_not_null(list);
     pl_assert_element_size(list);
+    assert_function_not_null(print_element);
+    AnyToVoid f = print_element;
     PointerListNode *node = (PointerListNode*)list->first;
     printf("[");
     if (node != NULL) {
-        print_element(node->value);
+        f(node->value);
         node = node->next;
     }
     for (; node != NULL; node = node->next) {
         prints(", ");
-        print_element(node->value);
+        f(node->value);
     }
     printf("]");
 }
 
-void pl_println(List list, AnyToVoid print_element) {
+void pl_println(List list, AnyFn print_element) {
     assert_argument_not_null(list);
     pl_assert_element_size(list);
     assert_function_not_null(print_element);
@@ -337,9 +342,8 @@ static bool isDogOrCat(Any s, int index, Any x) {
     return s_equals(s, "dog") || s_equals(s, "cat");
 }
 
-static bool isShorterThan(Any s, int index, Any x) {
-    int n = *(int*)x;
-    return s_length(s) < n;
+static bool isShorterThan(Any s, int index, int *n) {
+    return s_length(s) < *n;
 }
 
 static void pl_index_fn_test(void) {
@@ -351,13 +355,14 @@ static void pl_index_fn_test(void) {
     sl_free(a);
 }
 
-int pl_index_fn(List list, AnyIntAnyToBool predicate, Any x) {
+int pl_index_fn(List list, AnyFn predicate, Any x) {
     assert_argument_not_null(list);
     pl_assert_element_size(list);
     assert_function_not_null(predicate);
+    AnyIntAnyToBool f = predicate;
     int i = 0;
     for (PointerListNode *node = list->first; node != NULL; node = node->next, i++) {
-        if (predicate(node->value, i, x)) {
+        if (f(node->value, i, x)) {
             return i;
         }
     }
@@ -366,12 +371,13 @@ int pl_index_fn(List list, AnyIntAnyToBool predicate, Any x) {
 
 // @todo: add test
 
-Any pl_find(List list, AnyIntAnyToBool predicate, Any x) {
+Any pl_find(List list, AnyFn predicate, Any x) {
     assert_argument_not_null(list);
     assert_function_not_null(predicate);
+    AnyIntAnyToBool f = predicate;
     int i = 0;
     for (PointerListNode *node = list->first; node != NULL; node = node->next, i++) {
-        if (predicate(node->value, i, x)) {
+        if (f(node->value, i, x)) {
             return node->value;
         }
     }
@@ -502,10 +508,9 @@ void pl_remove(List list, int index) {
     l_remove(list, index);
 }
 
-static Any pl_upper_case_free(Any s, int index, Any x) {
-    Any u = s_upper_case(s);
-    String st = s;
-    s_free(st);
+static Any pl_upper_case_free(String s, int index, Any x) {
+    String u = s_upper_case(s);
+    s_free(s);
     return u;
 }
 
@@ -528,19 +533,18 @@ static void pl_each_test(void) {
     sl_free(ex);
 }
 
-void pl_each(List list, AnyIntAnyToAny f, Any x) {
-    assert_function_not_null(f);
+void pl_each(List list, AnyFn f, Any x) {
     assert_argument_not_null(list);
     pl_assert_element_size(list);
+    assert_function_not_null(f);
+    AnyIntAnyToAny ff = f;
     int i = 0;
     for (PointerListNode *node = list->first; node != NULL; node = node->next, i++) {
-        node->value = f(node->value, i, x);
+        node->value = ff(node->value, i, x);
     }
 }
 
-List pl_map(List list, AnyIntAnyToAny f, Any x);
-
-static Any append_each(Any element, int index, Any x) {
+static Any append_each(String element, int index, String x) {
     return s_concat(element, x);
 }
 
@@ -565,14 +569,15 @@ static void pl_map_test(void) {
     pl_free(ex);
 }
 
-List pl_map(List list, AnyIntAnyToAny f, Any x) {
-    assert_function_not_null(f);
+List pl_map(List list, AnyFn f, Any x) {
     assert_argument_not_null(list);
     pl_assert_element_size(list);
+    assert_function_not_null(f);
+    AnyIntAnyToAny ff = f;
     List result = pl_create();
     int i = 0;
     for (PointerListNode *node = list->first; node != NULL; node = node->next, i++) {
-        pl_append(result, f(node->value, i, x));
+        pl_append(result, ff(node->value, i, x));
     }
     return result;
 }
@@ -601,19 +606,20 @@ static void pl_foldl_test(void) {
     pl_free(l);
 }
 
-Any pl_foldl(List list, AnyAnyIntToAny f, Any state) {
-    assert_function_not_null(f);
+Any pl_foldl(List list, AnyFn f, Any state) {
     assert_argument_not_null(list);
     pl_assert_element_size(list);
+    assert_function_not_null(f);
+    AnyAnyIntToAny ff = f;
     int i = 0;
     for (PointerListNode *node = list->first; node != NULL; node = node->next, i++) {
-        state = f(state, node->value, i);
+        state = ff(state, node->value, i);
     }
     return state;
 }
 
-static Any pl_concat_r(Any element, Any state, int index) {
-    Any s = s_concat(element, state);
+static String pl_concat_r(String element, String state, int index) {
+    String s = s_concat(element, state);
     s_free(state);
     return s;
 }
@@ -637,20 +643,21 @@ static void pl_foldr_test(void) {
     pl_free(l);
 }
 
-Any pl_foldr(List list, AnyAnyIntToAny f, Any init) {
-    assert_function_not_null(f);
+Any pl_foldr(List list, AnyFn f, Any init) {
     assert_argument_not_null(list);
     pl_assert_element_size(list);
+    assert_function_not_null(f);
+    AnyAnyIntToAny ff = f;
     List rev = l_reverse(list);
     int i = l_length(list) - 1;
     for (PointerListNode *node = rev->first; node != NULL; node = node->next, i--) {
-        init = f(node->value, init, i);
+        init = ff(node->value, init, i);
     }
     l_free(rev);
     return init;
 }
 
-static bool f_ends_with(Any element, int index, Any x) {
+static bool f_ends_with(String element, int index, String x) {
     return s_ends_with(element, x);
 }
 
@@ -667,22 +674,22 @@ static void pl_filter_test(void) {
     pl_free(ex);
 }
 
-List pl_filter(List list, AnyIntAnyToBool predicate, Any x) {
-    assert_function_not_null(predicate);
+List pl_filter(List list, AnyFn predicate, Any x) {
     assert_argument_not_null(list);
     pl_assert_element_size(list);
+    assert_function_not_null(predicate);
+    AnyIntAnyToBool f = predicate;
     List result = pl_create();
     int i = 0;
     for (PointerListNode *node = list->first; node != NULL; node = node->next, i++) {
-        if (predicate(node->value, i, x)) {
+        if (f(node->value, i, x)) {
             pl_append(result, node->value);
         }
     }
     return result;
 }
 
-///static 
-Any ends_width_0_append(Any element, int index, Any x) {
+static String ends_width_0_append(String element, int index, String x) {
     if (s_ends_with(element, "0")) {
         return s_concat(element, x);
     }
@@ -703,14 +710,15 @@ static void pl_choose_test(void) {
     sl_free(ex);
 }
 
-List pl_choose(List list, AnyIntAnyToAny f, Any x) {
-    assert_function_not_null(f);
+List pl_choose(List list, AnyFn f, Any x) {
     assert_argument_not_null(list);
     pl_assert_element_size(list);
+    assert_function_not_null(f);
+    AnyIntAnyToAny ff = f;
     List result = pl_create();
     int i = 0;
     for (PointerListNode *node = list->first; node != NULL; node = node->next, i++) {
-        Any a = f(node->value, i, x);
+        Any a = ff(node->value, i, x);
         if (a != NULL) {
             pl_append(result, a);
         }
@@ -718,13 +726,11 @@ List pl_choose(List list, AnyIntAnyToAny f, Any x) {
     return result;
 }
 
-bool pl_exists(List list, AnyIntAnyToBool predicate, Any x);
-
-static bool pl_element_eq(Any element, int index, Any x) {
+static bool pl_element_eq(String element, int index, String x) {
     return s_equals(element, x);
 }
 
-static bool pl_element_ne(Any element, int index, Any x) {
+static bool pl_element_ne(String element, int index, String x) {
     return !s_equals(element, x);
 }
 
@@ -737,20 +743,19 @@ static void pl_exists_test(void) {
     sl_free(l);
 }
 
-bool pl_exists(List list, AnyIntAnyToBool predicate, Any x) {
-    assert_function_not_null(predicate);
+bool pl_exists(List list, AnyFn predicate, Any x) {
     assert_argument_not_null(list);
     pl_assert_element_size(list);
+    assert_function_not_null(predicate);
+    AnyIntAnyToBool f = predicate;
     int i = 0;
     for (PointerListNode *node = list->first; node != NULL; node = node->next, i++) {
-        if (predicate(node->value, i, x)) {
+        if (f(node->value, i, x)) {
             return true;
         }
     }
     return false;
 }
-
-bool pl_forall(List list, AnyIntAnyToBool predicate, Any x);
 
 static void pl_forall_test(void) {
     printsln((Any)__func__);
@@ -760,13 +765,14 @@ static void pl_forall_test(void) {
     pl_free(l);
 }
 
-bool pl_forall(List list, AnyIntAnyToBool predicate, Any x) {
-    assert_function_not_null(predicate);
+bool pl_forall(List list, AnyFn predicate, Any x) {
     assert_argument_not_null(list);
     pl_assert_element_size(list);
+    assert_function_not_null(predicate);
+    AnyIntAnyToBool f = predicate;
     int i = 0;
     for (PointerListNode *node = list->first; node != NULL; node = node->next, i++) {
-        if (!predicate(node->value, i, x)) {
+        if (!f(node->value, i, x)) {
             return false;
         }
     }
@@ -820,7 +826,7 @@ bool pl_check_expect_file_line(const char *file, const char *function, int line,
 ///////////////////////////////////////////////////////////////////////////////
 
 void pl_test_all(void) {
-    pl_repeat_test();
+//    pl_repeat_test();
     pl_prepend_append_test();
     pl_iterator_test();
     pl_print_test();
