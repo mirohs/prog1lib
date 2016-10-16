@@ -12,13 +12,8 @@ polar coordinates. Design a function that computes the distance of such a
 point to the origin of the coordinate system.
 */
 
-enum PointTag {
-    TPointEuclid, // tag for a point in Euclidean coordinates
-    TPointPolar   // tag for a point in polar coordinates
-};
-
 struct Point {
-    enum PointTag tag;           // indicate which variant follows
+    enum { TPointEuclid, TPointPolar } tag; // indicate which variant follows
     union {
         struct {                 // Euclidean variant
             double x;
