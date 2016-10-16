@@ -22,13 +22,13 @@ String stars(int n) {
 void stars_test(void) {
     String s;
     check_expect_s(s = stars(0), "");
-    free(s);
+    s_free(s);
     check_expect_s(s = stars(1), "*");
-    free(s);
+    s_free(s);
     check_expect_s(s = stars(2), "**");
-    free(s);
+    s_free(s);
     check_expect_s(s = stars(3), "***");
-    free(s);
+    s_free(s);
 }
 
 int main(void) {
