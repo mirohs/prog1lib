@@ -37,7 +37,7 @@ PROJECT_NAME           = "Programming I"
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         = "version 0.8"
+PROJECT_NUMBER         = "version 0.9"
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
@@ -1052,7 +1052,7 @@ HTML_COLORSTYLE_SAT    = 100
 # luminance component of the colors in the HTML output. Values below 100
 # gradually make the output lighter, whereas values above 100 make the output
 # darker. The value divided by 100 is the actual gamma applied, so 80 represents
-# a gamma of 0.8, The value 220 represents a gamma of 2.2, and 100 does not
+# a gamma of test_lib, The value 220 represents a gamma of 2.2, and 100 does not
 # change the gamma. Minimum value: 40, maximum value: 240, default value: 80.
 #
 # This tag requires that the tag GENERATE_HTML is set to YES.

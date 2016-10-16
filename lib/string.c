@@ -83,9 +83,9 @@ char s_get(String s, int i) {
     assert_argument_not_null(s);
     int n = strlen(s);
     if (i < 0 || i >= n) {
-        printf("s_get: index %d is out of range "
+        printf("%s: index %d is out of range "
             "(string length: %d, allowed indices: 0..%d)\n", 
-        i, n, n - 1);
+        __func__, i, n, n - 1);
         exit(EXIT_FAILURE);
     }
     return s[i];
@@ -95,9 +95,9 @@ void s_set(String s, int i, char v) {
     assert_argument_not_null(s);
     int n = strlen(s);
     if (i < 0 || i >= n) {
-        printf("s_set: index %d is out of range "
+        printf("%s: index %d is out of range "
             "(string length: %d, allowed indices: 0..%d)\n", 
-        i, n, n - 1);
+        __func__, i, n, n - 1);
         exit(EXIT_FAILURE);
     }
     s[i] = v;
@@ -106,6 +106,17 @@ void s_set(String s, int i, char v) {
 void s_blit(String source, int source_index, String destination, int destination_index, int count) {
     assert_argument_not_null(source);
     assert_argument_not_null(destination);
+    if (count <= 0) return;
+    // do not check for string lengths, as that would require 
+    // finding '\0' and would not allow binary strings
+    if (source_index < 0) {
+        printf("%s: source_index cannot be negative (is %d)\n", 
+        __func__, source_index);
+    }
+    if (destination_index < 0) {
+        printf("%s: destination_index cannot be negative (is %d)\n", 
+        __func__, destination_index);
+    }
     for (int i = source_index, j = destination_index; i < source_index + count; i++, j++) {
         s_set(destination, j, s_get(source, i));
     }
