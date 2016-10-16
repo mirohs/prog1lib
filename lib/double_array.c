@@ -343,6 +343,21 @@ void da_set(Array array, int i, double v) {
 }
 #endif
 
+#ifdef A_GET_SET
+void da_inc(Array array, int i, double v) {
+    assert_argument_not_null(array);
+    da_assert_element_size(array);
+    if (i < 0 || i >= array->n) {
+        printf("da_inc: index %d is out of range "
+            "(array length: %d, allowed indices: 0..%d)\n", 
+        i, array->n, array->n - 1);
+        exit(EXIT_FAILURE);
+    }
+    double *a = array->a;
+    a[i] += v;
+}
+#endif
+
 void da_print(Array array) {
     assert_argument_not_null(array);
     da_assert_element_size(array);

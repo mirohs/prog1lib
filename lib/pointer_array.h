@@ -35,7 +35,7 @@ Return array element at index.
 #ifdef A_GET_SET
 Any pa_get(Array array, int index);
 #else
-#define pa_get(array, index) ((Any*)array.a)[index]
+#define pa_get(array, index) ((Any*)((array)->a))[index]
 #endif
 
 /**
@@ -47,7 +47,7 @@ Set array element at index to value.
 #ifdef A_GET_SET
 void pa_set(Array array, int index, Any value);
 #else
-#define pa_set(array, index, value) ((Any*)array.a)[index] = value;
+#define pa_set(array, index, value) ((Any*)((array)->a))[index] = value;
 #endif
 
 #if 0
@@ -384,6 +384,6 @@ bool pa_check_expect_file_line(const char *file, const char *function, int line,
 #define pa_assert_element_size(function_name, array) 
 #endif
 
-
+void pa_test_all(void);
 
 #endif

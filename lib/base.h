@@ -135,7 +135,6 @@ See test functions in .c file for more examples.
 #include "basedefs.h"
 
 
-
 ////////////////////////////////////////////////////////////////////////////
 // Initialization
 
@@ -671,5 +670,21 @@ void base_count_check(void);
 
 /** Call this from within check_* functions to count the number of successful checks. */
 void base_count_success(void);
+
+////////////////////////////////////////////////////////////////////////////
+// Convenience includes (so users just need to include base.h)
+
+#include "string.h"
+#include "array.h"
+#include "int_array.h"
+#include "double_array.h"
+#include "string_array.h"
+#include "pointer_array.h"
+#include "byte_array.h"
+#include "list.h"
+#include "int_list.h"
+#include "double_list.h"
+#include "string_list.h"
+#include "pointer_list.h"
 
 #endif

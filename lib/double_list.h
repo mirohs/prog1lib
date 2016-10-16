@@ -110,6 +110,14 @@ Set list element at index to value.
 void dl_set(List list, int index, double value);
 
 /**
+Increment list element at index by value. Avoids common pattern: set(ls, i, get(ls, i) + v)
+@param[in,out] list double list
+@param[in] index index of list element to increment
+@param[in] value value to increment
+*/
+void dl_inc(List list, int index, double value);
+
+/**
 Return the next value.
 @param[in,out] iter an iterator, iterator will be advanced to next element
 @return next element
@@ -551,6 +559,6 @@ String s is debug output (e.g., function name).
 #define dl_assert_element_size(function_name, list) 
 #endif
 
-
+void dl_test_all(void);
 
 #endif

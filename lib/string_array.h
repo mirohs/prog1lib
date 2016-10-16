@@ -59,7 +59,7 @@ Return array element at index.
 #ifdef A_GET_SET
 String sa_get(Array array, int index);
 #else
-#define sa_get(array, index) ((String*)array.a)[index]
+#define sa_get(array, index) ((String*)((array)->a))[index]
 #endif
 
 /**
@@ -71,7 +71,7 @@ Set array element at index to value.
 #ifdef A_GET_SET
 void sa_set(Array array, int index, String value);
 #else
-#define sa_set(array, index, value) ((String*)array.a)[index] = value;
+#define sa_set(array, index, value) ((String*)((array)->a))[index] = value;
 #endif
 
 /**
@@ -439,6 +439,6 @@ bool sa_check_expect_file_line(const char *file, const char *function, int line,
 #define sa_assert_element_size(function_name, array) 
 #endif
 
-
+void sa_test_all(void);
 
 #endif

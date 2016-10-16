@@ -101,6 +101,18 @@ void da_set(Array array, int index, double value);
 #endif
 
 /**
+Increment array element at index by value. Avoids common pattern: set(a, i, get(a, i) + v)
+@param[in,out] array double array
+@param[in] index index of array element to increment
+@param[in] value value to increment
+*/
+#ifdef A_GET_SET
+void da_inc(Array array, int index, double value);
+#else
+#define da_inc(array, index, value) ia_set(array, index, ia_get(array, index) + (value));
+#endif
+
+/**
 Print the array.
 @param[in] array double array
 */
@@ -497,5 +509,7 @@ Checks if array has the right element size. Fails if not.
 #else
 #define da_assert_element_size(function_name, array) 
 #endif
+
+void da_test_all(void);
 
 #endif

@@ -110,6 +110,14 @@ Set list element at index to value.
 void il_set(List list, int index, int value);
 
 /**
+Increment list element at index by value. Avoids common pattern: set(ls, i, get(ls, i) + v)
+@param[in,out] list int list
+@param[in] index index of list element to increment
+@param[in] value value to increment
+*/
+void il_inc(List list, int index, int value);
+
+/**
 Return the next value.
 @param[in,out] iter an iterator, iterator will be advanced to next element
 @return next element
@@ -526,6 +534,6 @@ String s is debug output (e.g., function name).
 #define il_assert_element_size(function_name, list) 
 #endif
 
-
+void il_test_all(void);
 
 #endif

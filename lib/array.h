@@ -495,6 +495,6 @@ Test for inline arrays. Use macro \ref a_check_expect.
 */
 bool a_check_expect_file_line(const char *file, const char *function, int line, Array ac, Array ex);
 
-
+void a_test_all(void);
 
 #endif

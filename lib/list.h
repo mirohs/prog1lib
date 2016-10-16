@@ -108,11 +108,6 @@ Copies l_element_size(list) bytes from value.
 void l_set(List list, int index, Any value);
 
 /**
-Represents the state for iterating through a list.
-*/
-typedef ListNode* ListIterator;
-
-/**
 Return a fresh iterator for this list. Usable with any kind of list.
 @param[in] list input list
 @return list iterator
@@ -528,6 +523,6 @@ Test for inline lists. Use macro \ref l_check_expect.
 */
 bool l_check_expect_file_line(const char *file, const char *function, int line, List ac, List ex);
 
-
+void l_test_all(void);
 
 #endif

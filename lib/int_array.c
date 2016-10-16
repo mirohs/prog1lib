@@ -337,6 +337,23 @@ void ia_set(Array array, int index, int value) {
 }
 #endif
 
+#ifdef A_GET_SET
+int ia_inc(Array array, int index, int value) {
+    assert_argument_not_null(array);
+    ia_assert_element_size(array);
+    if (index < 0 || index >= array->n) {
+        printf("ia_inc: index %d is out of range "
+            "(array length: %d, allowed indices: 0..%d)\n", 
+        index, array->n, array->n - 1);
+        exit(EXIT_FAILURE);
+    }
+    int *a = array->a;
+    value += a[index];
+    a[index] = value;
+    return value;
+}
+#endif
+
 void ia_print(Array array) {
     assert_argument_not_null(array);
     ia_assert_element_size(array);

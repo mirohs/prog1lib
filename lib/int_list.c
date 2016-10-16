@@ -278,9 +278,9 @@ int il_get(List list, int index) {
             return node->value;
         }
     }
-    printf("il_get: index %d is out of range "
+    printf("%s: index %d is out of range "
         "(current list length: %d, allowed indices: 0..%d)\n", 
-        index, i, i - 1);
+        __func__, index, i, i - 1);
     exit(EXIT_FAILURE);
     return 0;
 }
@@ -295,9 +295,25 @@ void il_set(List list, int index, int value) {
             return;
         }
     }
-    printf("il_set: index %d is out of range "
+    printf("%s: index %d is out of range "
         "(current list length: %d, allowed indices: 0..%d)\n", 
-        index, i, i - 1);
+        __func__, index, i, i - 1);
+    exit(EXIT_FAILURE);
+}
+
+void il_inc(List list, int index, int value) {
+    assert_argument_not_null(list);
+    il_assert_element_size(list);
+    int i = 0;
+    for (IntListNode *node = list->first; node != NULL; node = node->next, i++) {
+        if (i == index) {
+            node->value += value;
+            return;
+        }
+    }
+    printf("%s: index %d is out of range "
+        "(current list length: %d, allowed indices: 0..%d)\n", 
+        __func__, index, i, i - 1);
     exit(EXIT_FAILURE);
 }
 

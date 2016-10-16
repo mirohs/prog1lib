@@ -94,7 +94,7 @@ Return array element at index.
 #ifdef A_GET_SET
 Byte ba_get(Array array, int index);
 #else
-#define ba_get(array, index) ((Byte*)array.a)[index]
+#define ba_get(array, index) ((Byte*)((array)->a))[index]
 #endif
 
 /**
@@ -106,7 +106,7 @@ Set array element at index to value.
 #ifdef A_GET_SET
 void ba_set(Array array, int index, Byte value);
 #else
-#define ba_set(array, index, value) ((Byte*)array.a)[index] = value;
+#define ba_set(array, index, value) ((Byte*)((array)->a))[index] = value;
 #endif
 
 /**
@@ -531,6 +531,6 @@ Checks if array has the right element size. Fails if not.
 #define ba_assert_element_size(function_name, array) 
 #endif
 
-
+void ba_test_all(void);
 
 #endif

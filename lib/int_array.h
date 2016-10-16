@@ -105,7 +105,7 @@ Return array element at index.
 #ifdef A_GET_SET
 int ia_get(Array array, int index);
 #else
-#define ia_get(array, i) ((int*)array.a)[i]
+#define ia_get(array, i) ((int*)((array)->a))[i]
 #endif
 
 /**
@@ -117,7 +117,20 @@ Set array element at index to value.
 #ifdef A_GET_SET
 void ia_set(Array array, int index, int value);
 #else
-#define ia_set(array, index, value) ((int*)array.a)[index] = value;
+#define ia_set(array, index, value) ((int*)((array)->a))[index] = value;
+#endif
+
+/**
+Increment array element at index by value. Avoids common pattern: set(a, i, get(a, i) + v)
+@param[in,out] array int array
+@param[in] index index of array element to increment
+@param[in] value value to increment
+@return the incremented value
+*/
+#ifdef A_GET_SET
+int ia_inc(Array array, int index, int value);
+#else
+#define ia_inc(array, index, value) ia_set(array, index, ia_get(array, index) + (value));
 #endif
 
 /**
@@ -544,5 +557,8 @@ String s is debug output (e.g., function name).
 #else
 #define ia_assert_element_size(function_name, array) 
 #endif
+
+void ia_test_all(void);
+void da_test_all(void);
 
 #endif

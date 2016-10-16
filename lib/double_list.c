@@ -309,6 +309,22 @@ void dl_set(List list, int index, double value) {
     exit(EXIT_FAILURE);
 }
 
+void dl_inc(List list, int index, double value) {
+    assert_argument_not_null(list);
+    dl_assert_element_size(list);
+    int i = 0;
+    for (DoubleListNode *node = list->first; node != NULL; node = node->next, i++) {
+        if (i == index) {
+            node->value += value;
+            return;
+        }
+    }
+    printf("%s: index %d is out of range "
+        "(current list length: %d, allowed indices: 0..%d)\n", 
+        __func__, index, i, i - 1);
+    exit(EXIT_FAILURE);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 static void dl_iterator_test(void) {

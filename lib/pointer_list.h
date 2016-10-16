@@ -411,6 +411,6 @@ String s is debug output (e.g., function name).
 #define pl_assert_element_size(function_name, list) 
 #endif
 
-
+void pl_test_all(void);
 
 #endif

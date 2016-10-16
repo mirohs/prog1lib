@@ -708,6 +708,6 @@ String s is debug output (e.g., function name).
 #define sl_assert_element_size(function_name, list) 
 #endif
 
-
+void sl_test_all(void);
 
 #endif

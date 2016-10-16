@@ -322,6 +322,11 @@ typedef struct ListHead {
 typedef struct ListHead * List;
 
 /**
+Represents the state for iterating through a list.
+*/
+typedef ListNode* ListIterator;
+
+/**
 Represents a list node that holds an integer.
 */
 typedef struct IntListNode {
