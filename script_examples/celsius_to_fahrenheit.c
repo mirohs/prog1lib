@@ -20,7 +20,7 @@ int celsius_to_fahrenheit(int celsius) {
 }
 
 int main(void) {
-    check_expect_i(celsius_to_fahrenheit(0), 33); // given 0, expect 32
+    check_expect_i(celsius_to_fahrenheit(0), 32); // given 0, expect 32
     check_expect_i(celsius_to_fahrenheit(10), 50); // given 10, expect 50
     check_expect_i(celsius_to_fahrenheit(-5), 23); // given -5, expect 23
     check_expect_i(celsius_to_fahrenheit(100), 212); // given 100, expect 212

@@ -19,6 +19,11 @@ int main(void) {
     printdln(x);
     x = 3.0 / 2.0;
     printdln(x);
+    
+    printsln("-----------");
+    for (int i = -10; i <= 10; i++) {
+        printf("%d\t%d\t%d\n", i, i / 9, i % 9);
+    }
 
     return 0;
 }
