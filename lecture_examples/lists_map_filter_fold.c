@@ -10,11 +10,8 @@ make lists_map_filter_fold && ./lists_map_filter_fold
 #include "string_list.h" // http://hci.uni-hannover.de/files/prog1lib/string__list_8h.html
 #include "int_list.h"
 
-void string2length(Any element, int index, Any state, /*out*/ Any mapped_element) {
-    // index and state are not used
-    String s = *(String*)element;
-    int *result = mapped_element;
-    *result = s_length(s);
+void string2length(String* element, int index, Any state, /*out*/ int* mapped_element) {
+    *mapped_element = s_length(*element);
 }
 
 void sum_lengths(Any state, Any element, int index) {
