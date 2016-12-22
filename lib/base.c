@@ -434,10 +434,7 @@ void get_line(char *line, int n) {
 }
 
 String s_input(int n) {
-    if (n <= 0) {
-        printf("%s: n = %d (has to be positive)\n", (String)__func__, n);
-        exit(EXIT_FAILURE);
-    }
+    if (n < 8) n = 8;
     char *line = base_malloc(__FILE__, __func__, __LINE__, n);
     *line = '\0';
     fgets(line, n, stdin);
