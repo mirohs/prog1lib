@@ -8,6 +8,7 @@ make keep_strings && ./keep_strings
 #include "string.h"      // http://hci.uni-hannover.de/files/prog1lib/string_8h.html
 #include "list.h"        // http://hci.uni-hannover.de/files/prog1lib/list_8h.html
 #include "string_list.h" // http://hci.uni-hannover.de/files/prog1lib/string__list_8h.html
+#include "arrays_lists.h"
 
 static bool contains(String element, int index, String x) {
     return s_contains(element, x);
@@ -28,9 +29,11 @@ void keep_strings(void) {
     s_free(data);
 }
 
+#if 0
 List keep_if_contains(List list, String part) {
     return sl_filter(list, contains, part);
 }
+#endif
 
 #if 0
 List keep_if_contains(List list, String part) {
@@ -42,12 +45,28 @@ List keep_if_contains(List list, String part) {
     }
     return result;
 }
+#endif
 
+#if 0
 List keep_if_contains(List list, String part) {
     List result = sl_create();
     ListIterator iter = l_iterator(list);
     while (l_has_next(iter)) {
         String s = sl_next(&iter);
+        if (s_contains(s, part)) {
+            sl_append(result, s);
+        }
+    }
+    return result;
+}
+#endif
+
+#if 1
+List keep_if_contains(List list, String part) {
+    List result = list(String);
+    Iterator iter = iterator(list);
+    while (has_next(iter)) {
+        String s = next_value(String, iter);
         if (s_contains(s, part)) {
             sl_append(result, s);
         }
