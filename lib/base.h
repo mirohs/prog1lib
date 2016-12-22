@@ -512,8 +512,9 @@ void printboaln(bool *a, int n);
 // Input
 
 /**
-Read at most n-1 characters into an existing buffer.
+Read at most n-1 characters into an existing buffer. 
 Stop reading if newline or end-of-file is reached.
+Ensure that n is greater than or equal to 8.
 @param[in,out] line buffer to write into (size of buffer at least n bytes)
 @param[in] n maximum number of bytes to read
 @see s_input
@@ -523,6 +524,7 @@ void get_line(char *line, int n);
 /**
 Read at most n-1 characters into a newly allocated string.
 Stop reading if newline or end-of-file is reached.
+Ensure that n is greater than or equal to 8.
 @param[in] n maximum number of bytes to read
 @return newly allocated String with bytes read, length is according to number of bytes actually read
 @see get_line

@@ -421,8 +421,8 @@ void get_line(char *line, int n) {
         printf("%s: line cannot be NULL\n", (String)__func__);
         exit(EXIT_FAILURE);
     }
-    if (n <= 0) {
-        printf("%s: n = %d (has to be positive)\n", (String)__func__, n);
+    if (n < 8) {
+        printf("%s: n = %d (has to be 8 or greater)\n", (String)__func__, n);
         exit(EXIT_FAILURE);
     }
     fgets(line, n, stdin);
