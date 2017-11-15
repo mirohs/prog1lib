@@ -15,22 +15,22 @@ static void ba_create_test(void) {
     
     array = ba_create(3, 0);
     Byte a1[] = { 0, 0, 0 };
-    ba_check_expect_file_line(__FILE__, __func__, __LINE__, array, a1, 3);
+    ba_test_equal_file_line(__FILE__, __func__, __LINE__, array, a1, 3);
     a_free(array);
     
     array = ba_create(5, 1);
     Byte a2[] = { 1, 1, 1, 1, 1 };
-    ba_check_expect_file_line(__FILE__, __func__, __LINE__, array, a2, 5);
+    ba_test_equal_file_line(__FILE__, __func__, __LINE__, array, a2, 5);
     a_free(array);
     
     array = ba_create(1, 2);
     Byte a3[] = { 2 };
-    ba_check_expect_file_line(__FILE__, __func__, __LINE__, array, a3, 1);
+    ba_test_equal_file_line(__FILE__, __func__, __LINE__, array, a3, 1);
     a_free(array);
     
     array = ba_create(0, 2);
     Byte a4[] = { };
-    ba_check_expect_file_line(__FILE__, __func__, __LINE__, array, a4, 0);
+    ba_test_equal_file_line(__FILE__, __func__, __LINE__, array, a4, 0);
     a_free(array);
 }
 
@@ -56,37 +56,37 @@ static void ba_range_test(void) {
 
     array = ba_range(0, 3);
     Byte a1[] = { 0, 1, 2 };
-    ba_check_expect_file_line(__FILE__, __func__, __LINE__, array, a1, 3);
+    ba_test_equal_file_line(__FILE__, __func__, __LINE__, array, a1, 3);
     a_free(array);
 
     array = ba_range(3, 2);
     Byte a2[] = { 3 };
-    ba_check_expect_file_line(__FILE__, __func__, __LINE__, array, a2, 1);
+    ba_test_equal_file_line(__FILE__, __func__, __LINE__, array, a2, 1);
     a_free(array);
 
     array = ba_range(2, 3);
     Byte a3[] = { 2 };
-    ba_check_expect_file_line(__FILE__, __func__, __LINE__, array, a3, 1);
+    ba_test_equal_file_line(__FILE__, __func__, __LINE__, array, a3, 1);
     a_free(array);
 
     array = ba_range(3, 3);
     Byte a4[] = { };
-    ba_check_expect_file_line(__FILE__, __func__, __LINE__, array, a4, 0);
+    ba_test_equal_file_line(__FILE__, __func__, __LINE__, array, a4, 0);
     a_free(array);
 
     array = ba_range(-3, -3);
     Byte a5[] = { };
-    ba_check_expect_file_line(__FILE__, __func__, __LINE__, array, a5, 0);
+    ba_test_equal_file_line(__FILE__, __func__, __LINE__, array, a5, 0);
     a_free(array);
 
     array = ba_range(1, 4);
     Byte a6[] = { 1, 2, 3 };
-    ba_check_expect_file_line(__FILE__, __func__, __LINE__, array, a6, 3);
+    ba_test_equal_file_line(__FILE__, __func__, __LINE__, array, a6, 3);
     a_free(array);
 
     array = ba_range(4, 1);
     Byte a7[] = { 4, 3, 2 };
-    ba_check_expect_file_line(__FILE__, __func__, __LINE__, array, a7, 3);
+    ba_test_equal_file_line(__FILE__, __func__, __LINE__, array, a7, 3);
     a_free(array);
 }
 
@@ -122,31 +122,31 @@ static void ba_of_string_test(void) {
 
     ac = ba_of_string("1, 2, 3, 4, 5, 6");
     ex = ba_range(1, 7);
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ba_of_string("   1, 2, 3, 4, 5, 6   ");
     ex = ba_range(1, 7);
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ba_of_string("1xx2asdfs3");
     ex = ba_range(1, 4);
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ba_of_string("y1xx2asdfs3x");
     ex = ba_range(1, 4);
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ba_of_string("3, 2, 1");
     ex = ba_range(3, 0);
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
@@ -155,19 +155,19 @@ static void ba_of_string_test(void) {
     ba_set(ex, 0, 1);
     ba_set(ex, 1, 2);
     ba_set(ex, 2, 3);
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ba_of_string("-x--+ +.+++a-b c-");
     ex = ba_create(0, 0);
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ba_of_string("");
     ex = ba_create(0, 0);
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 }
@@ -222,22 +222,22 @@ static void ba_fn_test(void) {
 
     array = ba_fn(3, two_i_plus_1, 0);
     Byte a1[] = { 1, 3, 5 };
-    ba_check_expect_file_line(__FILE__, __func__, __LINE__, array, a1, 3);
+    ba_test_equal_file_line(__FILE__, __func__, __LINE__, array, a1, 3);
     a_free(array);
 
     array = ba_fn(4, two_i_plus_1, 0);
     Byte a2[] = { 1, 3, 5, 7 };
-    ba_check_expect_file_line(__FILE__, __func__, __LINE__, array, a2, 4);
+    ba_test_equal_file_line(__FILE__, __func__, __LINE__, array, a2, 4);
     a_free(array);
 
     array = ba_fn(1, two_i_plus_1, 0);
     Byte a3[] = { 1 };
-    ba_check_expect_file_line(__FILE__, __func__, __LINE__, array, a3, 1);
+    ba_test_equal_file_line(__FILE__, __func__, __LINE__, array, a3, 1);
     a_free(array);
 
     array = ba_fn(0, two_i_plus_1, 0);
     Byte a4[] = { };
-    ba_check_expect_file_line(__FILE__, __func__, __LINE__, array, a4, 0);
+    ba_test_equal_file_line(__FILE__, __func__, __LINE__, array, a4, 0);
     a_free(array);
 }
 
@@ -311,9 +311,9 @@ static void ba_contains_test(void) {
     printsln((String)__func__);
     Array array;
     array = ba_of_string("10, 20, 30");
-    check_expect_b(ba_contains(array, 10), true);
-    check_expect_b(ba_contains(array, 11), false);
-    check_expect_b(ba_contains(array, 30), true);
+    test_equal_b(ba_contains(array, 10), true);
+    test_equal_b(ba_contains(array, 11), false);
+    test_equal_b(ba_contains(array, 30), true);
     a_free(array);
 }
 
@@ -336,19 +336,19 @@ static void ba_fill_test(void) {
     array = ba_create(3, 0);
     ba_fill(array, -1);
     Byte a1[] = { -1, -1, -1 };
-    ba_check_expect_file_line(__FILE__, __func__, __LINE__, array, a1, 3);
+    ba_test_equal_file_line(__FILE__, __func__, __LINE__, array, a1, 3);
     a_free(array);
 
     array = ba_create(2, 0);
     ba_fill(array, 2);
     Byte a2[] = { 2, 2 };
-    ba_check_expect_file_line(__FILE__, __func__, __LINE__, array, a2, 2);
+    ba_test_equal_file_line(__FILE__, __func__, __LINE__, array, a2, 2);
     a_free(array);
 
     array = ba_create(0, 0);
     ba_fill(array, 2);
     Byte a3[] = { };
-    ba_check_expect_file_line(__FILE__, __func__, __LINE__, array, a3, 0);
+    ba_test_equal_file_line(__FILE__, __func__, __LINE__, array, a3, 0);
     a_free(array);
 }
 
@@ -368,49 +368,49 @@ static void ba_fill_from_to_test(void) {
     array = ba_create(3, 0);
     ba_fill_from_to(array, -1, 0, array->n);
     Byte a1[] = { -1, -1, -1 };
-    ba_check_expect_file_line(__FILE__, __func__, __LINE__, array, a1, 3);
+    ba_test_equal_file_line(__FILE__, __func__, __LINE__, array, a1, 3);
     a_free(array);
 
     array = ba_create(3, 0);
     ba_fill_from_to(array, -1, -1, array->n + 1);
     Byte a2[] = { -1, -1, -1 };
-    ba_check_expect_file_line(__FILE__, __func__, __LINE__, array, a2, 3);
+    ba_test_equal_file_line(__FILE__, __func__, __LINE__, array, a2, 3);
     a_free(array);
 
     array = ba_create(3, 0);
     ba_fill_from_to(array, -1, 0, 0);
     Byte a3[] = { 0, 0, 0 };
-    ba_check_expect_file_line(__FILE__, __func__, __LINE__, array, a3, 3);
+    ba_test_equal_file_line(__FILE__, __func__, __LINE__, array, a3, 3);
     a_free(array);
 
     array = ba_create(3, 0);
     ba_fill_from_to(array, -1, 0, 1);
     Byte a4[] = { -1, 0, 0 };
-    ba_check_expect_file_line(__FILE__, __func__, __LINE__, array, a4, 3);
+    ba_test_equal_file_line(__FILE__, __func__, __LINE__, array, a4, 3);
     a_free(array);
 
     array = ba_create(3, 0);
     ba_fill_from_to(array, -1, 2, 2);
     Byte a5[] = { 0, 0, 0 };
-    ba_check_expect_file_line(__FILE__, __func__, __LINE__, array, a5, 3);
+    ba_test_equal_file_line(__FILE__, __func__, __LINE__, array, a5, 3);
     a_free(array);
 
     array = ba_create(3, 0);
     ba_fill_from_to(array, -1, 2, 3);
     Byte a6[] = { 0, 0, -1 };
-    ba_check_expect_file_line(__FILE__, __func__, __LINE__, array, a6, 3);
+    ba_test_equal_file_line(__FILE__, __func__, __LINE__, array, a6, 3);
     a_free(array);
 
     array = ba_create(3, 0);
     ba_fill_from_to(array, -1, 2, 1);
     Byte a7[] = { 0, 0, 0 };
-    ba_check_expect_file_line(__FILE__, __func__, __LINE__, array, a7, 3);
+    ba_test_equal_file_line(__FILE__, __func__, __LINE__, array, a7, 3);
     a_free(array);
 
     array = ba_create(3, 0);
     ba_fill_from_to(array, -1, 1, 3);
     Byte a8[] = { 0, -1, -1 };
-    ba_check_expect_file_line(__FILE__, __func__, __LINE__, array, a8, 3);
+    ba_test_equal_file_line(__FILE__, __func__, __LINE__, array, a8, 3);
     a_free(array);
 }
 
@@ -438,13 +438,13 @@ static void ba_index_test(void) {
         printf("value found at index %d\n", i);
     }
 #endif
-    check_expect_i(i, -1);
+    test_equal_i(i, -1);
 
     i = ba_index(array, 1);
-    check_expect_i(i, 0);
+    test_equal_i(i, 0);
         
     i = ba_index(array, 2);
-    check_expect_i(i, 1);
+    test_equal_i(i, 1);
         
     a_free(array);
     
@@ -465,11 +465,11 @@ int ba_index(Array array, Byte value) {
 static void ba_index_from_test(void) {
     printsln((String)__func__);
     Array a = ba_of_string("10 20 30 40 50");
-    check_expect_i(ba_index_from(a, 20, 0), 1);
-    check_expect_i(ba_index_from(a, 20, 1), 1);
-    check_expect_i(ba_index_from(a, 20, 2), -1);
-    check_expect_i(ba_index_from(a, 30, -1), 2);
-    check_expect_i(ba_index_from(a, 60, 0), -1);
+    test_equal_i(ba_index_from(a, 20, 0), 1);
+    test_equal_i(ba_index_from(a, 20, 1), 1);
+    test_equal_i(ba_index_from(a, 20, 2), -1);
+    test_equal_i(ba_index_from(a, 30, -1), 2);
+    test_equal_i(ba_index_from(a, 60, 0), -1);
     a_free(a);
     
 }
@@ -490,8 +490,8 @@ int ba_index_from(Array array, Byte value, int from) {
 static void ba_index_fn_test(void) {
     printsln((String)__func__);
     Array a = ba_of_string("1 2 3 4 5");
-    check_expect_i(ba_index_fn(a, ba_even, 0), 1);
-    check_expect_i(ba_index_fn(a, ba_lt, 0), -1);
+    test_equal_i(ba_index_fn(a, ba_even, 0), 1);
+    test_equal_i(ba_index_fn(a, ba_lt, 0), -1);
     a_free(a);
 }
 
@@ -511,9 +511,9 @@ int ba_index_fn(Array array, ByteIntByteToBool predicate, Byte x) {
 static void ba_last_index_test(void) {
     printsln((String)__func__);
     Array a = ba_of_string("10 20 30 10 20 30");
-    check_expect_i(ba_last_index(a, 20), 4);
-    check_expect_i(ba_last_index(a, 30), 5);
-    check_expect_i(ba_last_index(a, 60), -1);
+    test_equal_i(ba_last_index(a, 20), 4);
+    test_equal_i(ba_last_index(a, 30), 5);
+    test_equal_i(ba_last_index(a, 60), -1);
     a_free(a);
 }
 
@@ -532,11 +532,11 @@ int ba_last_index(Array array, Byte value) {
 static void ba_last_index_from_test(void) {
     printsln((String)__func__);
     Array a = ba_of_string("10 20 30 10 20 30");
-    check_expect_i(ba_last_index_from(a, 20, 5), 4);
-    check_expect_i(ba_last_index_from(a, 20, 4), 4);
-    check_expect_i(ba_last_index_from(a, 20, 3), 1);
-    check_expect_i(ba_last_index_from(a, 30, 2), 2);
-    check_expect_i(ba_last_index_from(a, 30, 1), -1);
+    test_equal_i(ba_last_index_from(a, 20, 5), 4);
+    test_equal_i(ba_last_index_from(a, 20, 4), 4);
+    test_equal_i(ba_last_index_from(a, 20, 3), 1);
+    test_equal_i(ba_last_index_from(a, 30, 2), 2);
+    test_equal_i(ba_last_index_from(a, 30, 1), -1);
     a_free(a);    
 }
 
@@ -556,8 +556,8 @@ int ba_last_index_from(Array array, Byte value, int from) {
 static void ba_last_index_fn_test(void) {
     printsln((String)__func__);
     Array a = ba_of_string("1 2 2 3 0 5");
-    check_expect_i(ba_last_index_fn(a, ba_even, 0), 4);
-    check_expect_i(ba_last_index_fn(a, ba_lt, 1), 4);
+    test_equal_i(ba_last_index_fn(a, ba_even, 0), 4);
+    test_equal_i(ba_last_index_fn(a, ba_lt, 1), 4);
     a_free(a);
 }
 
@@ -592,28 +592,28 @@ static void ba_sort_test(void) {
     ex = ba_of_string("1, 2, 3, 4, 5");
     a_shuffle(ac);
     ba_sort(ac);
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ba_of_string("1, 2, 1, 3, 2");
     ex = ba_of_string("1, 1, 2, 2, 3");
     ba_sort(ac);
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ba_of_string("");
     ex = ba_of_string("");
     ba_sort(ac);
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ba_of_string("-1, -2, -3, -1");
     ex = ba_of_string("-3, -2, -1, -1");
     ba_sort(ac);
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 }
@@ -642,28 +642,28 @@ static void ba_sort_dec_test(void) {
     ex = ba_of_string("5, 4, 3, 2, 1");
     a_shuffle(ac);
     ba_sort_dec(ac);
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ba_of_string("1, 2, 1, 3, 2");
     ex = ba_of_string("3, 2, 2, 1, 1");
     ba_sort_dec(ac);
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ba_of_string("");
     ex = ba_of_string("");
     ba_sort_dec(ac);
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ba_of_string("-3, -2, -1");
     ex = ba_of_string("-1, -2, -3");
     ba_sort_dec(ac);
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 }
@@ -681,42 +681,42 @@ static void ba_insert_test(void) {
     ac = ba_of_string("1, 2, 3, 4, 5, 6");
     ba_insert(ac, 0, 9);
     ex = ba_of_string("9, 1, 2, 3, 4, 5");
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = ba_of_string("1, 2, 3, 4, 5, 6");
     ba_insert(ac, 5, 9);
     ex = ba_of_string("1, 2, 3, 4, 5, 9");
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = ba_of_string("1, 2, 3, 4, 5, 6");
     ba_insert(ac, 3, 9);
     ex = ba_of_string("1, 2, 3, 9, 4, 5");
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = ba_of_string("1");
     ba_insert(ac, -1, 9);
     ex = ba_of_string("1");
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = ba_of_string("1");
     ba_insert(ac, 1, 9);
     ex = ba_of_string("1");
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = ba_of_string("");
     ba_insert(ac, 0, 9);
     ex = ba_of_string("");
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 }
@@ -741,49 +741,49 @@ static void ba_remove_test(void) {
     ac = ba_of_string("1, 2, 3, 4, 5, 6");
     ba_remove(ac, 0, 9);
     ex = ba_of_string("2, 3, 4, 5, 6, 9");
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = ba_of_string("1, 2, 3, 4, 5, 6");
     ba_remove(ac, 5, 9);
     ex = ba_of_string("1, 2, 3, 4, 5, 9");
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = ba_of_string("1, 2, 3, 4, 5, 6");
     ba_remove(ac, 3, 9);
     ex = ba_of_string("1, 2, 3, 5, 6, 9");
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = ba_of_string("1");
     ba_remove(ac, -1, 9);
     ex = ba_of_string("1");
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = ba_of_string("1");
     ba_remove(ac, 1, 9);
     ex = ba_of_string("1");
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = ba_of_string("1");
     ba_remove(ac, 0, 9);
     ex = ba_of_string("9");
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = ba_of_string("");
     ba_remove(ac, 0, 9);
     ex = ba_of_string("");
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 }
@@ -884,14 +884,14 @@ static void ba_each_test(void) {
     a = ba_of_string("1, 2, 3, 4");
     ba_each(a, ba_times, 2);
     ex = ba_of_string("2, 4, 6, 8");
-    ba_check_expect(a, ex);
+    ba_test_equal(a, ex);
     a_free(a);
     a_free(ex);
     
     a = ba_of_string("");
     ba_each(a, ba_times, 3);
     ex = ba_of_string("");
-    ba_check_expect(a, ex);
+    ba_test_equal(a, ex);
     a_free(a);
     a_free(ex);
 }
@@ -959,13 +959,13 @@ Array ba_map_state(Array array, ByteIntByteAnyToByte f, Byte x, Any state) {
 static void ba_foldl_test(void) {
     printsln((String)__func__);
     Array a = ba_of_string("");    
-    check_expect_b(ba_foldl(a, ba_plus, 100), 100);
-    check_expect_b(ba_foldl(a, ba_minus, 100), 100);
+    test_equal_b(ba_foldl(a, ba_plus, 100), 100);
+    test_equal_b(ba_foldl(a, ba_minus, 100), 100);
     a_free(a);
     
     a = ba_of_string("1, 2, 3, 4");    
-    check_expect_b(ba_foldl(a, ba_plus, 0),    (((0 + 1) + 2) + 3) + 4);
-    check_expect_b(ba_foldl(a, ba_minus, 100), (((100 - 1) - 2) - 3) - 4);
+    test_equal_b(ba_foldl(a, ba_plus, 0),    (((0 + 1) + 2) + 3) + 4);
+    test_equal_b(ba_foldl(a, ba_minus, 100), (((100 - 1) - 2) - 3) - 4);
     a_free(a);
 }
 
@@ -983,13 +983,13 @@ int ba_foldl(Array array, ByteByteIntToByte f, Byte init) {
 static void ba_foldr_test(void) {
     printsln((String)__func__);
     Array a = ba_of_string("");    
-    check_expect_b(ba_foldr(a, ba_plus, 100), 100);
-    check_expect_b(ba_foldr(a, ba_minus, 100), 100);
+    test_equal_b(ba_foldr(a, ba_plus, 100), 100);
+    test_equal_b(ba_foldr(a, ba_minus, 100), 100);
     a_free(a);
     
     a = ba_of_string("1, 2, 3, 4");    
-    check_expect_b(ba_foldr(a, ba_plus, 100), 1 + (2 + (3 + (4 + 100))));
-    check_expect_b(ba_foldr(a, ba_minus, 0), 1 - (2 - (3 - (4 - 0))));
+    test_equal_b(ba_foldr(a, ba_plus, 100), 1 + (2 + (3 + (4 + 100))));
+    test_equal_b(ba_foldr(a, ba_minus, 0), 1 - (2 - (3 - (4 - 0))));
     a_free(a);
 }
 
@@ -1011,19 +1011,19 @@ static void ba_filter_test(void) {
     a = ba_of_string("1, 2, 3, 4, 5, 6");
     ac = ba_filter(a, ba_gt, 3);
     ex = ba_of_string("4, 5, 6");
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ba_filter(a, ba_lt, 4);
     ex = ba_of_string("1, 2, 3");
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ba_filter(a, ba_le, 3);
     ex = ba_of_string("1, 2, 3");
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
     a_free(a);
@@ -1095,7 +1095,7 @@ static void ba_choose_test(void) {
     a = ba_of_string("1, 2, 3, 4, 5, 6");
     ac = ba_choose(a, evens_times_x, 3);
     ex = ba_of_string("6, 12, 18");
-    ba_check_expect(ac, ex);
+    ba_test_equal(ac, ex);
 
     a_free(ac);
     a_free(ex);
@@ -1153,9 +1153,9 @@ Array ba_choose_state(Array array, ByteIntByteAnyToByteOption f, Byte x, Any sta
 static void ba_exists_test(void) {
     printsln((String)__func__);
     Array a = ba_of_string("1, 2, 3, 4, 5, 6");
-    check_expect_b(ba_exists(a, ba_gt, 3), true);
-    check_expect_b(ba_exists(a, ba_gt, 9), false);
-    check_expect_b(ba_exists(a, ba_lt, 1), false);
+    test_equal_b(ba_exists(a, ba_gt, 3), true);
+    test_equal_b(ba_exists(a, ba_gt, 9), false);
+    test_equal_b(ba_exists(a, ba_lt, 1), false);
     a_free(a);
 }
 
@@ -1190,9 +1190,9 @@ bool ba_exists_state(Array array, ByteIntByteAnyToBool predicate, Byte x, Any st
 static void ba_forall_test(void) {
     printsln((String)__func__);
     Array a = ba_of_string("1, 2, 3, 4, 5, 6");
-    check_expect_b(ba_forall(a, ba_gt, 0), true);
-    check_expect_b(ba_forall(a, ba_gt, 1), false);
-    check_expect_b(ba_forall(a, ba_lt, 7), true);
+    test_equal_b(ba_forall(a, ba_gt, 0), true);
+    test_equal_b(ba_forall(a, ba_gt, 1), false);
+    test_equal_b(ba_forall(a, ba_lt, 7), true);
     a_free(a);
 }
 
@@ -1225,7 +1225,7 @@ bool ba_forall_state(Array array, ByteIntByteAnyToBool predicate, Byte x, Any st
 ///////////////////////////////////////////////////////////////////////////////
 // Testing
 
-bool ba_check_expect_file_line(const char *file, const char *function, int line, Array a, Byte *e, int ne) {
+bool ba_test_equal_file_line(const char *file, const char *function, int line, Array a, Byte *e, int ne) {
     base_init();
     base_count_check();
     if (a->n != ne) {

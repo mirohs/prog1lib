@@ -27,12 +27,12 @@ int hours_to_wages(int hours);
 Cents hours_to_wages(Hours hours);
 
 static void hours_to_wages_test() {
-    check_expect_i(hours_to_wages(0), 0);
-    check_expect_i(hours_to_wages(20), 20 * 1000);
-    check_expect_i(hours_to_wages(39), 39 * 1000);
-    check_expect_i(hours_to_wages(40), 40 * 1000);
-    check_expect_i(hours_to_wages(41), 40 * 1000 + 1 * 1500);
-    check_expect_i(hours_to_wages(45), 40 * 1000 + 5 * 1500);
+    test_equal_i(hours_to_wages(0), 0);
+    test_equal_i(hours_to_wages(20), 20 * 1000);
+    test_equal_i(hours_to_wages(39), 39 * 1000);
+    test_equal_i(hours_to_wages(40), 40 * 1000);
+    test_equal_i(hours_to_wages(41), 40 * 1000 + 1 * 1500);
+    test_equal_i(hours_to_wages(45), 40 * 1000 + 5 * 1500);
 }
 
 Cents hours_to_wages(Hours hours) {
@@ -86,12 +86,12 @@ Cents hours_to_wages(Hours hours) {
 
 7. Test the function
 void hours_to_wages_test() {
-    check_expect_i(hours_to_wages(0), 0);
-    check_expect_i(hours_to_wages(20), 20 * 1000);
-    check_expect_i(hours_to_wages(39), 39 * 1000);
-    check_expect_i(hours_to_wages(40), 40 * 1000);
-    check_expect_i(hours_to_wages(41), 40 * 1000 + 1 * 1500);
-    check_expect_i(hours_to_wages(45), 40 * 1000 + 5 * 1500);
+    test_equal_i(hours_to_wages(0), 0);
+    test_equal_i(hours_to_wages(20), 20 * 1000);
+    test_equal_i(hours_to_wages(39), 39 * 1000);
+    test_equal_i(hours_to_wages(40), 40 * 1000);
+    test_equal_i(hours_to_wages(41), 40 * 1000 + 1 * 1500);
+    test_equal_i(hours_to_wages(45), 40 * 1000 + 5 * 1500);
 }
 
 int main(void) {

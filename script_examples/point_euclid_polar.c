@@ -51,24 +51,24 @@ double distance_to_origin(struct Point p);
 
 static void distance_to_origin_test() {
     // test cases for polar variant
-    check_within_d(
+    test_within_d(
         distance_to_origin(make_point_polar(0.0, 0.0)), 
         0.0, EPSILON);
-    check_within_d(
+    test_within_d(
          distance_to_origin(make_point_polar(0.0, 1.0)), 
         1.0, EPSILON);
-    check_within_d(
+    test_within_d(
         distance_to_origin(make_point_polar(2.3, 2.0)), 
         2.0, EPSILON);
 
     // test cases for Euclidean variant
-    check_within_d(
+    test_within_d(
         distance_to_origin(make_point_euclid(0.0, -2.0)), 
         2.0, EPSILON);
-    check_within_d( 
+    test_within_d( 
         distance_to_origin(make_point_euclid(2.0, 0.0)), 
         2.0, EPSILON);
-    check_within_d( 
+    test_within_d( 
         distance_to_origin(make_point_euclid(1.0, 1.0)), 
         sqrt(2.0), EPSILON); // square root
 }
@@ -163,24 +163,24 @@ double distance_to_origin(struct Point p) {
 7. Test the function
 static void distance_to_origin_test() {
     // test cases for polar variant
-    check_within_d(
+    test_within_d(
         distance_to_origin(make_point_polar(0.0, 0.0)), 
         0.0, EPSILON);
-    check_within_d(
+    test_within_d(
          distance_to_origin(make_point_polar(0.0, 1.0)), 
         1.0, EPSILON);
-    check_within_d(
+    test_within_d(
         distance_to_origin(make_point_polar(2.3, 2.0)), 
         2.0, EPSILON);
 
     // test cases for Euclidean variant
-    check_within_d(
+    test_within_d(
         distance_to_origin(make_point_euclid(0.0, -2.0)), 
         2.0, EPSILON);
-    check_within_d( 
+    test_within_d( 
         distance_to_origin(make_point_euclid(2.0, 0.0)), 
         2.0, EPSILON);
-    check_within_d( 
+    test_within_d( 
         distance_to_origin(make_point_euclid(1.0, 1.0)), 
         sqrt(2.0), EPSILON); // square root
 }

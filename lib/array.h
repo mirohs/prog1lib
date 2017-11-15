@@ -481,11 +481,11 @@ Test for inline arrays.
 @param[in] ex expected result array
 @returns true iff actual equals expected array
 */
-#define a_check_expect(ac, ex) \
-    a_check_expect_file_line(__FILE__, __func__, __LINE__, ac, ex)
+#define a_test_equal(ac, ex) \
+    a_test_equal_file_line(__FILE__, __func__, __LINE__, ac, ex)
 
 /**
-Test for inline arrays. Use macro \ref a_check_expect.
+Test for inline arrays. Use macro \ref a_test_equal.
 @param[in] file source file name
 @param[in] function function name
 @param[in] line line number
@@ -493,7 +493,7 @@ Test for inline arrays. Use macro \ref a_check_expect.
 @param[in] ex expected result array
 @returns true iff actual equals expected array
 */
-bool a_check_expect_file_line(const char *file, const char *function, int line, Array ac, Array ex);
+bool a_test_equal_file_line(const char *file, const char *function, int line, Array ac, Array ex);
 
 void a_test_all(void);
 

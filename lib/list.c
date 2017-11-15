@@ -67,13 +67,13 @@ static void l_create_test(void) {
 
     Address *pa = l_get(list, 0);
     printsln(pa->firstname);
-    check_expect_s(pa->firstname, "Fred");
+    test_equal_s(pa->firstname, "Fred");
     pa = l_get(list, 1);
     printsln(pa->firstname);
-    check_expect_s(pa->city, "Hannover");
+    test_equal_s(pa->city, "Hannover");
     pa = l_get(list, 2);
     printsln(pa->firstname);
-    check_expect_s(pa->lastname, "Bond");
+    test_equal_s(pa->lastname, "Bond");
     
     l_free(list);
 
@@ -112,13 +112,13 @@ static void l_of_buffer_test(void) {
 
     Address *pa = l_get(l, 0);
     // printsln(pa->firstname);
-    check_expect_s(pa->firstname, "Fred");
+    test_equal_s(pa->firstname, "Fred");
     pa = l_get(l, 1);
     // printsln(pa->firstname);
-    check_expect_s(pa->city, "Hannover");
+    test_equal_s(pa->city, "Hannover");
     pa = l_get(l, 2);
     // printsln(pa->firstname);
-    check_expect_s(pa->lastname, "Bond");
+    test_equal_s(pa->lastname, "Bond");
     
     l_free(l);
     
@@ -169,7 +169,7 @@ static void l_fn_test(void) {
     ip = make_int_pair(2, 4);
     l_append(ex, &ip);
     
-    l_check_expect(ac, ex);
+    l_test_equal(ac, ex);
     
     l_free(ac);
     l_free(ex);
@@ -226,53 +226,53 @@ static void l_copy_test(void) {
     l_append(list, &a);
     
     copy = l_copy(list);
-    l_check_expect(copy, list);
+    l_test_equal(copy, list);
     
     l_free(list);
     l_free(copy);
 #if 0
     list = il_of_string("-1, -2, -3");
     copy = l_copy(list);
-    il_check_expect(copy, list);
+    il_test_equal(copy, list);
     l_free(list);
     l_free(copy);
 
     list = il_of_string("10");
     copy = l_copy(list);
-    il_check_expect(copy, list);
+    il_test_equal(copy, list);
     l_free(list);
     l_free(copy);
 
     list = il_of_string("100, -200");
     copy = l_copy(list);
-    il_check_expect(copy, list);
+    il_test_equal(copy, list);
     l_free(list);
     l_free(copy);
 
     list = il_of_string("");
     copy = l_copy(list);
-    il_check_expect(copy, list);
+    il_test_equal(copy, list);
     l_free(list);
     l_free(copy);
 
     list = dl_of_string("-1, -2, -3");
     copy = l_copy(list);
-    dl_check_within(list, copy);
+    dl_test_within(list, copy);
     l_free(list);
     l_free(copy);
     list = dl_of_string("10");
     copy = l_copy(list);
-    dl_check_within(list, copy);
+    dl_test_within(list, copy);
     l_free(list);
     l_free(copy);
     list = dl_of_string(" 100, -200 ");
     copy = l_copy(list);
-    dl_check_within(list, copy);
+    dl_test_within(list, copy);
     l_free(list);
     l_free(copy);
     list = dl_of_string("");
     copy = l_copy(list);
-    dl_check_within(list, copy);
+    dl_test_within(list, copy);
     l_free(list);
     l_free(copy);
 #endif
@@ -316,7 +316,7 @@ static void l_sub_test(void) {
     
     ac = l_sub(l, 0, 2);
     // l_println(ac, print_int_pair);
-    l_check_expect(ac, ex);
+    l_test_equal(ac, ex);
     l_free(ex);
     
     ex = l_create(sizeof(IntPair));
@@ -329,7 +329,7 @@ static void l_sub_test(void) {
     ac = l_sub(l, 1, 3);
     // l_println(ac, print_int_pair);
     // l_println(ex, print_int_pair);
-    l_check_expect(ac, ex);
+    l_test_equal(ac, ex);
     
     l_free(l);
     l_free(ac);
@@ -340,32 +340,32 @@ static void l_sub_test(void) {
     list = il_of_string("1 2 3 4");
 
     sub = l_sub(list, 0, l_length(list));
-    il_check_expect(list, sub);
+    il_test_equal(list, sub);
     l_free(sub);
 
     sub = l_sub(list, -1, l_length(list) + 1);
-    il_check_expect(list, sub);
+    il_test_equal(list, sub);
     l_free(sub);
 
     list2 = il_of_string("2 3 4");
     sub = l_sub(list, 1, l_length(list));
-    il_check_expect(sub, list2);
+    il_test_equal(sub, list2);
     l_free(list2);
     l_free(sub);
 
     list2 = il_of_string("2 3");
     sub = l_sub(list, 1, l_length(list) - 1);
-    il_check_expect(sub, list2);
+    il_test_equal(sub, list2);
     l_free(list2);
     l_free(sub);
 
     list2 = il_of_string("");
     sub = l_sub(list, 1, 1);
-    il_check_expect(sub, list2);
+    il_test_equal(sub, list2);
     l_free(sub);
 
     sub = l_sub(list, 2, 1);
-    il_check_expect(sub, list2);
+    il_test_equal(sub, list2);
     l_free(list2);
     l_free(sub);
 
@@ -376,38 +376,38 @@ static void l_sub_test(void) {
     list = dl_range(1, 10, 1);
     
     sub = l_sub(list, 0, list.n);
-    dl_check_within(sub, list);
+    dl_test_within(sub, list);
     l_free(sub);
 
     sub = l_sub(list, -10, list.n + 10);
-    dl_check_within(sub, list);
+    dl_test_within(sub, list);
     l_free(sub);
 
     list2 = dl_range(2, 10, 1);
     sub = l_sub(list, 1, list.n);
-    dl_check_within(sub, list2);
+    dl_test_within(sub, list2);
     l_free(list2);
     l_free(sub);
 
     list2 = dl_range(2, 9, 1);
     sub = l_sub(list, 1, list.n - 1);
-    dl_check_within(sub, list2);
+    dl_test_within(sub, list2);
     l_free(list2);
     l_free(sub);
 
     list2 = dl_range(0, 0, 1);
     sub = l_sub(list, 1, 1);
-    dl_check_within(sub, list2);
+    dl_test_within(sub, list2);
     l_free(sub);
 
     sub = l_sub(list, 2, 1);
-    dl_check_within(sub, list2);
+    dl_test_within(sub, list2);
     l_free(list2);
     l_free(sub);
 
     list2 = dl_range(3, 6, 1);
     sub = l_sub(list, 2, 5);
-    dl_check_within(sub, list2);
+    dl_test_within(sub, list2);
     l_free(list2);
     l_free(sub);
 
@@ -451,7 +451,7 @@ static void l_of_a_test(void) {
     i = 2; l_append(ex, &i);
     i = 3; l_append(ex, &i);
     
-    l_check_expect(ac, ex);
+    l_test_equal(ac, ex);
     
     a_free(ar);
     l_free(ac);
@@ -665,7 +665,7 @@ static void l_concat_test(void) {
     ip = make_int_pair(5, 50);
     l_append(ex, &ip);
     
-    l_check_expect(ac, ex);
+    l_test_equal(ac, ex);
     
     l_free(a1);
     l_free(a2);
@@ -676,7 +676,7 @@ static void l_concat_test(void) {
     a2 = il_of_string("1, 2, 3");
     ac = l_concat(a1, a2);
     ex = il_of_string("10, 20, 30, 1, 2, 3");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(a1);
     l_free(a2);
     l_free(ac);
@@ -686,7 +686,7 @@ static void l_concat_test(void) {
     a2 = il_range(0, 10);
     ac = l_concat(a1, a2);
     ex = il_range(-9, 10);
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(a1);
     l_free(a2);
     l_free(ac);
@@ -696,7 +696,7 @@ static void l_concat_test(void) {
     a2 = il_range(0, 0);
     ac = l_concat(a1, a2);
     ex = il_range(-9, 0);
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(a1);
     l_free(a2);
     l_free(ac);
@@ -706,7 +706,7 @@ static void l_concat_test(void) {
     a2 = il_range(0, 10);
     ac = l_concat(a1, a2);
     ex = il_range(0, 10);
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(a1);
     l_free(a2);
     l_free(ac);
@@ -716,7 +716,7 @@ static void l_concat_test(void) {
     a2 = il_range(0, 0);
     ac = l_concat(a1, a2);
     ex = il_range(0, 0);
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(a1);
     l_free(a2);
     l_free(ac);
@@ -726,7 +726,7 @@ static void l_concat_test(void) {
     a2 = dl_of_string("1, 2, 3");
     ac = l_concat(a1, a2);
     ex = dl_of_string("10, 20, 30, 1, 2, 3");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(a1);
     l_free(a2);
     l_free(ac);
@@ -736,7 +736,7 @@ static void l_concat_test(void) {
     a2 = dl_range(0, 10, 1);
     ac = l_concat(a1, a2);
     ex = dl_range(-9, 10, 1);
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(a1);
     l_free(a2);
     l_free(ac);
@@ -746,7 +746,7 @@ static void l_concat_test(void) {
     a2 = dl_range(0, 0, 1);
     ac = l_concat(a1, a2);
     ex = dl_range(-9, 0, 1);
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(a1);
     l_free(a2);
     l_free(ac);
@@ -756,7 +756,7 @@ static void l_concat_test(void) {
     a2 = dl_range(0, 10, 1);
     ac = l_concat(a1, a2);
     ex = dl_range(0, 10, 1);
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(a1);
     l_free(a2);
     l_free(ac);
@@ -766,7 +766,7 @@ static void l_concat_test(void) {
     a2 = dl_range(0, 0, 1);
     ac = l_concat(a1, a2);
     ex = dl_range(0, 0, 1);
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(a1);
     l_free(a2);
     l_free(ac);
@@ -820,7 +820,7 @@ static void l_index_fn_test(void) {
     l_println(ac, print_int_pair);
     
     int state = 15;
-    check_expect_i(l_index_fn(ac, j_is_gt, &state), 1);
+    test_equal_i(l_index_fn(ac, j_is_gt, &state), 1);
 
     l_free(ac);
 }
@@ -869,7 +869,7 @@ static void l_reverse_test(void) {
     i = 2; l_append(ex, &i);
     i = 3; l_append(ex, &i);
     ac = l_reverse(a);
-    l_check_expect(ac, ex);
+    l_test_equal(ac, ex);
     l_free(a);
     l_free(ac);
     l_free(ex);
@@ -877,21 +877,21 @@ static void l_reverse_test(void) {
     ac = il_of_string("1, 2, 3, 4");
     ex = il_of_string("4, 3, 2, 1");
     l_reverse(ac);
-    l_check_expect(ac, ex);
+    l_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = il_of_string("1");
     ex = il_of_string("1");
     l_reverse(ac);
-    l_check_expect(ac, ex);
+    l_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = l_create(0, 1);
     ex = l_create(0, 1);
     l_reverse(ac);
-    l_check_expect(ac, ex);
+    l_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 #endif
@@ -978,7 +978,7 @@ static void l_sort_test(void) {
     ex = il_of_string("1, 2, 3, 4, 5");
     l_shuffle(ac);
     l_sort(ac, l_compare_i);
-    l_check_expect(ac, ex);
+    l_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 
@@ -986,7 +986,7 @@ static void l_sort_test(void) {
     ex = il_of_string("1, 1, 2, 2, 3");
     l_shuffle(ac);
     l_sort(ac, l_compare_i);
-    l_check_expect(ac, ex);
+    l_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 
@@ -994,7 +994,7 @@ static void l_sort_test(void) {
     ex = il_of_string("");
     l_shuffle(ac);
     l_sort(ac, l_compare_i);
-    l_check_expect(ac, ex);
+    l_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 
@@ -1002,7 +1002,7 @@ static void l_sort_test(void) {
     ex = il_of_string("-3, -2, -1, -1");
     l_shuffle(ac);
     l_sort(ac, l_compare_i);
-    l_check_expect(ac, ex);
+    l_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 #endif
@@ -1046,7 +1046,7 @@ static void l_insert_test(void) {
     
     i = 9; l_insert(ac, 0, &i);
 
-    l_check_expect(ac, ex);
+    l_test_equal(ac, ex);
     
     l_free(ac);
     l_free(ex);
@@ -1064,7 +1064,7 @@ static void l_insert_test(void) {
     
     i = 9; l_insert(ac, 3, &i);
 
-    l_check_expect(ac, ex);
+    l_test_equal(ac, ex);
     l_println(ac, printpi);
     
     l_free(ac);
@@ -1104,17 +1104,17 @@ static void l_remove_test(void) {
     ex = l_create(sizeof(int));
 
     l_remove(ac, -1);
-    l_check_expect(ac, ex);
+    l_test_equal(ac, ex);
 
     l_remove(ac, 0);
-    l_check_expect(ac, ex);
+    l_test_equal(ac, ex);
 
     l_remove(ac, 1);
-    l_check_expect(ac, ex);
+    l_test_equal(ac, ex);
 
     i = 1; l_append(ac, &i);
     l_remove(ac, 0);
-    l_check_expect(ac, ex);
+    l_test_equal(ac, ex);
 
 
     i = 1; l_append(ac, &i);
@@ -1126,10 +1126,10 @@ static void l_remove_test(void) {
     i = 5; l_append(ex, &i);
     
     l_remove(ac, -1);
-    l_check_expect(ac, ex);
+    l_test_equal(ac, ex);
     
     l_remove(ac, 3);
-    l_check_expect(ac, ex);
+    l_test_equal(ac, ex);
     
     l_free(ac);
     l_free(ex);
@@ -1144,7 +1144,7 @@ static void l_remove_test(void) {
     i = 5; l_append(ex, &i);
     
     l_remove(ac, 0);
-    l_check_expect(ac, ex);
+    l_test_equal(ac, ex);
     
     l_free(ac);
     l_free(ex);
@@ -1159,7 +1159,7 @@ static void l_remove_test(void) {
     i = 3; l_append(ex, &i);
     
     l_remove(ac, 2);
-    l_check_expect(ac, ex);
+    l_test_equal(ac, ex);
     
     l_free(ac);
     l_free(ex);
@@ -1234,7 +1234,7 @@ static void l_map_test(void) {
     ip = make_int_pair(4, 31);
     l_append(ex, &ip);
     
-    l_check_expect(acm, ex);
+    l_test_equal(acm, ex);
     l_free(acm);
     l_free(ex);
 
@@ -1250,7 +1250,7 @@ static void l_map_test(void) {
 
     l_println(ac, print_int_pair);
     l_println(acm, printpi);
-    l_check_expect(acm, ex);
+    l_test_equal(acm, ex);
 
     l_free(ex);
     l_free(acm);
@@ -1308,7 +1308,7 @@ static void l_map2_test(void) {
     ip = make_int_pair(3, 30);
     l_append(ex, &ip);
 
-    l_check_expect(ac, ex);
+    l_test_equal(ac, ex);
     
     l_free(ac);
     l_free(ex);
@@ -1381,7 +1381,7 @@ static void l_map3_test(void) {
     it = make_int_triple(3, 30, 300);
     l_append(ex, &it);
 
-    l_check_expect(ac, ex);
+    l_test_equal(ac, ex);
 
     // map triple to third element
     List ak = l_map(ac, triple_k, sizeof(int), NULL);
@@ -1445,7 +1445,7 @@ static void l_each_test(void) {
     ip = make_int_pair(4, 31);
     l_append(ex, &ip);
     
-    l_check_expect(ac, ex);
+    l_test_equal(ac, ex);
     
     l_free(ac);
     l_free(ex);
@@ -1515,7 +1515,7 @@ static void l_foldl_test(void) {
     int n = 0;
     l_foldl(ac, l_sum_j, &n);
     
-    check_expect_i(n, 10 + 20 + 30);
+    test_equal_i(n, 10 + 20 + 30);
     
     l_free(ac);
 }
@@ -1585,7 +1585,7 @@ static void l_foldr_test(void) {
     int n = 0;
     l_foldr(ac, l_minus_j, &n);
     
-    check_expect_i(n, 10 - (20 - (30 - 0)));
+    test_equal_i(n, 10 - (20 - (30 - 0)));
     
     l_free(ac);
 }
@@ -1630,7 +1630,7 @@ static void l_filter_test(void) {
     ip = make_int_pair(2, 20);
     l_append(ex, &ip);
     
-    l_check_expect(ac2, ex);
+    l_test_equal(ac2, ex);
     
     l_free(ac);
     l_free(ac2);
@@ -1684,7 +1684,7 @@ static void l_choose_test(void) {
     i =  6; l_append(ex, &i);
     i = 12; l_append(ex, &i);
     i = 18; l_append(ex, &i);
-    l_check_expect(ac, ex);
+    l_test_equal(ac, ex);
 
     l_free(ac);
     l_free(ex);
@@ -1735,9 +1735,9 @@ static void l_exists_test(void) {
     // l_println(ac, print_int_pair);
     
     int state = 29;
-    check_expect_b(l_exists(ac, j_is_gt, &state), true);
+    test_equal_b(l_exists(ac, j_is_gt, &state), true);
     state = 30;
-    check_expect_b(l_exists(ac, j_is_gt, &state), false);
+    test_equal_b(l_exists(ac, j_is_gt, &state), false);
 
     l_free(ac);
 }
@@ -1772,9 +1772,9 @@ static void l_forall_test(void) {
     // l_println(ac, print_int_pair);
     
     int state = 9;
-    check_expect_b(l_forall(ac, j_is_gt, &state), true);
+    test_equal_b(l_forall(ac, j_is_gt, &state), true);
     state = 10;
-    check_expect_b(l_forall(ac, j_is_gt, &state), false);
+    test_equal_b(l_forall(ac, j_is_gt, &state), false);
 
     l_free(ac);
 }
@@ -1795,7 +1795,7 @@ bool l_forall(List list, AnyFn predicate, Any state) {
 ///////////////////////////////////////////////////////////////////////////////
 // Testing
 
-bool l_check_expect_file_line(const char *file, const char *function, int line, List a, List e) {
+bool l_test_equal_file_line(const char *file, const char *function, int line, List a, List e) {
     base_count_check();
     if (a == NULL) {
         printf("%s, line %d: Actual list is NULL\n", file, line);

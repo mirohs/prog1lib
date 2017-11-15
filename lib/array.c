@@ -38,13 +38,13 @@ static void a_create_test(void) {
     
     Address *pa = a_get(a, 0);
     // printsln(pa->firstname);
-    check_expect_s(pa->firstname, "Fred");
+    test_equal_s(pa->firstname, "Fred");
     pa = a_get(a, 1);
     // printsln(pa->firstname);
-    check_expect_s(pa->city, "Hannover");
+    test_equal_s(pa->city, "Hannover");
     pa = a_get(a, 2);
     // printsln(pa->firstname);
-    check_expect_s(pa->lastname, "Bond");
+    test_equal_s(pa->lastname, "Bond");
     
     a_free(a);
 
@@ -90,13 +90,13 @@ static void a_of_buffer_test(void) {
 
     Address *pa = a_get(a, 0);
     // printsln(pa->firstname);
-    check_expect_s(pa->firstname, "Fred");
+    test_equal_s(pa->firstname, "Fred");
     pa = a_get(a, 1);
     // printsln(pa->firstname);
-    check_expect_s(pa->city, "Hannover");
+    test_equal_s(pa->city, "Hannover");
     pa = a_get(a, 2);
     // printsln(pa->firstname);
-    check_expect_s(pa->lastname, "Bond");
+    test_equal_s(pa->lastname, "Bond");
     
     a_free(a);
     
@@ -144,7 +144,7 @@ static void a_fn_test(void) {
     ip = make_int_pair(2, 4);
     a_set(ex, 2, &ip);
     
-    a_check_expect(ac, ex);
+    a_test_equal(ac, ex);
     
     a_free(ac);
     a_free(ex);
@@ -189,53 +189,53 @@ static void a_copy_test(void) {
     a_set(array, 2, &a);
 
     copy = a_copy(array);
-    a_check_expect(copy, array);
+    a_test_equal(copy, array);
     
     a_free(array);
     a_free(copy);
 
     array = ia_of_string("-1, -2, -3");
     copy = a_copy(array);
-    ia_check_expect(copy, array);
+    ia_test_equal(copy, array);
     a_free(array);
     a_free(copy);
 
     array = ia_of_string("10");
     copy = a_copy(array);
-    ia_check_expect(copy, array);
+    ia_test_equal(copy, array);
     a_free(array);
     a_free(copy);
 
     array = ia_of_string("100, -200");
     copy = a_copy(array);
-    ia_check_expect(copy, array);
+    ia_test_equal(copy, array);
     a_free(array);
     a_free(copy);
 
     array = ia_of_string("");
     copy = a_copy(array);
-    ia_check_expect(copy, array);
+    ia_test_equal(copy, array);
     a_free(array);
     a_free(copy);
 
     array = da_of_string("-1, -2, -3");
     copy = a_copy(array);
-    da_check_within(array, copy);
+    da_test_within(array, copy);
     a_free(array);
     a_free(copy);
     array = da_of_string("10");
     copy = a_copy(array);
-    da_check_within(array, copy);
+    da_test_within(array, copy);
     a_free(array);
     a_free(copy);
     array = da_of_string(" 100, -200 ");
     copy = a_copy(array);
-    da_check_within(array, copy);
+    da_test_within(array, copy);
     a_free(array);
     a_free(copy);
     array = da_of_string("");
     copy = a_copy(array);
-    da_check_within(array, copy);
+    da_test_within(array, copy);
     a_free(array);
     a_free(copy);
 }
@@ -277,7 +277,7 @@ static void a_sub_test(void) {
     a_set(ex, 1, &ip);
     
     ac = a_sub(a, 0, 2);
-    a_check_expect(ac, ex);
+    a_test_equal(ac, ex);
     
     ip = make_int_pair(2, 20);
     a_set(ex, 0, &ip);
@@ -286,7 +286,7 @@ static void a_sub_test(void) {
     
     a_free(ac);
     ac = a_sub(a, 1, 3);
-    a_check_expect(ac, ex);
+    a_test_equal(ac, ex);
     
     a_free(a);
     a_free(ac);
@@ -296,32 +296,32 @@ static void a_sub_test(void) {
     array = ia_of_string("1 2 3 4");
 
     sub = a_sub(array, 0, a_length(array));
-    ia_check_expect(array, sub);
+    ia_test_equal(array, sub);
     a_free(sub);
 
     sub = a_sub(array, -1, a_length(array) + 1);
-    ia_check_expect(array, sub);
+    ia_test_equal(array, sub);
     a_free(sub);
 
     array2 = ia_of_string("2 3 4");
     sub = a_sub(array, 1, a_length(array));
-    ia_check_expect(sub, array2);
+    ia_test_equal(sub, array2);
     a_free(array2);
     a_free(sub);
 
     array2 = ia_of_string("2 3");
     sub = a_sub(array, 1, a_length(array) - 1);
-    ia_check_expect(sub, array2);
+    ia_test_equal(sub, array2);
     a_free(array2);
     a_free(sub);
 
     array2 = ia_of_string("");
     sub = a_sub(array, 1, 1);
-    ia_check_expect(sub, array2);
+    ia_test_equal(sub, array2);
     a_free(sub);
 
     sub = a_sub(array, 2, 1);
-    ia_check_expect(sub, array2);
+    ia_test_equal(sub, array2);
     a_free(array2);
     a_free(sub);
     a_free(array);
@@ -329,38 +329,38 @@ static void a_sub_test(void) {
     array = da_range(1, 10, 1);
     
     sub = a_sub(array, 0, array->n);
-    da_check_within(sub, array);
+    da_test_within(sub, array);
     a_free(sub);
 
     sub = a_sub(array, -10, array->n + 10);
-    da_check_within(sub, array);
+    da_test_within(sub, array);
     a_free(sub);
 
     array2 = da_range(2, 10, 1);
     sub = a_sub(array, 1, array->n);
-    da_check_within(sub, array2);
+    da_test_within(sub, array2);
     a_free(array2);
     a_free(sub);
 
     array2 = da_range(2, 9, 1);
     sub = a_sub(array, 1, array->n - 1);
-    da_check_within(sub, array2);
+    da_test_within(sub, array2);
     a_free(array2);
     a_free(sub);
 
     array2 = da_range(0, 0, 1);
     sub = a_sub(array, 1, 1);
-    da_check_within(sub, array2);
+    da_test_within(sub, array2);
     a_free(sub);
 
     sub = a_sub(array, 2, 1);
-    da_check_within(sub, array2);
+    da_test_within(sub, array2);
     a_free(array2);
     a_free(sub);
 
     array2 = da_range(3, 6, 1);
     sub = a_sub(array, 2, 5);
-    da_check_within(sub, array2);
+    da_test_within(sub, array2);
     a_free(array2);
     a_free(sub);
     a_free(array);
@@ -409,7 +409,7 @@ static void a_blit_test(void) {
     d = ia_create(5, 0);
     a_blit(s, 0, d, 0, 5);
     e = ia_of_string("1 2 3 4 5");
-    ia_check_expect(d, e);
+    ia_test_equal(d, e);
     a_free(s);
     a_free(d);
     a_free(e);
@@ -418,7 +418,7 @@ static void a_blit_test(void) {
     d = ia_create(5, 0);
     a_blit(s, 0, d, 1, 4);
     e = ia_of_string("0 1 2 3 4");
-    ia_check_expect(d, e);
+    ia_test_equal(d, e);
     a_free(s);
     a_free(d);
     a_free(e);
@@ -427,7 +427,7 @@ static void a_blit_test(void) {
     d = ia_create(5, 0);
     a_blit(s, 0, d, 1, 3);
     e = ia_of_string("0 1 2 3 0");
-    ia_check_expect(d, e);
+    ia_test_equal(d, e);
     a_free(s);
     a_free(d);
     a_free(e);
@@ -436,7 +436,7 @@ static void a_blit_test(void) {
     d = ia_create(5, 0);
     a_blit(s, 0, d, 0, 0);
     e = ia_of_string("0 0 0 0 0");
-    ia_check_expect(d, e);
+    ia_test_equal(d, e);
     a_free(s);
     a_free(d);
     a_free(e);
@@ -445,7 +445,7 @@ static void a_blit_test(void) {
     d = ia_create(5, 0);
     a_blit(s, 1, d, 0, 3);
     e = ia_of_string("2 3 4 0 0");
-    ia_check_expect(d, e);
+    ia_test_equal(d, e);
     a_free(s);
     a_free(d);
     a_free(e);
@@ -454,7 +454,7 @@ static void a_blit_test(void) {
     d = da_create(5, 0);
     a_blit(s, 0, d, 0, 5);
     e = da_of_string("1 2 3 4 5");
-    da_check_within(d, e);
+    da_test_within(d, e);
     a_free(s);
     a_free(d);
     a_free(e);
@@ -463,7 +463,7 @@ static void a_blit_test(void) {
     d = da_create(5, 0);
     a_blit(s, 0, d, 1, 4);
     e = da_of_string("0 1 2 3 4");
-    da_check_within(d, e);
+    da_test_within(d, e);
     a_free(s);
     a_free(d);
     a_free(e);
@@ -472,7 +472,7 @@ static void a_blit_test(void) {
     d = da_create(5, 0);
     a_blit(s, 0, d, 1, 3);
     e = da_of_string("0 1 2 3 0");
-    da_check_within(d, e);
+    da_test_within(d, e);
     a_free(s);
     a_free(d);
     a_free(e);
@@ -481,7 +481,7 @@ static void a_blit_test(void) {
     d = da_create(5, 0);
     a_blit(s, 0, d, 0, 0);
     e = da_of_string("0 0 0 0 0");
-    da_check_within(d, e);
+    da_test_within(d, e);
     a_free(s);
     a_free(d);
     a_free(e);
@@ -490,7 +490,7 @@ static void a_blit_test(void) {
     d = da_create(5, 0);
     a_blit(s, 1, d, 0, 3);
     e = da_of_string("2 3 4 0 0");
-    da_check_within(d, e);
+    da_test_within(d, e);
     a_free(s);
     a_free(d);
     a_free(e);
@@ -645,7 +645,7 @@ static void a_concat_test(void) {
     ip = make_int_pair(5, 50);
     a_set(ex, 4, &ip);
     
-    a_check_expect(ac, ex);
+    a_test_equal(ac, ex);
     
     a_free(a1);
     a_free(a2);
@@ -656,7 +656,7 @@ static void a_concat_test(void) {
     a2 = ia_of_string("1, 2, 3");
     ac = a_concat(a1, a2);
     ex = ia_of_string("10, 20, 30, 1, 2, 3");
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(a1);
     a_free(a2);
     a_free(ac);
@@ -666,7 +666,7 @@ static void a_concat_test(void) {
     a2 = ia_range(0, 10);
     ac = a_concat(a1, a2);
     ex = ia_range(-9, 10);
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(a1);
     a_free(a2);
     a_free(ac);
@@ -676,7 +676,7 @@ static void a_concat_test(void) {
     a2 = ia_range(0, 0);
     ac = a_concat(a1, a2);
     ex = ia_range(-9, 0);
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(a1);
     a_free(a2);
     a_free(ac);
@@ -686,7 +686,7 @@ static void a_concat_test(void) {
     a2 = ia_range(0, 10);
     ac = a_concat(a1, a2);
     ex = ia_range(0, 10);
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(a1);
     a_free(a2);
     a_free(ac);
@@ -696,7 +696,7 @@ static void a_concat_test(void) {
     a2 = ia_range(0, 0);
     ac = a_concat(a1, a2);
     ex = ia_range(0, 0);
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(a1);
     a_free(a2);
     a_free(ac);
@@ -706,7 +706,7 @@ static void a_concat_test(void) {
     a2 = da_of_string("1, 2, 3");
     ac = a_concat(a1, a2);
     ex = da_of_string("10, 20, 30, 1, 2, 3");
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(a1);
     a_free(a2);
     a_free(ac);
@@ -716,7 +716,7 @@ static void a_concat_test(void) {
     a2 = da_range(0, 10, 1);
     ac = a_concat(a1, a2);
     ex = da_range(-9, 10, 1);
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(a1);
     a_free(a2);
     a_free(ac);
@@ -726,7 +726,7 @@ static void a_concat_test(void) {
     a2 = da_range(0, 0, 1);
     ac = a_concat(a1, a2);
     ex = da_range(-9, 0, 1);
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(a1);
     a_free(a2);
     a_free(ac);
@@ -736,7 +736,7 @@ static void a_concat_test(void) {
     a2 = da_range(0, 10, 1);
     ac = a_concat(a1, a2);
     ex = da_range(0, 10, 1);
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(a1);
     a_free(a2);
     a_free(ac);
@@ -746,7 +746,7 @@ static void a_concat_test(void) {
     a2 = da_range(0, 0, 1);
     ac = a_concat(a1, a2);
     ex = da_range(0, 0, 1);
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(a1);
     a_free(a2);
     a_free(ac);
@@ -796,7 +796,7 @@ static void a_index_fn_test(void) {
     // a_println(ac, print_int_pair);
     
     int state = 15;
-    check_expect_i(a_index_fn(ac, j_is_gt, &state), 1);
+    test_equal_i(a_index_fn(ac, j_is_gt, &state), 1);
 
     a_free(ac);
 }
@@ -828,7 +828,7 @@ static void a_last_index_fn_test(void) {
     // a_println(ac, print_int_pair);
     
     int state = 15;
-    check_expect_i(a_last_index_fn(ac, j_is_gt, &state), 2);
+    test_equal_i(a_last_index_fn(ac, j_is_gt, &state), 2);
 
     a_free(ac);
 }
@@ -854,28 +854,28 @@ static void a_reverse_test(void) {
     ac = ia_of_string("1, 2, 3");
     ex = ia_of_string("3, 2, 1");
     a_reverse(ac);
-    a_check_expect(ac, ex);
+    a_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ia_of_string("1, 2, 3, 4");
     ex = ia_of_string("4, 3, 2, 1");
     a_reverse(ac);
-    a_check_expect(ac, ex);
+    a_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ia_of_string("1");
     ex = ia_of_string("1");
     a_reverse(ac);
-    a_check_expect(ac, ex);
+    a_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = a_create(0, 1);
     ex = a_create(0, 1);
     a_reverse(ac);
-    a_check_expect(ac, ex);
+    a_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 }
@@ -930,7 +930,7 @@ static void a_sort_test(void) {
     ex = ia_of_string("1, 2, 3, 4, 5");
     a_shuffle(ac);
     a_sort(ac, a_compare_i);
-    a_check_expect(ac, ex);
+    a_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
@@ -938,7 +938,7 @@ static void a_sort_test(void) {
     ex = ia_of_string("1, 1, 2, 2, 3");
     a_shuffle(ac);
     a_sort(ac, a_compare_i);
-    a_check_expect(ac, ex);
+    a_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
@@ -946,7 +946,7 @@ static void a_sort_test(void) {
     ex = ia_of_string("");
     a_shuffle(ac);
     a_sort(ac, a_compare_i);
-    a_check_expect(ac, ex);
+    a_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
@@ -954,7 +954,7 @@ static void a_sort_test(void) {
     ex = ia_of_string("-3, -2, -1, -1");
     a_shuffle(ac);
     a_sort(ac, a_compare_i);
-    a_check_expect(ac, ex);
+    a_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 }
@@ -1003,7 +1003,7 @@ static void a_map_test(void) {
     ip = make_int_pair(4, 31);
     a_set(ex, 2, &ip);
     
-    a_check_expect(acm, ex);
+    a_test_equal(acm, ex);
     a_free(acm);
     a_free(ex);
 
@@ -1017,7 +1017,7 @@ static void a_map_test(void) {
 
     acm = a_map(ac, a_int_pair_i, sizeof(int), NULL);
 
-    a_check_expect(acm, ex);
+    a_test_equal(acm, ex);
     
     ia_println(acm);
 
@@ -1071,7 +1071,7 @@ static void a_map2_test(void) {
     ip = make_int_pair(3, 30);
     a_set(ex, 2, &ip);
 
-    a_check_expect(ac, ex);
+    a_test_equal(ac, ex);
     
     a_free(ac);
     a_free(ex);
@@ -1130,7 +1130,7 @@ static void a_map3_test(void) {
     it = make_int_triple(3, 30, 300);
     a_set(ex, 2, &it);
 
-    a_check_expect(ac, ex);
+    a_test_equal(ac, ex);
 
     // map triple to third element
     Array ak = a_map(ac, triple_k, sizeof(int), NULL);
@@ -1195,7 +1195,7 @@ static void a_each_test(void) {
     ip = make_int_pair(4, 31);
     a_set(ex, 2, &ip);
     
-    a_check_expect(ac, ex);
+    a_test_equal(ac, ex);
     
     a_free(ac);
     a_free(ex);
@@ -1259,7 +1259,7 @@ static void a_foldl_test(void) {
     int n = 0;
     a_foldl(ac, a_sum_j, &n);
     
-    check_expect_i(n, 10 + 20 + 30);
+    test_equal_i(n, 10 + 20 + 30);
     
     a_free(ac);
 }
@@ -1322,7 +1322,7 @@ static void a_foldr_test(void) {
     int n = 0;
     a_foldr(ac, a_minus_j, &n);
     
-    check_expect_i(n, 10 - (20 - (30 - 0)));
+    test_equal_i(n, 10 - (20 - (30 - 0)));
     
     a_free(ac);
 }
@@ -1359,7 +1359,7 @@ static void a_filter_test(void) {
     ip = make_int_pair(2, 20);
     a_set(ex, 0, &ip);
     
-    a_check_expect(ac2, ex);
+    a_test_equal(ac2, ex);
     
     a_free(ac);
     a_free(ac2);
@@ -1406,9 +1406,9 @@ static void a_exists_test(void) {
     // a_println(ac, print_int_pair);
     
     int state = 29;
-    check_expect_b(a_exists(ac, j_is_gt, &state), true);
+    test_equal_b(a_exists(ac, j_is_gt, &state), true);
     state = 30;
-    check_expect_b(a_exists(ac, j_is_gt, &state), false);
+    test_equal_b(a_exists(ac, j_is_gt, &state), false);
 
     a_free(ac);
 }
@@ -1440,9 +1440,9 @@ static void a_forall_test(void) {
     // a_println(ac, print_int_pair);
     
     int state = 9;
-    check_expect_b(a_forall(ac, j_is_gt, &state), true);
+    test_equal_b(a_forall(ac, j_is_gt, &state), true);
     state = 10;
-    check_expect_b(a_forall(ac, j_is_gt, &state), false);
+    test_equal_b(a_forall(ac, j_is_gt, &state), false);
 
     a_free(ac);
 }
@@ -1463,7 +1463,7 @@ bool a_forall(Array array, AnyFn predicate, Any state) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool a_check_expect_file_line(const char *file, const char *function, int line, Array a, Array e) {
+bool a_test_equal_file_line(const char *file, const char *function, int line, Array a, Array e) {
     base_init();
     base_count_check();
     if (a->n != e->n) {

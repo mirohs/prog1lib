@@ -15,22 +15,22 @@ static void ia_create_test(void) {
     
     array = ia_create(3, 0);
     int a1[] = { 0, 0, 0 };
-    ia_check_expect_file_line(__FILE__, __func__, __LINE__, array, a1, 3);
+    ia_test_equal_file_line(__FILE__, __func__, __LINE__, array, a1, 3);
     a_free(array);
     
     array = ia_create(5, -1);
     int a2[] = { -1, -1, -1, -1, -1 };
-    ia_check_expect_file_line(__FILE__, __func__, __LINE__, array, a2, 5);
+    ia_test_equal_file_line(__FILE__, __func__, __LINE__, array, a2, 5);
     a_free(array);
     
     array = ia_create(1, 2);
     int a3[] = { 2 };
-    ia_check_expect_file_line(__FILE__, __func__, __LINE__, array, a3, 1);
+    ia_test_equal_file_line(__FILE__, __func__, __LINE__, array, a3, 1);
     a_free(array);
     
     array = ia_create(0, 2);
     int a4[] = { };
-    ia_check_expect_file_line(__FILE__, __func__, __LINE__, array, a4, 0);
+    ia_test_equal_file_line(__FILE__, __func__, __LINE__, array, a4, 0);
     a_free(array);
 }
 
@@ -58,37 +58,37 @@ static void ia_range_test(void) {
 
     array = ia_range(0, 3);
     int a1[] = { 0, 1, 2 };
-    ia_check_expect_file_line(__FILE__, __func__, __LINE__, array, a1, 3);
+    ia_test_equal_file_line(__FILE__, __func__, __LINE__, array, a1, 3);
     a_free(array);
 
     array = ia_range(3, 2);
     int a2[] = { 3 };
-    ia_check_expect_file_line(__FILE__, __func__, __LINE__, array, a2, 1);
+    ia_test_equal_file_line(__FILE__, __func__, __LINE__, array, a2, 1);
     a_free(array);
 
     array = ia_range(2, 3);
     int a3[] = { 2 };
-    ia_check_expect_file_line(__FILE__, __func__, __LINE__, array, a3, 1);
+    ia_test_equal_file_line(__FILE__, __func__, __LINE__, array, a3, 1);
     a_free(array);
 
     array = ia_range(3, 3);
     int a4[] = { };
-    ia_check_expect_file_line(__FILE__, __func__, __LINE__, array, a4, 0);
+    ia_test_equal_file_line(__FILE__, __func__, __LINE__, array, a4, 0);
     a_free(array);
 
     array = ia_range(-3, -3);
     int a5[] = { };
-    ia_check_expect_file_line(__FILE__, __func__, __LINE__, array, a5, 0);
+    ia_test_equal_file_line(__FILE__, __func__, __LINE__, array, a5, 0);
     a_free(array);
 
     array = ia_range(1, 4);
     int a6[] = { 1, 2, 3 };
-    ia_check_expect_file_line(__FILE__, __func__, __LINE__, array, a6, 3);
+    ia_test_equal_file_line(__FILE__, __func__, __LINE__, array, a6, 3);
     a_free(array);
 
     array = ia_range(4, 1);
     int a7[] = { 4, 3, 2 };
-    ia_check_expect_file_line(__FILE__, __func__, __LINE__, array, a7, 3);
+    ia_test_equal_file_line(__FILE__, __func__, __LINE__, array, a7, 3);
     a_free(array);
 }
 
@@ -126,37 +126,37 @@ static void ia_of_string_test(void) {
 
     ac = ia_of_string("1, 2, 3, 4, 5, 6");
     ex = ia_range(1, 7);
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ia_of_string("   1, 2, 3, 4, 5, 6   ");
     ex = ia_range(1, 7);
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ia_of_string("1xx2asdfs3");
     ex = ia_range(1, 4);
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ia_of_string("y1xx2asdfs3x");
     ex = ia_range(1, 4);
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ia_of_string("-3, -2, -1, 0, 1");
     ex = ia_range(-3, 2);
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ia_of_string(" -3 -2 -1 ");
     ex = ia_range(-3, 0);
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
@@ -165,27 +165,27 @@ static void ia_of_string_test(void) {
     ia_set(ex, 0, 1);
     ia_set(ex, 1, -2);
     ia_set(ex, 2, 3);
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
 
     ac = ia_of_string("-.1.-2.-.3.-");
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
 
     ac = ia_of_string("---.1.----2.----.3.----");
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ia_of_string("-x--+ +.+++a-b c-");
     ex = ia_create(0, 0);
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ia_of_string("");
     ex = ia_create(0, 0);
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 }
@@ -243,22 +243,22 @@ static void ia_fn_test(void) {
 
     array = ia_fn(3, two_i_plus_1, 0);
     int a1[] = { 1, 3, 5 };
-    ia_check_expect_file_line(__FILE__, __func__, __LINE__, array, a1, 3);
+    ia_test_equal_file_line(__FILE__, __func__, __LINE__, array, a1, 3);
     a_free(array);
 
     array = ia_fn(4, two_i_plus_1, 0);
     int a2[] = { 1, 3, 5, 7 };
-    ia_check_expect_file_line(__FILE__, __func__, __LINE__, array, a2, 4);
+    ia_test_equal_file_line(__FILE__, __func__, __LINE__, array, a2, 4);
     a_free(array);
 
     array = ia_fn(1, two_i_plus_1, 0);
     int a3[] = { 1 };
-    ia_check_expect_file_line(__FILE__, __func__, __LINE__, array, a3, 1);
+    ia_test_equal_file_line(__FILE__, __func__, __LINE__, array, a3, 1);
     a_free(array);
 
     array = ia_fn(0, two_i_plus_1, 0);
     int a4[] = { };
-    ia_check_expect_file_line(__FILE__, __func__, __LINE__, array, a4, 0);
+    ia_test_equal_file_line(__FILE__, __func__, __LINE__, array, a4, 0);
     a_free(array);
 }
 
@@ -288,7 +288,7 @@ static void ia_of_da_test(void) {
     da = da_of_string("0.0 0.49999 0.5 1.0 -0.49999 -0.50001 -1.0");
     ex = ia_of_string(" 0   0       1   1    0       -1       -1 ");
     ac = ia_of_da(da);
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(da);
     a_free(ex);
     a_free(ac);
@@ -381,9 +381,9 @@ static void ia_contains_test(void) {
     printsln((String)__func__);
     Array array;
     array = ia_of_string("10, 20, 30");
-    check_expect_b(ia_contains(array, 10), true);
-    check_expect_b(ia_contains(array, 11), false);
-    check_expect_b(ia_contains(array, 30), true);
+    test_equal_b(ia_contains(array, 10), true);
+    test_equal_b(ia_contains(array, 11), false);
+    test_equal_b(ia_contains(array, 30), true);
     a_free(array);
 }
 
@@ -408,19 +408,19 @@ static void ia_fill_test(void) {
     array = ia_create(3, 0);
     ia_fill(array, -1);
     int a1[] = { -1, -1, -1 };
-    ia_check_expect_file_line(__FILE__, __func__, __LINE__, array, a1, 3);
+    ia_test_equal_file_line(__FILE__, __func__, __LINE__, array, a1, 3);
     a_free(array);
 
     array = ia_create(2, 0);
     ia_fill(array, 2);
     int a2[] = { 2, 2 };
-    ia_check_expect_file_line(__FILE__, __func__, __LINE__, array, a2, 2);
+    ia_test_equal_file_line(__FILE__, __func__, __LINE__, array, a2, 2);
     a_free(array);
 
     array = ia_create(0, 0);
     ia_fill(array, 2);
     int a3[] = { };
-    ia_check_expect_file_line(__FILE__, __func__, __LINE__, array, a3, 0);
+    ia_test_equal_file_line(__FILE__, __func__, __LINE__, array, a3, 0);
     a_free(array);
 }
 
@@ -442,49 +442,49 @@ static void ia_fill_from_to_test(void) {
     array = ia_create(3, 0);
     ia_fill_from_to(array, -1, 0, array->n);
     int a1[] = { -1, -1, -1 };
-    ia_check_expect_file_line(__FILE__, __func__, __LINE__, array, a1, 3);
+    ia_test_equal_file_line(__FILE__, __func__, __LINE__, array, a1, 3);
     a_free(array);
 
     array = ia_create(3, 0);
     ia_fill_from_to(array, -1, -1, array->n + 1);
     int a2[] = { -1, -1, -1 };
-    ia_check_expect_file_line(__FILE__, __func__, __LINE__, array, a2, 3);
+    ia_test_equal_file_line(__FILE__, __func__, __LINE__, array, a2, 3);
     a_free(array);
 
     array = ia_create(3, 0);
     ia_fill_from_to(array, -1, 0, 0);
     int a3[] = { 0, 0, 0 };
-    ia_check_expect_file_line(__FILE__, __func__, __LINE__, array, a3, 3);
+    ia_test_equal_file_line(__FILE__, __func__, __LINE__, array, a3, 3);
     a_free(array);
 
     array = ia_create(3, 0);
     ia_fill_from_to(array, -1, 0, 1);
     int a4[] = { -1, 0, 0 };
-    ia_check_expect_file_line(__FILE__, __func__, __LINE__, array, a4, 3);
+    ia_test_equal_file_line(__FILE__, __func__, __LINE__, array, a4, 3);
     a_free(array);
 
     array = ia_create(3, 0);
     ia_fill_from_to(array, -1, 2, 2);
     int a5[] = { 0, 0, 0 };
-    ia_check_expect_file_line(__FILE__, __func__, __LINE__, array, a5, 3);
+    ia_test_equal_file_line(__FILE__, __func__, __LINE__, array, a5, 3);
     a_free(array);
 
     array = ia_create(3, 0);
     ia_fill_from_to(array, -1, 2, 3);
     int a6[] = { 0, 0, -1 };
-    ia_check_expect_file_line(__FILE__, __func__, __LINE__, array, a6, 3);
+    ia_test_equal_file_line(__FILE__, __func__, __LINE__, array, a6, 3);
     a_free(array);
 
     array = ia_create(3, 0);
     ia_fill_from_to(array, -1, 2, 1);
     int a7[] = { 0, 0, 0 };
-    ia_check_expect_file_line(__FILE__, __func__, __LINE__, array, a7, 3);
+    ia_test_equal_file_line(__FILE__, __func__, __LINE__, array, a7, 3);
     a_free(array);
 
     array = ia_create(3, 0);
     ia_fill_from_to(array, -1, 1, 3);
     int a8[] = { 0, -1, -1 };
-    ia_check_expect_file_line(__FILE__, __func__, __LINE__, array, a8, 3);
+    ia_test_equal_file_line(__FILE__, __func__, __LINE__, array, a8, 3);
     a_free(array);
 }
 
@@ -514,13 +514,13 @@ static void ia_index_test(void) {
         printf("value found at index %d\n", i);
     }
 #endif
-    check_expect_i(i, -1);
+    test_equal_i(i, -1);
 
     i = ia_index(array, 1);
-    check_expect_i(i, 0);
+    test_equal_i(i, 0);
         
     i = ia_index(array, 2);
-    check_expect_i(i, 1);
+    test_equal_i(i, 1);
         
     a_free(array);
     
@@ -543,11 +543,11 @@ int ia_index_from(Array array, int value, int from);
 static void ia_index_from_test(void) {
     printsln((String)__func__);
     Array a = ia_of_string("10 20 30 40 50");
-    check_expect_i(ia_index_from(a, 20, 0), 1);
-    check_expect_i(ia_index_from(a, 20, 1), 1);
-    check_expect_i(ia_index_from(a, 20, 2), -1);
-    check_expect_i(ia_index_from(a, 30, -1), 2);
-    check_expect_i(ia_index_from(a, 60, 0), -1);
+    test_equal_i(ia_index_from(a, 20, 0), 1);
+    test_equal_i(ia_index_from(a, 20, 1), 1);
+    test_equal_i(ia_index_from(a, 20, 2), -1);
+    test_equal_i(ia_index_from(a, 30, -1), 2);
+    test_equal_i(ia_index_from(a, 60, 0), -1);
     a_free(a);
     
 }
@@ -570,8 +570,8 @@ int ia_index_fn(Array array, IntIntIntToBool predicate, int x);
 static void ia_index_fn_test(void) {
     printsln((String)__func__);
     Array a = ia_of_string("1 2 3 -4 5");
-    check_expect_i(ia_index_fn(a, ia_even, 0), 1);
-    check_expect_i(ia_index_fn(a, ia_lt, 0), 3);
+    test_equal_i(ia_index_fn(a, ia_even, 0), 1);
+    test_equal_i(ia_index_fn(a, ia_lt, 0), 3);
     a_free(a);
 }
 
@@ -593,9 +593,9 @@ int ia_last_index(Array array, int value);
 static void ia_last_index_test(void) {
     printsln((String)__func__);
     Array a = ia_of_string("10 20 30 10 20 30");
-    check_expect_i(ia_last_index(a, 20), 4);
-    check_expect_i(ia_last_index(a, 30), 5);
-    check_expect_i(ia_last_index(a, 60), -1);
+    test_equal_i(ia_last_index(a, 20), 4);
+    test_equal_i(ia_last_index(a, 30), 5);
+    test_equal_i(ia_last_index(a, 60), -1);
     a_free(a);
 }
 
@@ -616,11 +616,11 @@ int ia_last_index_from(Array array, int value, int from);
 static void ia_last_index_from_test(void) {
     printsln((String)__func__);
     Array a = ia_of_string("10 20 30 10 20 30");
-    check_expect_i(ia_last_index_from(a, 20, 5), 4);
-    check_expect_i(ia_last_index_from(a, 20, 4), 4);
-    check_expect_i(ia_last_index_from(a, 20, 3), 1);
-    check_expect_i(ia_last_index_from(a, 30, 2), 2);
-    check_expect_i(ia_last_index_from(a, 30, 1), -1);
+    test_equal_i(ia_last_index_from(a, 20, 5), 4);
+    test_equal_i(ia_last_index_from(a, 20, 4), 4);
+    test_equal_i(ia_last_index_from(a, 20, 3), 1);
+    test_equal_i(ia_last_index_from(a, 30, 2), 2);
+    test_equal_i(ia_last_index_from(a, 30, 1), -1);
     a_free(a);    
 }
 
@@ -642,8 +642,8 @@ int ia_last_index_fn(Array array, IntIntIntToBool predicate, int x);
 static void ia_last_index_fn_test(void) {
     printsln((String)__func__);
     Array a = ia_of_string("1 2 2 3 -3 5");
-    check_expect_i(ia_last_index_fn(a, ia_even, 0), 2);
-    check_expect_i(ia_last_index_fn(a, ia_lt, 0), 4);
+    test_equal_i(ia_last_index_fn(a, ia_even, 0), 2);
+    test_equal_i(ia_last_index_fn(a, ia_lt, 0), 4);
     a_free(a);
 }
 
@@ -680,28 +680,28 @@ static void ia_sort_test(void) {
     ex = ia_of_string("1, 2, 3, 4, 5");
     a_shuffle(ac);
     ia_sort(ac);
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ia_of_string("1, 2, 1, 3, 2");
     ex = ia_of_string("1, 1, 2, 2, 3");
     ia_sort(ac);
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ia_of_string("");
     ex = ia_of_string("");
     ia_sort(ac);
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ia_of_string("-1, -2, -3, -1");
     ex = ia_of_string("-3, -2, -1, -1");
     ia_sort(ac);
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 }
@@ -729,28 +729,28 @@ static void ia_sort_dec_test(void) {
     ex = ia_of_string("5, 4, 3, 2, 1");
     a_shuffle(ac);
     ia_sort_dec(ac);
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ia_of_string("1, 2, 1, 3, 2");
     ex = ia_of_string("3, 2, 2, 1, 1");
     ia_sort_dec(ac);
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ia_of_string("");
     ex = ia_of_string("");
     ia_sort_dec(ac);
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ia_of_string("-3, -2, -1");
     ex = ia_of_string("-1, -2, -3");
     ia_sort_dec(ac);
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 }
@@ -771,42 +771,42 @@ static void ia_insert_test(void) {
     ac = ia_of_string("1, 2, 3, 4, 5, 6");
     ia_insert(ac, 0, 9);
     ex = ia_of_string("9, 1, 2, 3, 4, 5");
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = ia_of_string("1, 2, 3, 4, 5, 6");
     ia_insert(ac, 5, 9);
     ex = ia_of_string("1, 2, 3, 4, 5, 9");
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = ia_of_string("1, 2, 3, 4, 5, 6");
     ia_insert(ac, 3, 9);
     ex = ia_of_string("1, 2, 3, 9, 4, 5");
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = ia_of_string("1");
     ia_insert(ac, -1, 9);
     ex = ia_of_string("1");
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = ia_of_string("1");
     ia_insert(ac, 1, 9);
     ex = ia_of_string("1");
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = ia_of_string("");
     ia_insert(ac, 0, 9);
     ex = ia_of_string("");
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 }
@@ -833,49 +833,49 @@ static void ia_remove_test(void) {
     ac = ia_of_string("1, 2, 3, 4, 5, 6");
     ia_remove(ac, 0, 9);
     ex = ia_of_string("2, 3, 4, 5, 6, 9");
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = ia_of_string("1, 2, 3, 4, 5, 6");
     ia_remove(ac, 5, 9);
     ex = ia_of_string("1, 2, 3, 4, 5, 9");
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = ia_of_string("1, 2, 3, 4, 5, 6");
     ia_remove(ac, 3, 9);
     ex = ia_of_string("1, 2, 3, 5, 6, 9");
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = ia_of_string("1");
     ia_remove(ac, -1, 9);
     ex = ia_of_string("1");
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = ia_of_string("1");
     ia_remove(ac, 1, 9);
     ex = ia_of_string("1");
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = ia_of_string("1");
     ia_remove(ac, 0, 9);
     ex = ia_of_string("9");
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = ia_of_string("");
     ia_remove(ac, 0, 9);
     ex = ia_of_string("");
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 }
@@ -979,14 +979,14 @@ static void ia_each_test(void) {
     a = ia_of_string("1, 2, 3, 4");
     ia_each(a, ia_times, 2);
     ex = ia_of_string("2, 4, 6, 8");
-    ia_check_expect(a, ex);
+    ia_test_equal(a, ex);
     a_free(a);
     a_free(ex);
     
     a = ia_of_string("");
     ia_each(a, ia_times, 3);
     ex = ia_of_string("");
-    ia_check_expect(a, ex);
+    ia_test_equal(a, ex);
     a_free(a);
     a_free(ex);
 }
@@ -1057,13 +1057,13 @@ int ia_foldl(Array array, IntIntIntToInt f, int init);
 static void ia_foldl_test(void) {
     printsln((String)__func__);
     Array a = ia_of_string("");    
-    check_expect_i(ia_foldl(a, int_plus, 100), 100);
-    check_expect_i(ia_foldl(a, int_minus, 100), 100);
+    test_equal_i(ia_foldl(a, int_plus, 100), 100);
+    test_equal_i(ia_foldl(a, int_minus, 100), 100);
     a_free(a);
     
     a = ia_of_string("1, 2, 3, 4");    
-    check_expect_i(ia_foldl(a, int_plus, 0),    (((0 + 1) + 2) + 3) + 4);
-    check_expect_i(ia_foldl(a, int_minus, 100), (((100 - 1) - 2) - 3) - 4);
+    test_equal_i(ia_foldl(a, int_plus, 0),    (((0 + 1) + 2) + 3) + 4);
+    test_equal_i(ia_foldl(a, int_minus, 100), (((100 - 1) - 2) - 3) - 4);
     a_free(a);
 }
 
@@ -1083,13 +1083,13 @@ int ia_foldr(Array array, IntIntIntToInt f, int init);
 static void ia_foldr_test(void) {
     printsln((String)__func__);
     Array a = ia_of_string("");    
-    check_expect_i(ia_foldr(a, int_plus, 100), 100);
-    check_expect_i(ia_foldr(a, int_minus, 100), 100);
+    test_equal_i(ia_foldr(a, int_plus, 100), 100);
+    test_equal_i(ia_foldr(a, int_minus, 100), 100);
     a_free(a);
     
     a = ia_of_string("1, 2, 3, 4");    
-    check_expect_i(ia_foldr(a, int_plus, 100), 1 + (2 + (3 + (4 + 100))));
-    check_expect_i(ia_foldr(a, int_minus, 0), 1 - (2 - (3 - (4 - 0))));
+    test_equal_i(ia_foldr(a, int_plus, 100), 1 + (2 + (3 + (4 + 100))));
+    test_equal_i(ia_foldr(a, int_minus, 0), 1 - (2 - (3 - (4 - 0))));
     a_free(a);
 }
 
@@ -1113,19 +1113,19 @@ static void ia_filter_test(void) {
     a = ia_of_string("1, 2, 3, 4, 5, 6");
     ac = ia_filter(a, ia_gt, 3);
     ex = ia_of_string("4, 5, 6");
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ia_filter(a, ia_lt, 4);
     ex = ia_of_string("1, 2, 3");
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = ia_filter(a, ia_le, 3);
     ex = ia_of_string("1, 2, 3");
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
     a_free(a);
@@ -1196,7 +1196,7 @@ static void ia_choose_test(void) {
     a = ia_of_string("1, 2, 3, 4, 5, 6");
     ac = ia_choose(a, evens_times_x, 3);
     ex = ia_of_string("6, 12, 18");
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
 
     a_free(ac);
     a_free(ex);
@@ -1255,9 +1255,9 @@ bool ia_exists(Array array, IntIntIntToBool predicate, int x);
 static void ia_exists_test(void) {
     printsln((String)__func__);
     Array a = ia_of_string("1, 2, 3, 4, 5, 6");
-    check_expect_b(ia_exists(a, ia_gt, 3), true);
-    check_expect_b(ia_exists(a, ia_gt, 9), false);
-    check_expect_b(ia_exists(a, ia_lt, -1), false);
+    test_equal_b(ia_exists(a, ia_gt, 3), true);
+    test_equal_b(ia_exists(a, ia_gt, 9), false);
+    test_equal_b(ia_exists(a, ia_lt, -1), false);
     a_free(a);
 }
 
@@ -1293,9 +1293,9 @@ bool ia_forall(Array array, IntIntIntToBool predicate, int x);
 static void ia_forall_test(void) {
     printsln((String)__func__);
     Array a = ia_of_string("1, 2, 3, 4, 5, 6");
-    check_expect_b(ia_forall(a, ia_gt, 0), true);
-    check_expect_b(ia_forall(a, ia_gt, 1), false);
-    check_expect_b(ia_forall(a, ia_lt, 7), true);
+    test_equal_b(ia_forall(a, ia_gt, 0), true);
+    test_equal_b(ia_forall(a, ia_gt, 1), false);
+    test_equal_b(ia_forall(a, ia_lt, 7), true);
     a_free(a);
 }
 
@@ -1328,7 +1328,7 @@ bool ia_forall_state(Array array, IntIntIntAnyToBool predicate, int x, Any state
 ///////////////////////////////////////////////////////////////////////////////
 // Testing
 
-bool ia_check_expect_file_line(const char *file, const char *function, int line, Array a, int *e, int ne) {
+bool ia_test_equal_file_line(const char *file, const char *function, int line, Array a, int *e, int ne) {
     base_init();
     base_count_check();
     if (a->n != ne) {

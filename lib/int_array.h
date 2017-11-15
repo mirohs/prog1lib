@@ -528,8 +528,8 @@ Test for int arrays.
 @param[in] ex expected result array
 @returns true iff actual equals expected array
 */
-#define ia_check_expect(ac, ex) \
-    ia_check_expect_file_line(__FILE__, __func__, __LINE__, ac, (ex)->a, (ex)->n)
+#define ia_test_equal(ac, ex) \
+    ia_test_equal_file_line(__FILE__, __func__, __LINE__, ac, (ex)->a, (ex)->n)
 
 /**
 Test for int arrays.
@@ -541,7 +541,7 @@ Test for int arrays.
 @param[in] exn length of expected result C-array (number of elements)
 @returns true iff actual equals expected array
 */
-bool ia_check_expect_file_line(const char *file, const char *function, int line, Array ac, int *ex, int exn);
+bool ia_test_equal_file_line(const char *file, const char *function, int line, Array ac, int *ex, int exn);
 
 /*
 Checks if array has the right element size. Fails if not.

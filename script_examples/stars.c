@@ -21,13 +21,13 @@ String stars(int n) {
 
 void stars_test(void) {
     String s;
-    check_expect_s(s = stars(0), "");
+    test_equal_s(s = stars(0), "");
     s_free(s);
-    check_expect_s(s = stars(1), "*");
+    test_equal_s(s = stars(1), "*");
     s_free(s);
-    check_expect_s(s = stars(2), "**");
+    test_equal_s(s = stars(2), "**");
     s_free(s);
-    check_expect_s(s = stars(3), "***");
+    test_equal_s(s = stars(3), "***");
     s_free(s);
 }
 

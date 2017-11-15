@@ -621,56 +621,56 @@ If @c A_GET_SET is defined, use array accessor functions. These perform bounds c
 /** A very small positive value.*/
 #define EPSILON 0.00000001
 
-bool base_check_expect_b(const char *file, int line, bool a, bool e);
-bool base_check_expect_i(const char *file, int line, int a, int e);
-bool base_check_within_d(const char *file, int line, double a, double e, double epsilon);
-bool base_check_within_i(const char *file, int line, int a, int e, int epsilon);
-bool base_check_expect_c(const char *file, int line, char a, char e);
-bool base_check_expect_s(const char *file, int line, String a, String e);
+bool base_test_equal_b(const char *file, int line, bool a, bool e);
+bool base_test_equal_i(const char *file, int line, int a, int e);
+bool base_test_within_d(const char *file, int line, double a, double e, double epsilon);
+bool base_test_within_i(const char *file, int line, int a, int e, int epsilon);
+bool base_test_equal_c(const char *file, int line, char a, char e);
+bool base_test_equal_s(const char *file, int line, String a, String e);
 
-bool base_check_expect_ca(const char *file, int line, Array a, char *e, int ne);
-bool base_check_expect_boa(const char *file, int line, Array a, bool *e, int ne);
+bool base_test_equal_ca(const char *file, int line, Array a, char *e, int ne);
+bool base_test_equal_boa(const char *file, int line, Array a, bool *e, int ne);
 
-bool base_check_expect_struct(const char *file, int line, 
+bool base_test_equal_struct(const char *file, int line, 
         Any actual, Any expected, Any predicate);
 
 
 
 /** Check whether the actual boolean (first argument) is equal to the expected boolean (second argument). */
-#define check_expect_b(a, e) base_check_expect_b(__FILE__, __LINE__, a, e)
+#define test_equal_b(a, e) base_test_equal_b(__FILE__, __LINE__, a, e)
 
 /** Check whether the actual int (first argument) is equal to the expected int (second argument). */
-#define check_expect_i(a, e) base_check_expect_i(__FILE__, __LINE__, a, e)
+#define test_equal_i(a, e) base_test_equal_i(__FILE__, __LINE__, a, e)
 
 /** Check whether the actual double (first argument) is within +/-epsilon (third argument) of the expected double (second argument). */
-#define check_within_d(a, e, epsilon) base_check_within_d(__FILE__, __LINE__, a, e, epsilon)
+#define test_within_d(a, e, epsilon) base_test_within_d(__FILE__, __LINE__, a, e, epsilon)
 
 /** Check whether the actual int (first argument) is within +/-epsilon (third argument) of the expected int (second argument). */
-#define check_within_i(a, e, epsilon) base_check_within_i(__FILE__, __LINE__, a, e, epsilon)
+#define test_within_i(a, e, epsilon) base_test_within_i(__FILE__, __LINE__, a, e, epsilon)
 
 /** Check whether the actual character (first argument) is equal to the expected character (second argument). */
-#define check_expect_c(a, e) base_check_expect_c(__FILE__, __LINE__, a, e)
+#define test_equal_c(a, e) base_test_equal_c(__FILE__, __LINE__, a, e)
 
 /** Check whether the actual String (first argument) is equal to the expected String (second argument). */
-#define check_expect_s(a, e) base_check_expect_s(__FILE__, __LINE__, a, e)
+#define test_equal_s(a, e) base_test_equal_s(__FILE__, __LINE__, a, e)
 
 
 
 /** Check whether the actual array (first argument) is equal to the expected array (second argument). */
-#define check_expect_ca(a, e, ne) base_check_expect_ca(__FILE__, __LINE__, a, e, ne)
+#define test_equal_ca(a, e, ne) base_test_equal_ca(__FILE__, __LINE__, a, e, ne)
 
 /** Check whether the actual array (first argument) is equal to the expected array (second argument). */
-#define check_expect_boa(a, e, ne) base_check_expect_ba(__FILE__, __LINE__, a, e, ne)
+#define test_equal_boa(a, e, ne) base_test_equal_ba(__FILE__, __LINE__, a, e, ne)
 
 /** Check whether the actual struct (first argument) is equal to the expected struct (second argument). */
-#define check_expect_struct(a, e, p) base_check_expect_struct(__FILE__, __LINE__, a, e, p)
+#define test_equal_struct(a, e, p) base_test_equal_struct(__FILE__, __LINE__, a, e, p)
 
 
 
-/** Call this from within check_* functions to count the number of checks. */
+/** Call this from within test_* functions to count the number of checks. */
 void base_count_check(void);
 
-/** Call this from within check_* functions to count the number of successful checks. */
+/** Call this from within test_* functions to count the number of successful checks. */
 void base_count_success(void);
 
 ////////////////////////////////////////////////////////////////////////////

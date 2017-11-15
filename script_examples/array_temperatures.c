@@ -21,27 +21,27 @@ static void contains_negative_test(void) {
     Array array;
  
     array = ia_of_string("10, 20, 30");
-    check_expect_b(contains_negative(array), false);
+    test_equal_b(contains_negative(array), false);
     a_free(array);
  
     array = ia_of_string("0, 0, 1, 1, 1");
-    check_expect_b(contains_negative(array), false);
+    test_equal_b(contains_negative(array), false);
     a_free(array);
  
     array = ia_of_string("-1, -3");
-    check_expect_b(contains_negative(array), true);
+    test_equal_b(contains_negative(array), true);
     a_free(array);
  
     array = ia_of_string("1, 3, -99");
-    check_expect_b(contains_negative(array), true);
+    test_equal_b(contains_negative(array), true);
     a_free(array);
  
     array = ia_of_string("-1, 3, 99");
-    check_expect_b(contains_negative(array), true);
+    test_equal_b(contains_negative(array), true);
     a_free(array);
  
     array = ia_of_string("");
-    check_expect_b(contains_negative(array), false);
+    test_equal_b(contains_negative(array), false);
     a_free(array);
 }
 
@@ -78,7 +78,7 @@ static void every_other_test(void) {
     a = ia_of_string("1 2 3");
     ac = every_other(a);
     ex = ia_of_string("1 3");
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(a);
     a_free(ac);
     a_free(ex);
@@ -86,7 +86,7 @@ static void every_other_test(void) {
     a = ia_of_string("");
     ac = every_other(a);
     ex = ia_of_string("");
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(a);
     a_free(ac);
     a_free(ex);
@@ -94,7 +94,7 @@ static void every_other_test(void) {
     a = ia_of_string("-2");
     ac = every_other(a);
     ex = ia_of_string("-2");
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(a);
     a_free(ac);
     a_free(ex);
@@ -102,7 +102,7 @@ static void every_other_test(void) {
     a = ia_of_string("1 2");
     ac = every_other(a);
     ex = ia_of_string("1");
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(a);
     a_free(ac);
     a_free(ex);
@@ -110,7 +110,7 @@ static void every_other_test(void) {
     a = ia_of_string("1 2 3 4");
     ac = every_other(a);
     ex = ia_of_string("1 3");
-    ia_check_expect(ac, ex);
+    ia_test_equal(ac, ex);
     a_free(a);
     a_free(ac);
     a_free(ex);

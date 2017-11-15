@@ -628,7 +628,7 @@ void base_atexit_test(void) {
 }
 #endif
 
-bool base_check_expect_b(const char *file, int line, bool a, bool e) {
+bool base_test_equal_b(const char *file, int line, bool a, bool e) {
     base_init();
     base_check_count++;
     if (a == e) {
@@ -645,7 +645,7 @@ bool base_check_expect_b(const char *file, int line, bool a, bool e) {
     }
 }
 
-bool base_check_expect_i(const char *file, int line, int a, int e) {
+bool base_test_equal_i(const char *file, int line, int a, int e) {
     base_init();
     base_check_count++;
     if (a == e) {
@@ -658,7 +658,7 @@ bool base_check_expect_i(const char *file, int line, int a, int e) {
     }
 }
 
-bool base_check_within_d(const char *file, int line, double a, double e, double epsilon) {
+bool base_test_within_d(const char *file, int line, double a, double e, double epsilon) {
     base_init();
     base_check_count++;
     if (fabs(a - e) <= epsilon) {
@@ -671,7 +671,7 @@ bool base_check_within_d(const char *file, int line, double a, double e, double 
     }
 }
 
-bool base_check_within_i(const char *file, int line, int a, int e, int epsilon) {
+bool base_test_within_i(const char *file, int line, int a, int e, int epsilon) {
     base_init();
     base_check_count++;
     if (abs(a - e) <= epsilon) {
@@ -684,7 +684,7 @@ bool base_check_within_i(const char *file, int line, int a, int e, int epsilon) 
     }
 }
 
-bool base_check_expect_c(const char *file, int line, char a, char e) {
+bool base_test_equal_c(const char *file, int line, char a, char e) {
     base_init();
     base_check_count++;
     if (a == e) {
@@ -697,7 +697,7 @@ bool base_check_expect_c(const char *file, int line, char a, char e) {
     }
 }
 
-bool base_check_expect_s(const char *file, int line, String a, String e) {
+bool base_test_equal_s(const char *file, int line, String a, String e) {
     base_init();
     base_check_count++;
     if (strcmp(a, e) == 0) {
@@ -710,7 +710,7 @@ bool base_check_expect_s(const char *file, int line, String a, String e) {
     }
 }
 
-bool base_check_expect_ca(const char *file, int line, Array a, char *e, int ne) {
+bool base_test_equal_ca(const char *file, int line, Array a, char *e, int ne) {
     base_init();
     base_check_count++;
     if (a->n != ne) {
@@ -755,7 +755,7 @@ bool base_check_expect_ca(const char *file, int line, Array a, char *e, int ne) 
     return true;
 }
 
-bool base_check_expect_boa(const char *file, int line, Array a, bool *e, int ne) {
+bool base_test_equal_boa(const char *file, int line, Array a, bool *e, int ne) {
     base_init();
     base_check_count++;
     if (a->n != ne) {
@@ -800,7 +800,7 @@ bool base_check_expect_boa(const char *file, int line, Array a, bool *e, int ne)
     return true;
 }
 
-bool base_check_expect_struct(const char *file, int line, 
+bool base_test_equal_struct(const char *file, int line, 
     Any actual, Any expected, Any predicate) 
 {
     bool (*pred)(Any, Any) = predicate;

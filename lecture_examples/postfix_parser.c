@@ -63,31 +63,31 @@ bool is_unknown_character(char c) {
     return !is_operator(c) && !is_float_character(c);
 }
 
-bool line_check_expect_i(int line, int actual, int expected) {
-    return base_check_expect_i(__FILE__, line, actual, expected);
+bool line_test_equal_i(int line, int actual, int expected) {
+    return base_test_equal_i(__FILE__, line, actual, expected);
 }
 
-bool check_expect_token(int line, Token actual, Token expected) {
-    bool b1 = line_check_expect_i(line * 100 + 1, actual.type, expected.type);
-    bool b2 = line_check_expect_i(line * 100 + 2, actual.start, expected.start);
-    bool b3 = line_check_expect_i(line * 100 + 3, actual.end, expected.end);
+bool test_equal_token(int line, Token actual, Token expected) {
+    bool b1 = line_test_equal_i(line * 100 + 1, actual.type, expected.type);
+    bool b2 = line_test_equal_i(line * 100 + 2, actual.start, expected.start);
+    bool b3 = line_test_equal_i(line * 100 + 3, actual.end, expected.end);
     return b1 && b2 && b3;
 }
 
 Token next_token(String s, int start);
 
 void next_token_test() {
-    check_expect_token(__LINE__, next_token(" 1.34 + 89", 0), make_token(OPERAND, 1, 5));
-    check_expect_token(__LINE__, next_token(" 1.34 + 89", 5), make_token(OPERATOR, 6, 7));
-    check_expect_token(__LINE__, next_token(" 1.34 + 89", 7), make_token(OPERAND, 8, 10));
-    check_expect_token(__LINE__, next_token("", 0), make_token(UNKNOWN, 0, 0));
-    check_expect_token(__LINE__, next_token("", 5), make_token(UNKNOWN, 0, 0));
-    check_expect_token(__LINE__, next_token(" ", 0), make_token(UNKNOWN, 0, 1));
-    check_expect_token(__LINE__, next_token(" ", 5), make_token(UNKNOWN, 1, 1));
-    check_expect_token(__LINE__, next_token(" abc", 0), make_token(UNKNOWN, 0, 4));
-    check_expect_token(__LINE__, next_token(" abc", 1), make_token(UNKNOWN, 1, 4));
-    check_expect_token(__LINE__, next_token(" ab3", 0), make_token(UNKNOWN, 0, 3));
-    check_expect_token(__LINE__, next_token(" ab3", 1), make_token(UNKNOWN, 1, 3));
+    test_equal_token(__LINE__, next_token(" 1.34 + 89", 0), make_token(OPERAND, 1, 5));
+    test_equal_token(__LINE__, next_token(" 1.34 + 89", 5), make_token(OPERATOR, 6, 7));
+    test_equal_token(__LINE__, next_token(" 1.34 + 89", 7), make_token(OPERAND, 8, 10));
+    test_equal_token(__LINE__, next_token("", 0), make_token(UNKNOWN, 0, 0));
+    test_equal_token(__LINE__, next_token("", 5), make_token(UNKNOWN, 0, 0));
+    test_equal_token(__LINE__, next_token(" ", 0), make_token(UNKNOWN, 0, 1));
+    test_equal_token(__LINE__, next_token(" ", 5), make_token(UNKNOWN, 1, 1));
+    test_equal_token(__LINE__, next_token(" abc", 0), make_token(UNKNOWN, 0, 4));
+    test_equal_token(__LINE__, next_token(" abc", 1), make_token(UNKNOWN, 1, 4));
+    test_equal_token(__LINE__, next_token(" ab3", 0), make_token(UNKNOWN, 0, 3));
+    test_equal_token(__LINE__, next_token(" ab3", 1), make_token(UNKNOWN, 1, 3));
 }
 
 Token next_token(String s, int start) {

@@ -30,13 +30,13 @@ static void pl_repeat_test(void) {
     pl_append(ex, "abc");
     // pl_println(ac);
     // pl_println(ex);
-    pl_check_expect(ac, ex);
+    pl_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = pl_repeat(0, "abc");
     ex = pl_create();
-    pl_check_expect(ac, ex);
+    pl_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 }
@@ -170,7 +170,7 @@ static void pl_prepend_append_test(void) {
     pl_prepend(ex, "33");
     pl_prepend(ex, "22");
     pl_prepend(ex, "11");
-    pl_check_expect(ac, ex);
+    pl_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 }
@@ -261,9 +261,9 @@ static void pl_contains_test(void) {
     List list = pl_create();
     pl_append(list, l1);
     pl_append(list, l2);
-    check_expect_b(pl_contains(list, l1), true);
-    check_expect_b(pl_contains(list, l2), true);
-    check_expect_b(pl_contains(list, l3), false);
+    test_equal_b(pl_contains(list, l1), true);
+    test_equal_b(pl_contains(list, l2), true);
+    test_equal_b(pl_contains(list, l3), false);
     l_free(list);
     s_free(l3);
 }
@@ -295,9 +295,9 @@ static void pl_index_test(void) {
         printf("value found at index %d\n", i);
     }
 #endif
-    check_expect_i(i, -1);
-    check_expect_i(pl_index(list, l1), 0);
-    check_expect_i(pl_index(list, l2), 1);
+    test_equal_i(i, -1);
+    test_equal_i(pl_index(list, l1), 0);
+    test_equal_i(pl_index(list, l2), 1);
     l_free(list);
     s_free(l3);
 }
@@ -317,11 +317,11 @@ int pl_index(List list, Any value) {
 static void pl_index_from_test(void) {
     printsln((Any)__func__);
     List a = sl_of_string("10, 20, 30, 40, 50");
-    check_expect_i(pl_index_from(a, "20", 0), 1);
-    check_expect_i(pl_index_from(a, "20", 1), 1);
-    check_expect_i(pl_index_from(a, "20", 2), -1);
-    check_expect_i(pl_index_from(a, "30", -1), 2);
-    check_expect_i(pl_index_from(a, "60", 0), -1);
+    test_equal_i(pl_index_from(a, "20", 0), 1);
+    test_equal_i(pl_index_from(a, "20", 1), 1);
+    test_equal_i(pl_index_from(a, "20", 2), -1);
+    test_equal_i(pl_index_from(a, "30", -1), 2);
+    test_equal_i(pl_index_from(a, "60", 0), -1);
     pl_free(a);
 }
 
@@ -349,9 +349,9 @@ static bool isShorterThan(Any s, int index, int *n) {
 static void pl_index_fn_test(void) {
     printsln((Any)__func__);
     List a = sl_of_string("test, dog, a, cat");
-    check_expect_i(pl_index_fn(a, isDogOrCat, NULL), 1);
+    test_equal_i(pl_index_fn(a, isDogOrCat, NULL), 1);
     int n = 3;
-    check_expect_i(pl_index_fn(a, isShorterThan, &n), 2);
+    test_equal_i(pl_index_fn(a, isShorterThan, &n), 2);
     sl_free(a);
 }
 
@@ -391,42 +391,42 @@ static void pl_insert_test(void) {
     ac = sl_of_string("1, 2, 3, 4, 5");
     pl_insert(ac, 0, s_create("9"));
     ex = sl_of_string("9, 1, 2, 3, 4, 5");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     pl_free(ac);
     pl_free(ex);
     
     ac = sl_of_string("1, 2, 3, 4, 5");
     pl_insert(ac, 5, s_create("9"));
     ex = sl_of_string("1, 2, 3, 4, 5, 9");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     pl_free(ac);
     pl_free(ex);
     
     ac = sl_of_string("1, 2, 3, 4, 5");
     pl_insert(ac, 3, s_create("9"));
     ex = sl_of_string("1, 2, 3, 9, 4, 5");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     pl_free(ac);
     pl_free(ex);
     
     ac = sl_of_string("1");
     pl_insert(ac, -1, "9");
     ex = sl_of_string("1");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     pl_free(ac);
     pl_free(ex);
 
     ac = sl_of_string("1");
     pl_insert(ac, 1, s_create("9"));
     ex = sl_of_string("1, 9");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     pl_free(ac);
     pl_free(ex);
 
     ac = pl_create();
     pl_insert(ac, 0, s_create("9"));
     ex = sl_of_string("9");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     pl_free(ac);
     pl_free(ex);
 }
@@ -447,7 +447,7 @@ static void pl_remove_test(void) {
     s_free(s);
     pl_remove(ac, 0);
     ex = sl_of_string("2, 3, 4, 5, 6");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     pl_free(ac);
     pl_free(ex);
     
@@ -456,7 +456,7 @@ static void pl_remove_test(void) {
     s_free(s);
     pl_remove(ac, 5);
     ex = sl_of_string("1, 2, 3, 4, 5");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     pl_free(ac);
     pl_free(ex);
     
@@ -465,21 +465,21 @@ static void pl_remove_test(void) {
     s_free(s);
     pl_remove(ac, 3);
     ex = sl_of_string("1, 2, 3, 5, 6");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     pl_free(ac);
     pl_free(ex);
     
     ac = sl_of_string("1");
     pl_remove(ac, -1);
     ex = sl_of_string("1");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     pl_free(ac);
     pl_free(ex);
     
     ac = sl_of_string("1");
     pl_remove(ac, 1);
     ex = sl_of_string("1");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     pl_free(ac);
     pl_free(ex);
     
@@ -488,7 +488,7 @@ static void pl_remove_test(void) {
     s_free(s);
     pl_remove(ac, 0);
     ex = pl_create();
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     pl_free(ac);
     l_free(ex);
     
@@ -497,7 +497,7 @@ static void pl_remove_test(void) {
     s_free(s);
     pl_remove(ac, 0);
     ex = pl_create();
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 }
@@ -521,14 +521,14 @@ static void pl_each_test(void) {
     ac = sl_of_string("a, b, c, d");
     pl_each(ac, pl_upper_case_free, NULL);
     ex = sl_of_string("A, B, C, D");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     sl_free(ac);
     sl_free(ex);
     
     ac = sl_of_string("");
     pl_each(ac, pl_upper_case_free, NULL);
     ex = sl_of_string("");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     sl_free(ac);
     sl_free(ex);
 }
@@ -555,7 +555,7 @@ static void pl_map_test(void) {
     l = sl_of_string("a, b, c, d");
     ac = pl_map(l, append_each, "...!");
     ex = sl_of_string("a...!, b...!, c...!, d...!");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     pl_free(l);
     pl_free(ac);
     pl_free(ex);
@@ -563,7 +563,7 @@ static void pl_map_test(void) {
     l = sl_of_string("a, b, c, d");
     ac = pl_map(l, append_each, "");
     ex = sl_of_string("a, b, c, d");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     pl_free(l);
     pl_free(ac);
     pl_free(ex);
@@ -595,13 +595,13 @@ static void pl_foldl_test(void) {
     
     l = sl_of_string("a, b, c");    
     s = pl_foldl(l, fold_concat_free, s_copy("init"));
-    check_expect_s(s, "initabc");
+    test_equal_s(s, "initabc");
     s_free(s);
     pl_free(l);
 
     l = sl_of_string("");    
     s = pl_foldl(l, fold_concat_free, s_copy("init"));
-    check_expect_s(s, "init");
+    test_equal_s(s, "init");
     s_free(s);
     pl_free(l);
 }
@@ -632,13 +632,13 @@ static void pl_foldr_test(void) {
     
     l = sl_of_string("a, b, c");    
     s = pl_foldr(l, pl_concat_r, s_copy("X"));
-    check_expect_s(s, "abcX");
+    test_equal_s(s, "abcX");
     s_free(s);
     pl_free(l);
 
     l = sl_of_string("");    
     s = pl_foldr(l, pl_concat_r, s_copy("X"));
-    check_expect_s(s, "X");
+    test_equal_s(s, "X");
     s_free(s);
     pl_free(l);
 }
@@ -668,7 +668,7 @@ static void pl_filter_test(void) {
     l = sl_of_string("Kürbis, Brombeere, Heidelbeere, Himbeere, Apfel");
     ac = pl_filter(l, f_ends_with, "beere");
     ex = sl_of_string("Brombeere, Heidelbeere, Himbeere");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     pl_free(l);
     l_free(ac);
     pl_free(ex);
@@ -704,7 +704,7 @@ static void pl_choose_test(void) {
     printiln(sizeof(Any));
     ac = pl_choose(l, ends_width_0_append, "x");
     ex = sl_of_string("10x, 30x, 50x");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     sl_free(l);
     sl_free(ac);
     sl_free(ex);
@@ -737,9 +737,9 @@ static bool pl_element_ne(String element, int index, String x) {
 static void pl_exists_test(void) {
     printsln((Any)__func__);
     List l = sl_of_string("1, 2, 3, 4, 5, 6");
-    check_expect_b(pl_exists(l, pl_element_eq, "3"), true);
-    check_expect_b(pl_exists(l, pl_element_eq, "9"), false);
-    check_expect_b(pl_exists(l, pl_element_ne, "9"), true);
+    test_equal_b(pl_exists(l, pl_element_eq, "3"), true);
+    test_equal_b(pl_exists(l, pl_element_eq, "9"), false);
+    test_equal_b(pl_exists(l, pl_element_ne, "9"), true);
     sl_free(l);
 }
 
@@ -760,8 +760,8 @@ bool pl_exists(List list, AnyFn predicate, Any x) {
 static void pl_forall_test(void) {
     printsln((Any)__func__);
     List l = sl_of_string("1, 2, 3, 4, 5, 6");
-    check_expect_b(pl_forall(l, pl_element_eq, "3"), false);
-    check_expect_b(pl_forall(l, pl_element_ne, "9"), true);
+    test_equal_b(pl_forall(l, pl_element_eq, "3"), false);
+    test_equal_b(pl_forall(l, pl_element_ne, "9"), true);
     pl_free(l);
 }
 
@@ -781,7 +781,7 @@ bool pl_forall(List list, AnyFn predicate, Any x) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool pl_check_expect_file_line(const char *file, const char *function, int line, List a, List e) {
+bool pl_test_equal_file_line(const char *file, const char *function, int line, List a, List e) {
     base_count_check();
 
     if (a == NULL) {

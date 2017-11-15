@@ -28,18 +28,18 @@ static void il_repeat_test(void) {
     List list;
     
     list = il_repeat(3, 0);
-    check_expect_i(il_get(list, 0), 0);
-    check_expect_i(il_get(list, 1), 0);
-    check_expect_i(il_get(list, 2), 0);
+    test_equal_i(il_get(list, 0), 0);
+    test_equal_i(il_get(list, 1), 0);
+    test_equal_i(il_get(list, 2), 0);
     l_free(list);
     
     list = il_repeat(2, -1);
-    check_expect_i(il_get(list, 0), -1);
-    check_expect_i(il_get(list, 1), -1);
+    test_equal_i(il_get(list, 0), -1);
+    test_equal_i(il_get(list, 1), -1);
     l_free(list);
 
     list = il_repeat(0, 2);
-    check_expect_i(l_length(list), 0);
+    test_equal_i(l_length(list), 0);
     l_free(list);
 }
 
@@ -112,37 +112,37 @@ static void il_of_string_test(void) {
 
     ac = il_of_string("1,2, 3, 4, 5, 6");
     ex = il_range(1, 7);
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = il_of_string("   1, 2, 3, 4, 5, 6   ");
     ex = il_range(1, 7);
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = il_of_string("1xx2asdfs3");
     ex = il_range(1, 4);
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = il_of_string("y1xx2asdfs3x");
     ex = il_range(1, 4);
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = il_of_string("-3, -2, -1, 0, 1");
     ex = il_range(-3, 2);
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = il_of_string(" -3 -2 -1 ");
     ex = il_range(-3, 0);
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 
@@ -151,27 +151,27 @@ static void il_of_string_test(void) {
     il_set(ex, 0, 1);
     il_set(ex, 1, -2);
     il_set(ex, 2, 3);
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
 
     ac = il_of_string("-.1.-2.-.3.-");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
 
     ac = il_of_string("---.1.----2.----.3.----");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = il_of_string("-x--+ +.+++a-b c-");
     ex = il_repeat(0, 0);
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = il_of_string("");
     ex = il_repeat(0, 0);
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 }
@@ -210,25 +210,25 @@ static void il_fn_test(void) {
 
     ac = il_fn(3, two_i_plus_1, 0);
     ex = il_of_string("1, 3, 5");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = il_fn(4, two_i_plus_1, 0);
     ex = il_of_string("1, 3, 5, 7");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = il_fn(1, two_i_plus_1, 0);
     ex = il_of_string("1");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = il_fn(0, two_i_plus_1, 0);
     ex = il_create();
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 }
@@ -253,7 +253,7 @@ static void il_of_dl_test(void) {
     List dl = dl_of_string("0.0 0.49999 0.5 1.0 -0.49999 -0.50001 -1.0");
     List ex = il_of_string(" 0   0       1   1    0       -1       -1 ");
     List ac = il_of_dl(dl);
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(dl);
     l_free(ex);
     l_free(ac);
@@ -377,7 +377,7 @@ static void il_prepend_append_test(void) {
     il_prepend(ex, 3);
     il_prepend(ex, 2);
     il_prepend(ex, 1);
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 }
@@ -444,9 +444,9 @@ static void il_contains_test(void) {
     printsln((String)__func__);
     List list;
     list = il_of_string("10, 20, 30");
-    check_expect_b(il_contains(list, 10), true);
-    check_expect_b(il_contains(list, 11), false);
-    check_expect_b(il_contains(list, 30), true);
+    test_equal_b(il_contains(list, 10), true);
+    test_equal_b(il_contains(list, 11), false);
+    test_equal_b(il_contains(list, 30), true);
     l_free(list);
 }
 
@@ -470,21 +470,21 @@ static void il_fill_test(void) {
     ac = il_repeat(3, 0);
     il_fill(ac, -1);
     ex = il_of_string("-1, -1, -1");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = il_repeat(2, 0);
     il_fill(ac, 2);
     ex = il_of_string("2, 2");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = il_repeat(0, 0);
     il_fill(ac, 2);
     ex = il_create();
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 }
@@ -506,56 +506,56 @@ static void il_fill_from_to_test(void) {
     ac = il_repeat(3, 0);
     il_fill_from_to(ac, -1, 0, 3);
     ex = il_of_string("-1, -1, -1");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = il_repeat(3, 0);
     il_fill_from_to(ac, -1, -1, 4);
     ex = il_of_string("-1, -1, -1");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = il_repeat(3, 0);
     il_fill_from_to(ac, -1, 0, 0);
     ex = il_of_string("0, 0, 0");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = il_repeat(3, 0);
     il_fill_from_to(ac, -1, 0, 1);
     ex = il_of_string("-1, 0, 0");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = il_repeat(3, 0);
     il_fill_from_to(ac, -1, 2, 2);
     ex = il_of_string("0, 0, 0");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = il_repeat(3, 0);
     il_fill_from_to(ac, -1, 2, 3);
     ex = il_of_string("0, 0, -1");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = il_repeat(3, 0);
     il_fill_from_to(ac, -1, 2, 1);
     ex = il_of_string("0, 0, 0");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = il_repeat(3, 0);
     il_fill_from_to(ac, -1, 1, 3);
     ex = il_of_string("0, -1, -1");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 }
@@ -587,13 +587,13 @@ static void il_index_test(void) {
         printf("value found at index %d\n", i);
     }
 #endif
-    check_expect_i(i, -1);
+    test_equal_i(i, -1);
 
     i = il_index(list, 1);
-    check_expect_i(i, 0);
+    test_equal_i(i, 0);
         
     i = il_index(list, 2);
-    check_expect_i(i, 1);
+    test_equal_i(i, 1);
         
     l_free(list);
     
@@ -616,11 +616,11 @@ int il_index_from(List list, int value, int from);
 static void il_index_from_test(void) {
     printsln((String)__func__);
     List a = il_of_string("10 20 30 40 50");
-    check_expect_i(il_index_from(a, 20, 0), 1);
-    check_expect_i(il_index_from(a, 20, 1), 1);
-    check_expect_i(il_index_from(a, 20, 2), -1);
-    check_expect_i(il_index_from(a, 30, -1), 2);
-    check_expect_i(il_index_from(a, 60, 0), -1);
+    test_equal_i(il_index_from(a, 20, 0), 1);
+    test_equal_i(il_index_from(a, 20, 1), 1);
+    test_equal_i(il_index_from(a, 20, 2), -1);
+    test_equal_i(il_index_from(a, 30, -1), 2);
+    test_equal_i(il_index_from(a, 60, 0), -1);
     l_free(a);
     
 }
@@ -643,8 +643,8 @@ int il_index_fn(List list, IntIntIntToBool predicate, int x);
 static void il_index_fn_test(void) {
     printsln((String)__func__);
     List a = il_of_string("1 2 3 -4 5");
-    check_expect_i(il_index_fn(a, il_gt, 1), 1);
-    check_expect_i(il_index_fn(a, il_lt, 0), 3);
+    test_equal_i(il_index_fn(a, il_gt, 1), 1);
+    test_equal_i(il_index_fn(a, il_lt, 0), 3);
     l_free(a);
 }
 
@@ -678,7 +678,7 @@ static void il_sort_test(void) {
     ac = il_of_string("5, 4, 3, 2, 1");
     ex = il_of_string("1, 2, 3, 4, 5");
     as = il_sort(ac);
-    il_check_expect(as, ex);
+    il_test_equal(as, ex);
     l_free(ac);
     l_free(ex);
     l_free(as);
@@ -686,7 +686,7 @@ static void il_sort_test(void) {
     ac = il_of_string("1, 2, 1, 3, 2");
     ex = il_of_string("1, 1, 2, 2, 3");
     as = il_sort(ac);
-    il_check_expect(as, ex);
+    il_test_equal(as, ex);
     l_free(ac);
     l_free(ex);
     l_free(as);
@@ -694,7 +694,7 @@ static void il_sort_test(void) {
     ac = il_of_string("");
     ex = il_of_string("");
     as = il_sort(ac);
-    il_check_expect(as, ex);
+    il_test_equal(as, ex);
     l_free(ac);
     l_free(ex);
     l_free(as);
@@ -702,7 +702,7 @@ static void il_sort_test(void) {
     ac = il_of_string("-1, -2, -3, -1");
     ex = il_of_string("-3, -2, -1, -1");
     as = il_sort(ac);
-    il_check_expect(as, ex);
+    il_test_equal(as, ex);
     l_free(ac);
     l_free(ex);
     l_free(as);
@@ -729,7 +729,7 @@ static void il_sort_dec_test(void) {
     ac = il_of_string("1, 2, 3, 4, 5");
     ex = il_of_string("5, 4, 3, 2, 1");
     as = il_sort_dec(ac);
-    il_check_expect(as, ex);
+    il_test_equal(as, ex);
     l_free(ac);
     l_free(ex);
     l_free(as);
@@ -737,7 +737,7 @@ static void il_sort_dec_test(void) {
     ac = il_of_string("1, 2, 1, 3, 2");
     ex = il_of_string("3, 2, 2, 1, 1");
     as = il_sort_dec(ac);
-    il_check_expect(as, ex);
+    il_test_equal(as, ex);
     l_free(ac);
     l_free(ex);
     l_free(as);
@@ -745,7 +745,7 @@ static void il_sort_dec_test(void) {
     ac = il_of_string("");
     ex = il_of_string("");
     as = il_sort_dec(ac);
-    il_check_expect(as, ex);
+    il_test_equal(as, ex);
     l_free(ac);
     l_free(ex);
     l_free(as);
@@ -753,7 +753,7 @@ static void il_sort_dec_test(void) {
     ac = il_of_string("-3, -2, -1");
     ex = il_of_string("-1, -2, -3");
     as = il_sort_dec(ac);
-    il_check_expect(as, ex);
+    il_test_equal(as, ex);
     l_free(ac);
     l_free(ex);
     l_free(as);
@@ -774,42 +774,42 @@ static void il_insert_test(void) {
     ac = il_of_string("1, 2, 3, 4, 5");
     il_insert(ac, 0, 9);
     ex = il_of_string("9, 1, 2, 3, 4, 5");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
     
     ac = il_of_string("1, 2, 3, 4, 5");
     il_insert(ac, 5, 9);
     ex = il_of_string("1, 2, 3, 4, 5, 9");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
     
     ac = il_of_string("1, 2, 3, 4, 5");
     il_insert(ac, 3, 9);
     ex = il_of_string("1, 2, 3, 9, 4, 5");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
     
     ac = il_of_string("1");
     il_insert(ac, -1, 9);
     ex = il_of_string("1");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
     
     ac = il_of_string("1");
     il_insert(ac, 1, 9);
     ex = il_of_string("1, 9");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
     
     ac = il_of_string("");
     il_insert(ac, 0, 9);
     ex = il_of_string("9");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 }
@@ -829,49 +829,49 @@ static void il_remove_test(void) {
     ac = il_of_string("1, 2, 3, 4, 5, 6");
     il_remove(ac, 0);
     ex = il_of_string("2, 3, 4, 5, 6");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
     
     ac = il_of_string("1, 2, 3, 4, 5, 6");
     il_remove(ac, 5);
     ex = il_of_string("1, 2, 3, 4, 5");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
     
     ac = il_of_string("1, 2, 3, 4, 5, 6");
     il_remove(ac, 3);
     ex = il_of_string("1, 2, 3, 5, 6");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
     
     ac = il_of_string("1");
     il_remove(ac, -1);
     ex = il_of_string("1");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
     
     ac = il_of_string("1");
     il_remove(ac, 1);
     ex = il_of_string("1");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
     
     ac = il_of_string("1");
     il_remove(ac, 0);
     ex = il_of_string("");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
     
     ac = il_of_string("");
     il_remove(ac, 0);
     ex = il_of_string("");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 }
@@ -954,14 +954,14 @@ static void il_each_test(void) {
     ac = il_of_string("1, 2, 3, 4");
     il_each(ac, il_times, 2);
     ex = il_of_string("2, 4, 6, 8");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
     
     ac = il_of_string("");
     il_each(ac, il_times, 3);
     ex = il_of_string("");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 }
@@ -1024,13 +1024,13 @@ int il_foldl(List list, IntIntIntToInt f, int init);
 static void il_foldl_test(void) {
     printsln((String)__func__);
     List a = il_of_string("");    
-    check_expect_i(il_foldl(a, int_plus, 100), 100);
-    check_expect_i(il_foldl(a, int_minus, 100), 100);
+    test_equal_i(il_foldl(a, int_plus, 100), 100);
+    test_equal_i(il_foldl(a, int_minus, 100), 100);
     l_free(a);
     
     a = il_of_string("1, 2, 3, 4");    
-    check_expect_i(il_foldl(a, int_plus, 0),    (((0 + 1) + 2) + 3) + 4);
-    check_expect_i(il_foldl(a, int_minus, 100), (((100 - 1) - 2) - 3) - 4);
+    test_equal_i(il_foldl(a, int_plus, 0),    (((0 + 1) + 2) + 3) + 4);
+    test_equal_i(il_foldl(a, int_minus, 100), (((100 - 1) - 2) - 3) - 4);
     l_free(a);
 }
 
@@ -1050,13 +1050,13 @@ int il_foldr(List list, IntIntIntToInt f, int init);
 static void il_foldr_test(void) {
     printsln((String)__func__);
     List a = il_of_string("");    
-    check_expect_i(il_foldr(a, int_plus, 100), 100);
-    check_expect_i(il_foldr(a, int_minus, 100), 100);
+    test_equal_i(il_foldr(a, int_plus, 100), 100);
+    test_equal_i(il_foldr(a, int_minus, 100), 100);
     l_free(a);
     
     a = il_of_string("1, 2, 3, 4");    
-    check_expect_i(il_foldr(a, int_plus, 100), 1 + (2 + (3 + (4 + 100))));
-    check_expect_i(il_foldr(a, int_minus, 0), 1 - (2 - (3 - (4 - 0))));
+    test_equal_i(il_foldr(a, int_plus, 100), 1 + (2 + (3 + (4 + 100))));
+    test_equal_i(il_foldr(a, int_minus, 0), 1 - (2 - (3 - (4 - 0))));
     l_free(a);
 }
 
@@ -1082,19 +1082,19 @@ static void il_filter_test(void) {
     a = il_of_string("1, 2, 3, 4, 5, 6");
     ac = il_filter(a, il_gt, 3);
     ex = il_of_string("4, 5, 6");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = il_filter(a, il_lt, 4);
     ex = il_of_string("1, 2, 3");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = il_filter(a, il_le, 3);
     ex = il_of_string("1, 2, 3");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
     l_free(a);
@@ -1151,7 +1151,7 @@ static void il_choose_test(void) {
     a = il_of_string("1, 2, 3, 4, 5, 6");
     ac = il_choose(a, evens_times_x, 3);
     ex = il_of_string("6, 12, 18");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
 
     l_free(ac);
     l_free(ex);
@@ -1189,7 +1189,7 @@ static void il_choose_state_test(void) {
     a = il_of_string("1, 2, 3, 4, 5, 6");
     ac = il_choose_state(a, evens_times_x_state, 3, NULL);
     ex = il_of_string("6, 12, 18");
-    il_check_expect(ac, ex);
+    il_test_equal(ac, ex);
 
     l_free(ac);
     l_free(ex);
@@ -1216,9 +1216,9 @@ bool il_exists(List list, IntIntIntToBool predicate, int x);
 static void il_exists_test(void) {
     printsln((String)__func__);
     List a = il_of_string("1, 2, 3, 4, 5, 6");
-    check_expect_b(il_exists(a, il_gt, 3), true);
-    check_expect_b(il_exists(a, il_gt, 9), false);
-    check_expect_b(il_exists(a, il_lt, -1), false);
+    test_equal_b(il_exists(a, il_gt, 3), true);
+    test_equal_b(il_exists(a, il_gt, 9), false);
+    test_equal_b(il_exists(a, il_lt, -1), false);
     l_free(a);
 }
 
@@ -1261,9 +1261,9 @@ bool il_forall(List list, IntIntIntToBool predicate, int x);
 static void il_forall_test(void) {
     printsln((String)__func__);
     List a = il_of_string("1, 2, 3, 4, 5, 6");
-    check_expect_b(il_forall(a, il_gt, 0), true);
-    check_expect_b(il_forall(a, il_gt, 1), false);
-    check_expect_b(il_forall(a, il_lt, 7), true);
+    test_equal_b(il_forall(a, il_gt, 0), true);
+    test_equal_b(il_forall(a, il_gt, 1), false);
+    test_equal_b(il_forall(a, il_lt, 7), true);
     l_free(a);
 }
 
@@ -1304,7 +1304,7 @@ bool il_forall_state(List list, IntIntIntAnyToBool predicate, int x, Any state) 
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool il_check_expect_file_line(const char *file, const char *function, int line, List a, List e) {
+bool il_test_equal_file_line(const char *file, const char *function, int line, List a, List e) {
     base_count_check();
 
     if (a == NULL) {

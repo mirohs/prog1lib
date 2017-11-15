@@ -75,6 +75,6 @@ int main(void) {
     base_init();
     base_set_memory_check(true);
     lists_map_filter_fold_test();
-    check_expect_i(1,2);
+    test_equal_i(1,2);
     return 0;
 }

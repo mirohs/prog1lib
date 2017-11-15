@@ -679,8 +679,8 @@ Test for String lists.
 @param[in] ex expected result list
 @returns true iff actual equals expected list
 */
-#define sl_check_expect(ac, ex) \
-    sl_check_expect_file_line(__FILE__, __func__, __LINE__, ac, ex)
+#define sl_test_equal(ac, ex) \
+    sl_test_equal_file_line(__FILE__, __func__, __LINE__, ac, ex)
 
 /**
 Test for String lists.
@@ -691,7 +691,7 @@ Test for String lists.
 @param[in] ex expected result list
 @returns true iff actual equals expected list
 */
-bool sl_check_expect_file_line(const char *file, const char *function, int line, List ac, List ex);
+bool sl_test_equal_file_line(const char *file, const char *function, int line, List ac, List ex);
 
 /** 
 Checks if list has the right element size. Fails if not.

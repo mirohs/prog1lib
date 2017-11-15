@@ -15,8 +15,8 @@ Design a function that computes the greatest common divisor of numbers x and y.
 int ggt(int x, int y);
 
 static void ggt_test(void) {
-    check_expect_i(ggt(28, 20), 4);
-    check_expect_i(ggt(11, 12), 1);
+    test_equal_i(ggt(28, 20), 4);
+    test_equal_i(ggt(11, 12), 1);
 }
 
 int ggt(int x, int y) {

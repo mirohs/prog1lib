@@ -14,13 +14,13 @@ void quicksort_test() {
     Array a = ia_of_string("7 4 2 1 3");
     Array b = ia_of_string("1 2 3 4 7");
     Array as = quicksort(a);
-    ia_check_expect(as, b);
+    ia_test_equal(as, b);
     a_free(a); a_free(b); a_free(as);
 
     a = ia_of_string("7 -4 2 1 3 -4");
     b = ia_of_string("-4 -4 1 2 3 7");
     as = quicksort(a);
-    ia_check_expect(as, b);
+    ia_test_equal(as, b);
     a_free(a); a_free(b); a_free(as);
 }
 

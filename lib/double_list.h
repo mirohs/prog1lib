@@ -529,8 +529,8 @@ Test for double lists.
 @param[in] ex expected result list
 @returns true iff actual equals expected list
 */
-#define dl_check_within(ac, ex) \
-    dl_check_within_file_line(__FILE__, __func__, __LINE__, ac, ex, EPSILON)
+#define dl_test_within(ac, ex) \
+    dl_test_within_file_line(__FILE__, __func__, __LINE__, ac, ex, EPSILON)
 
 /**
 Test for double lists.
@@ -542,7 +542,7 @@ Test for double lists.
 @param[in] epsilon tolerance around expected values
 @returns true iff actual equals expected list
 */
-bool dl_check_within_file_line(const char *file, const char *function, int line, List ac, List ex, double epsilon);
+bool dl_test_within_file_line(const char *file, const char *function, int line, List ac, List ex, double epsilon);
 
 /**
 Checks if list has the right element size. Fails if not.

@@ -476,11 +476,11 @@ Test for double arrays.
 @param[in] ex expected result array
 @returns true iff actual equals expected array
 */
-#define da_check_within(ac, ex) \
-    da_check_within_file_line(__FILE__, __func__, __LINE__, ac, (ex)->a, (ex)->n, EPSILON)
+#define da_test_within(ac, ex) \
+    da_test_within_file_line(__FILE__, __func__, __LINE__, ac, (ex)->a, (ex)->n, EPSILON)
 
-#define da_check_within2(ac, ex, exn) \
-    da_check_within_file_line(__FILE__, __func__, __LINE__, ac, ex, exn, EPSILON)
+#define da_test_within2(ac, ex, exn) \
+    da_test_within_file_line(__FILE__, __func__, __LINE__, ac, ex, exn, EPSILON)
 
 /**
 Test for double arrays.
@@ -493,7 +493,7 @@ Test for double arrays.
 @param[in] epsilon (small positive value) allowed tolerance
 @returns true iff actual equals expected array
 */
-bool da_check_within_file_line(const char *file, const char *function, int line, Array ac, double *ex, int exn, double epsilon);
+bool da_test_within_file_line(const char *file, const char *function, int line, Array ac, double *ex, int exn, double epsilon);
 
 /**
 Checks if array has the right element size. Fails if not.

@@ -505,8 +505,8 @@ Test for int lists.
 @param[in] ex expected result list
 @returns true iff actual equals expected list
 */
-#define il_check_expect(ac, ex) \
-    il_check_expect_file_line(__FILE__, __func__, __LINE__, ac, ex)
+#define il_test_equal(ac, ex) \
+    il_test_equal_file_line(__FILE__, __func__, __LINE__, ac, ex)
 
 /**
 Test for int lists.
@@ -517,7 +517,7 @@ Test for int lists.
 @param[in] ex expected result list
 @returns true iff actual equals expected list
 */
-bool il_check_expect_file_line(const char *file, const char *function, int line, List ac, List ex);
+bool il_test_equal_file_line(const char *file, const char *function, int line, List ac, List ex);
 
 /**
 Checks if list has the right element size. Fails if not.

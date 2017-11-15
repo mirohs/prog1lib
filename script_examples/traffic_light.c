@@ -22,9 +22,9 @@ enum TrafficLight {
 enum TrafficLight traffic_light_next(enum TrafficLight);
 
 static void traffic_light_next_test() {
-    check_expect_i(traffic_light_next(RED), GREEN);
-    check_expect_i(traffic_light_next(GREEN), YELLOW);
-    check_expect_i(traffic_light_next(YELLOW), RED);
+    test_equal_i(traffic_light_next(RED), GREEN);
+    test_equal_i(traffic_light_next(GREEN), YELLOW);
+    test_equal_i(traffic_light_next(YELLOW), RED);
 }
 
 // Produces the next color of a traffic light
@@ -86,9 +86,9 @@ enum TrafficLight traffic_light_next(enum TrafficLight tl) {
 
 7. Test the function
 static void traffic_light_next_test() {
-    check_expect_i(traffic_light_next(RED), GREEN);
-    check_expect_i(traffic_light_next(GREEN), YELLOW);
-    check_expect_i(traffic_light_next(YELLOW), RED);
+    test_equal_i(traffic_light_next(RED), GREEN);
+    test_equal_i(traffic_light_next(GREEN), YELLOW);
+    test_equal_i(traffic_light_next(YELLOW), RED);
 }
 
 int main(void) {

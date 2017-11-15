@@ -15,15 +15,15 @@ Point make_point(int x, int y) {
     return p;
 }
 
-bool check_expect_point(int line, Point a, Point b) {
-    bool x_equal = base_check_expect_i(__FILE__, line, a.x, b.x);
-    bool y_equal = base_check_expect_i(__FILE__, line, a.y, b.y);
+bool test_equal_point(int line, Point a, Point b) {
+    bool x_equal = base_test_equal_i(__FILE__, line, a.x, b.x);
+    bool y_equal = base_test_equal_i(__FILE__, line, a.y, b.y);
     return x_equal && y_equal;
 }
 
 int main(void) {
-    check_expect_point(__LINE__, make_point(10, 20), make_point(5 + 5, 2 * 10));
-    check_expect_point(__LINE__, make_point(10, 20), make_point(11, 21));
+    test_equal_point(__LINE__, make_point(10, 20), make_point(5 + 5, 2 * 10));
+    test_equal_point(__LINE__, make_point(10, 20), make_point(11, 21));
 
     return 0;
 }

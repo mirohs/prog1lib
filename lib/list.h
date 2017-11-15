@@ -509,11 +509,11 @@ Test for inline lists.
 @param[in] ex expected result list
 @returns true iff actual equals expected list
 */
-#define l_check_expect(ac, ex) \
-    l_check_expect_file_line(__FILE__, __func__, __LINE__, ac, ex)
+#define l_test_equal(ac, ex) \
+    l_test_equal_file_line(__FILE__, __func__, __LINE__, ac, ex)
 
 /**
-Test for inline lists. Use macro \ref l_check_expect.
+Test for inline lists. Use macro \ref l_test_equal.
 @param[in] file source file name
 @param[in] function function name
 @param[in] line line number
@@ -521,7 +521,7 @@ Test for inline lists. Use macro \ref l_check_expect.
 @param[in] ex expected result list
 @returns true iff actual equals expected list
 */
-bool l_check_expect_file_line(const char *file, const char *function, int line, List ac, List ex);
+bool l_test_equal_file_line(const char *file, const char *function, int line, List ac, List ex);
 
 void l_test_all(void);
 

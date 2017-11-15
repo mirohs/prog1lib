@@ -79,12 +79,12 @@ static void keep_if_contains_test(void) {
     List a = sl_split("Lists are collections of variable size.", ' ');
     List b = sl_split("Lists collections variable size.", ' ');
     List c = keep_if_contains(a, "i");
-    sl_check_expect(c, b);
+    sl_test_equal(c, b);
     sl_free(b); l_free(c);
 
     b = sl_split("are variable", ' ');
     c = keep_if_contains(a, "ar");
-    sl_check_expect(c, b);
+    sl_test_equal(c, b);
     sl_free(a); sl_free(b); l_free(c);
 }
 

@@ -133,10 +133,10 @@ void apply(char operator, double operand1, double operand2) {
 double evaluate(String expression);
 
 void evaluate_test(void) {
-    check_within_d(evaluate(" 1.5 2.5 +"), 4.0, EPSILON);
-    check_within_d(evaluate("1.5 2.5 -"), -1.0, EPSILON);
-    check_within_d(evaluate("100 0.01 *"), 1.0, EPSILON);
-    check_within_d(evaluate(" 15  7  1  1  + - / 2 * "), 6.0, EPSILON);
+    test_within_d(evaluate(" 1.5 2.5 +"), 4.0, EPSILON);
+    test_within_d(evaluate("1.5 2.5 -"), -1.0, EPSILON);
+    test_within_d(evaluate("100 0.01 *"), 1.0, EPSILON);
+    test_within_d(evaluate(" 15  7  1  1  + - / 2 * "), 6.0, EPSILON);
 }
 
 double evaluate(String expression) {
@@ -183,10 +183,10 @@ int main(void) {
 void stack_test(void) {
     push(3.5);
     push(2.5);
-    check_within_d(pop(), 2.5, EPSILON);
-    check_expect_b(is_empty(), false);
-    check_within_d(pop(), 3.5, EPSILON);
-    check_expect_b(is_empty(), true);
+    test_within_d(pop(), 2.5, EPSILON);
+    test_equal_b(is_empty(), false);
+    test_within_d(pop(), 3.5, EPSILON);
+    test_equal_b(is_empty(), true);
 }
 
 int main(void) {

@@ -29,13 +29,13 @@ static void sl_repeat_test(void) {
     sl_append(ex, "abc");
     // sl_println(ac);
     // sl_println(ex);
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = sl_repeat(0, "abc");
     ex = sl_create();
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 }
@@ -63,7 +63,7 @@ static void sl_of_string_test(void) {
     sl_append(ex, "1");
     sl_append(ex, "2");
     sl_append(ex, "3");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     sl_free(ac);
     l_free(ex);
 
@@ -72,7 +72,7 @@ static void sl_of_string_test(void) {
     sl_append(ex, "1    ");
     sl_append(ex, "2");
     sl_append(ex, "3  ");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     sl_free(ac); 
     l_free(ex);
 
@@ -80,21 +80,21 @@ static void sl_of_string_test(void) {
     ex = sl_create();
     sl_append(ex, "1    ");
     sl_append(ex, "2");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     sl_free(ac);
     l_free(ex);
 
     ac = sl_of_string("");
     ex = sl_create();
     sl_append(ex, "");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     sl_free(ac);
     l_free(ex);
 
     ac = sl_of_string("123");
     ex = sl_create();
     sl_append(ex, "123");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     sl_free(ac);
     l_free(ex);
 }
@@ -128,18 +128,18 @@ static void sl_split_test(void) {
     sl_append(ex, "1");
     sl_append(ex, "2");
     sl_append(ex, "3");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     sl_free(ac);
 
     ac = sl_split("1+2+3", '+');
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     sl_free(ac); 
     l_free(ex);
 
     ac = sl_split("1+2+3", ' ');
     ex = sl_create();
     sl_append(ex, "1+2+3");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     sl_free(ac);
     l_free(ex);
 
@@ -148,7 +148,7 @@ static void sl_split_test(void) {
     sl_append(ex, "1");
     sl_append(ex, "");
     sl_append(ex, "2");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     sl_free(ac);
     l_free(ex);
 }
@@ -180,21 +180,21 @@ static void s_join_test(void) {
     l = sl_of_string("1, 2, 3");
     ac = s_join(l, '+');
     ex = "1+2+3";
-    check_expect_s(ac, ex);
+    test_equal_s(ac, ex);
     s_free(ac);
     sl_free(l);
 
     l = sl_of_string("1");
     ac = s_join(l, '+');
     ex = "1";
-    check_expect_s(ac, ex);
+    test_equal_s(ac, ex);
     s_free(ac);
     sl_free(l);
 
     l = sl_of_string("");
     ac = s_join(l, '+');
     ex = "";
-    check_expect_s(ac, ex);
+    test_equal_s(ac, ex);
     s_free(ac);
     sl_free(l);
 }
@@ -332,7 +332,7 @@ static void sl_prepend_append_test(void) {
     sl_prepend(ex, "33");
     sl_prepend(ex, "22");
     sl_prepend(ex, "11");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 }
@@ -398,9 +398,9 @@ bool sl_contains(List list, String value);
 static void sl_contains_test(void) {
     printsln((String)__func__);
     List list = sl_of_string("10, 20, 30");
-    check_expect_b(sl_contains(list, "10"), true);
-    check_expect_b(sl_contains(list, "11"), false);
-    check_expect_b(sl_contains(list, "30"), true);
+    test_equal_b(sl_contains(list, "10"), true);
+    test_equal_b(sl_contains(list, "11"), false);
+    test_equal_b(sl_contains(list, "30"), true);
     sl_free(list);
 }
 
@@ -428,9 +428,9 @@ static void sl_index_test(void) {
         printf("value found at index %d\n", i);
     }
 #endif
-    check_expect_i(i, -1);
-    check_expect_i(sl_index(list, "1"), 0);
-    check_expect_i(sl_index(list, "2"), 1);
+    test_equal_i(i, -1);
+    test_equal_i(sl_index(list, "1"), 0);
+    test_equal_i(sl_index(list, "2"), 1);
     
     sl_free(list);
 }
@@ -452,11 +452,11 @@ int sl_index_from(List list, String value, int from);
 static void sl_index_from_test(void) {
     printsln((String)__func__);
     List a = sl_of_string("10, 20, 30, 40, 50");
-    check_expect_i(sl_index_from(a, "20", 0), 1);
-    check_expect_i(sl_index_from(a, "20", 1), 1);
-    check_expect_i(sl_index_from(a, "20", 2), -1);
-    check_expect_i(sl_index_from(a, "30", -1), 2);
-    check_expect_i(sl_index_from(a, "60", 0), -1);
+    test_equal_i(sl_index_from(a, "20", 0), 1);
+    test_equal_i(sl_index_from(a, "20", 1), 1);
+    test_equal_i(sl_index_from(a, "20", 2), -1);
+    test_equal_i(sl_index_from(a, "30", -1), 2);
+    test_equal_i(sl_index_from(a, "60", 0), -1);
     sl_free(a);
 }
 
@@ -486,8 +486,8 @@ static bool isShorterThan3(String s, int index, String x) {
 static void sl_index_fn_test(void) {
     printsln((String)__func__);
     List a = sl_of_string("test, dog, a, cat");
-    check_expect_i(sl_index_fn(a, isDogOrCat, NULL), 1);
-    check_expect_i(sl_index_fn(a, isShorterThan3, NULL), 2);
+    test_equal_i(sl_index_fn(a, isDogOrCat, NULL), 1);
+    test_equal_i(sl_index_fn(a, isShorterThan3, NULL), 2);
     sl_free(a);
 }
 
@@ -536,7 +536,7 @@ static void sl_sort_test(void) {
     ac = sl_of_string("5, 4, 3, 2, 1");
     ex = sl_of_string("1, 2, 3, 4, 5");
     as = sl_sort(ac);
-    sl_check_expect(as, ex);
+    sl_test_equal(as, ex);
     sl_free(ac);
     sl_free(ex);
     l_free(as);
@@ -544,7 +544,7 @@ static void sl_sort_test(void) {
     ac = sl_of_string("1, 2, 1, 3, 2");
     ex = sl_of_string("1, 1, 2, 2, 3");
     as = sl_sort(ac);
-    sl_check_expect(as, ex);
+    sl_test_equal(as, ex);
     sl_free(ac);
     sl_free(ex);
     l_free(as);
@@ -552,7 +552,7 @@ static void sl_sort_test(void) {
     ac = sl_of_string("");
     ex = sl_of_string("");
     as = sl_sort(ac);
-    sl_check_expect(as, ex);
+    sl_test_equal(as, ex);
     sl_free(ac);
     sl_free(ex);
     l_free(as);
@@ -560,7 +560,7 @@ static void sl_sort_test(void) {
     ac = sl_of_string("-1, -2, -3, -1");
     ex = sl_of_string("-1, -1, -2, -3"); // alphabetic, not numeric sort
     as = sl_sort(ac);
-    sl_check_expect(as, ex);
+    sl_test_equal(as, ex);
     sl_free(ac);
     sl_free(ex);
     l_free(as);
@@ -587,7 +587,7 @@ static void sl_sort_dec_test(void) {
     ac = sl_of_string("1, 2, 3, 4, 5");
     ex = sl_of_string("5, 4, 3, 2, 1");
     as = sl_sort_dec(ac);
-    sl_check_expect(as, ex);
+    sl_test_equal(as, ex);
     sl_free(ac);
     sl_free(ex);
     l_free(as);
@@ -595,7 +595,7 @@ static void sl_sort_dec_test(void) {
     ac = sl_of_string("1, 2, 1, 3, 2");
     ex = sl_of_string("3, 2, 2, 1, 1");
     as = sl_sort_dec(ac);
-    sl_check_expect(as, ex);
+    sl_test_equal(as, ex);
     sl_free(ac);
     sl_free(ex);
     l_free(as);
@@ -603,7 +603,7 @@ static void sl_sort_dec_test(void) {
     ac = sl_of_string("");
     ex = sl_of_string("");
     as = sl_sort_dec(ac);
-    sl_check_expect(as, ex);
+    sl_test_equal(as, ex);
     sl_free(ac);
     sl_free(ex);
     l_free(as);
@@ -611,7 +611,7 @@ static void sl_sort_dec_test(void) {
     ac = sl_of_string("-1, -2, -3, -1");
     ex = sl_of_string("-3, -2, -1, -1"); // alphabetic, not numeric sort
     as = sl_sort_dec(ac);
-    sl_check_expect(as, ex);
+    sl_test_equal(as, ex);
     sl_free(ac);
     sl_free(ex);
     l_free(as);
@@ -632,42 +632,42 @@ static void sl_insert_test(void) {
     ac = sl_of_string("1, 2, 3, 4, 5");
     sl_insert(ac, 0, s_create("9"));
     ex = sl_of_string("9, 1, 2, 3, 4, 5");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     sl_free(ac);
     sl_free(ex);
     
     ac = sl_of_string("1, 2, 3, 4, 5");
     sl_insert(ac, 5, s_create("9"));
     ex = sl_of_string("1, 2, 3, 4, 5, 9");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     sl_free(ac);
     sl_free(ex);
     
     ac = sl_of_string("1, 2, 3, 4, 5");
     sl_insert(ac, 3, s_create("9"));
     ex = sl_of_string("1, 2, 3, 9, 4, 5");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     sl_free(ac);
     sl_free(ex);
     
     ac = sl_of_string("1");
     sl_insert(ac, -1, "9");
     ex = sl_of_string("1");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     sl_free(ac);
     sl_free(ex);
 
     ac = sl_of_string("1");
     sl_insert(ac, 1, s_create("9"));
     ex = sl_of_string("1, 9");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     sl_free(ac);
     sl_free(ex);
 
     ac = sl_create();
     sl_insert(ac, 0, s_create("9"));
     ex = sl_of_string("9");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     sl_free(ac);
     sl_free(ex);
 }
@@ -692,7 +692,7 @@ static void sl_remove_test(void) {
     s_free(s);
     sl_remove(ac, 0);
     ex = sl_of_string("2, 3, 4, 5, 6");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     sl_free(ac);
     sl_free(ex);
     
@@ -701,7 +701,7 @@ static void sl_remove_test(void) {
     s_free(s);
     sl_remove(ac, 5);
     ex = sl_of_string("1, 2, 3, 4, 5");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     sl_free(ac);
     sl_free(ex);
     
@@ -710,21 +710,21 @@ static void sl_remove_test(void) {
     s_free(s);
     sl_remove(ac, 3);
     ex = sl_of_string("1, 2, 3, 5, 6");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     sl_free(ac);
     sl_free(ex);
     
     ac = sl_of_string("1");
     sl_remove(ac, -1);
     ex = sl_of_string("1");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     sl_free(ac);
     sl_free(ex);
     
     ac = sl_of_string("1");
     sl_remove(ac, 1);
     ex = sl_of_string("1");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     sl_free(ac);
     sl_free(ex);
     
@@ -733,7 +733,7 @@ static void sl_remove_test(void) {
     s_free(s);
     sl_remove(ac, 0);
     ex = sl_create();
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     sl_free(ac);
     l_free(ex);
     
@@ -742,7 +742,7 @@ static void sl_remove_test(void) {
     s_free(s);
     sl_remove(ac, 0);
     ex = sl_create();
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
 }
@@ -784,14 +784,14 @@ static void sl_each_test(void) {
     ac = sl_of_string("a, b, c, d");
     sl_each(ac, concat_free, "...!");
     ex = sl_of_string("a...!, b...!, c...!, d...!");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     sl_free(ac);
     sl_free(ex);
     
     ac = sl_of_string("a, b, c, d");
     sl_each(ac, concat_free, "");
     ex = sl_of_string("a, b, c, d");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     sl_free(ac);
     sl_free(ex);
 }
@@ -836,7 +836,7 @@ static void sl_map_test(void) {
     l = sl_of_string("a, b, c, d");
     ac = sl_map(l, append_each, "...!");
     ex = sl_of_string("a...!, b...!, c...!, d...!");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     sl_free(l);
     sl_free(ac);
     sl_free(ex);
@@ -844,7 +844,7 @@ static void sl_map_test(void) {
     l = sl_of_string("a, b, c, d");
     ac = sl_map(l, append_each, "");
     ex = sl_of_string("a, b, c, d");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     sl_free(l);
     sl_free(ac);
     sl_free(ex);
@@ -896,13 +896,13 @@ static void sl_foldl_test(void) {
     
     l = sl_of_string("a, b, c");    
     s = sl_foldl(l, fold_concat_free, s_copy("init"));
-    check_expect_s(s, "initabc");
+    test_equal_s(s, "initabc");
     s_free(s);
     sl_free(l);
 
     l = sl_of_string("");    
     s = sl_foldl(l, fold_concat_free, s_copy("init"));
-    check_expect_s(s, "init");
+    test_equal_s(s, "init");
     s_free(s);
     sl_free(l);
 }
@@ -934,13 +934,13 @@ static void sl_foldr_test(void) {
     
     l = sl_of_string("a, b, c");    
     s = sl_foldr(l, sl_concat_r, s_copy("X"));
-    check_expect_s(s, "abcX");
+    test_equal_s(s, "abcX");
     s_free(s);
     sl_free(l);
 
     l = sl_of_string("");    
     s = sl_foldr(l, sl_concat_r, s_copy("X"));
-    check_expect_s(s, "X");
+    test_equal_s(s, "X");
     s_free(s);
     sl_free(l);
 }
@@ -971,7 +971,7 @@ static void sl_filter_test(void) {
     l = sl_of_string("Kürbis, Brombeere, Heidelbeere, Himbeere, Apfel");
     ac = sl_filter(l, f_ends_width, "beere");
     ex = sl_of_string("Brombeere, Heidelbeere, Himbeere");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
     sl_free(l);
     l_free(ac);
     sl_free(ex);
@@ -1029,7 +1029,7 @@ static void sl_choose_test(void) {
     l = sl_of_string("10, 2, 30, 4, 50, 6");
     ac = sl_choose(l, ends_width_0_append, "x");
     ex = sl_of_string("10x, 30x, 50x");
-    sl_check_expect(ac, ex);
+    sl_test_equal(ac, ex);
 
     sl_free(l);
     sl_free(ac);
@@ -1086,9 +1086,9 @@ static bool sl_element_ne(String element, int index, String x) {
 static void sl_exists_test(void) {
     printsln((String)__func__);
     List l = sl_of_string("1, 2, 3, 4, 5, 6");
-    check_expect_b(sl_exists(l, sl_element_eq, "3"), true);
-    check_expect_b(sl_exists(l, sl_element_eq, "9"), false);
-    check_expect_b(sl_exists(l, sl_element_ne, "9"), true);
+    test_equal_b(sl_exists(l, sl_element_eq, "3"), true);
+    test_equal_b(sl_exists(l, sl_element_eq, "9"), false);
+    test_equal_b(sl_exists(l, sl_element_ne, "9"), true);
     sl_free(l);
 }
 
@@ -1128,8 +1128,8 @@ bool sl_exists_state(List list, StringIntStringAnyToBool predicate, String x, An
 static void sl_forall_test(void) {
     printsln((String)__func__);
     List l = sl_of_string("1, 2, 3, 4, 5, 6");
-    check_expect_b(sl_forall(l, sl_element_eq, "3"), false);
-    check_expect_b(sl_forall(l, sl_element_ne, "9"), true);
+    test_equal_b(sl_forall(l, sl_element_eq, "3"), false);
+    test_equal_b(sl_forall(l, sl_element_ne, "9"), true);
     sl_free(l);
 }
 
@@ -1167,7 +1167,7 @@ bool sl_forall_state(List list, StringIntStringAnyToBool predicate, String x, An
 ///////////////////////////////////////////////////////////////////////////////
 // Tests
 
-bool sl_check_expect_file_line(const char *file, const char *function, int line, List a, List e) {
+bool sl_test_equal_file_line(const char *file, const char *function, int line, List a, List e) {
     base_count_check();
 
     if (a == NULL) {

@@ -9,7 +9,7 @@ make sizeof && ./sizeof
 int main(void) {
 #if 0
     printiln(1);
-    check_expect_i(0, 0);
+    test_equal_i(0, 0);
 #endif
     
 #if 0

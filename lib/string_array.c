@@ -18,22 +18,22 @@ static void sa_create_test(void) {
     
     array = sa_create(3, "");
     String a1[] = { "", "", "" };
-    sa_check_expect_file_line(__FILE__, __func__, __LINE__, array, a1, 3);
+    sa_test_equal_file_line(__FILE__, __func__, __LINE__, array, a1, 3);
     a_free(array);
     
     array = sa_create(5, "x");
     String a2[] = { "x", "x", "x", "x", "x" };
-    sa_check_expect_file_line(__FILE__, __func__, __LINE__, array, a2, 5);
+    sa_test_equal_file_line(__FILE__, __func__, __LINE__, array, a2, 5);
     a_free(array);
     
     array = sa_create(1, "y");
     String a3[] = { "y" };
-    sa_check_expect_file_line(__FILE__, __func__, __LINE__, array, a3, 1);
+    sa_test_equal_file_line(__FILE__, __func__, __LINE__, array, a3, 1);
     a_free(array);
     
     array = sa_create(0, "z");
     String a4[] = { };
-    sa_check_expect_file_line(__FILE__, __func__, __LINE__, array, a4, 0);
+    sa_test_equal_file_line(__FILE__, __func__, __LINE__, array, a4, 0);
     a_free(array);
 }
 
@@ -64,14 +64,14 @@ static void sa_of_string_test(void) {
     sa_set(ex, 0, "1");
     sa_set(ex, 1, "2");
     sa_set(ex, 2, "3");
-    sa_check_expect(ac, ex);
+    sa_test_equal(ac, ex);
     sa_free(ac);
 
     ac = sa_of_string("1    ,      2,         3  ");
     sa_set(ex, 0, "1    ");
     sa_set(ex, 1, "2");
     sa_set(ex, 2, "3  ");
-    sa_check_expect(ac, ex);
+    sa_test_equal(ac, ex);
     sa_free(ac); 
     a_free(ex);
 
@@ -79,19 +79,19 @@ static void sa_of_string_test(void) {
     ex = sa_create(2, "");
     sa_set(ex, 0, "1    ");
     sa_set(ex, 1, "2");
-    sa_check_expect(ac, ex);
+    sa_test_equal(ac, ex);
     sa_free(ac);
     a_free(ex);
 
     ac = sa_of_string("");
     ex = sa_create(1, "");
-    sa_check_expect(ac, ex);
+    sa_test_equal(ac, ex);
     sa_free(ac);
     a_free(ex);
 
     ac = sa_of_string("123");
     ex = sa_create(1, "123");
-    sa_check_expect(ac, ex);
+    sa_test_equal(ac, ex);
     sa_free(ac);
     a_free(ex);
 }
@@ -167,25 +167,25 @@ static void a_copy_test(void) {
 
     array = sa_of_string("-1, -2, -3");
     copy = a_copy(array);
-    sa_check_expect(copy, array);
+    sa_test_equal(copy, array);
     sa_free(array);
     a_free(copy);
 
     array = sa_of_string("10");
     copy = a_copy(array);
-    sa_check_expect(copy, array);
+    sa_test_equal(copy, array);
     sa_free(array);
     a_free(copy);
 
     array = sa_of_string("100, -200");
     copy = a_copy(array);
-    sa_check_expect(copy, array);
+    sa_test_equal(copy, array);
     sa_free(array);
     a_free(copy);
 
     array = sa_of_string("");
     copy = a_copy(array);
-    sa_check_expect(copy, array);
+    sa_test_equal(copy, array);
     sa_free(array);
     a_free(copy);
 }
@@ -196,34 +196,34 @@ static void a_sub_test(void) {
     array = sa_of_string("1, 2, 3, 4");
 
     sub = a_sub(array, 0, a_length(array));
-    sa_check_expect(array, sub);
+    sa_test_equal(array, sub);
     a_free(sub);
 
     sub = a_sub(array, -1, a_length(array) + 1);
-    sa_check_expect(array, sub);
+    sa_test_equal(array, sub);
     a_free(sub);
 
     array2 = sa_of_string("2, 3, 4");
     // sa_println(array2);
     // printiln(a_length(array2));
     sub = a_sub(array, 1, a_length(array));
-    sa_check_expect(array2, sub);
+    sa_test_equal(array2, sub);
     sa_free(array2);
     a_free(sub);
 
     array2 = sa_of_string("2, 3");
     sub = a_sub(array, 1, a_length(array) - 1);
-    sa_check_expect(array2, sub);
+    sa_test_equal(array2, sub);
     sa_free(array2);
     a_free(sub);
 
     array2 = sa_create(0, "");
     sub = a_sub(array, 1, 1);
-    sa_check_expect(array2, sub);
+    sa_test_equal(array2, sub);
     a_free(sub);
 
     sub = a_sub(array, 2, 1);
-    sa_check_expect(array2, sub);
+    sa_test_equal(array2, sub);
     sa_free(array2);
     a_free(sub);
 
@@ -307,7 +307,7 @@ static void a_concat_test(void) {
     a2 = sa_of_string("1, 2, 3");
     ac = a_concat(a1, a2);
     ex = sa_of_string("10, 20, 30, 1, 2, 3");
-    sa_check_expect(ac, ex);
+    sa_test_equal(ac, ex);
     sa_free(a1);
     sa_free(a2);
     a_free(ac);
@@ -317,7 +317,7 @@ static void a_concat_test(void) {
     a2 = sa_create(0, "");
     ac = a_concat(a1, a2);
     ex = sa_of_string("10, 20, 30");
-    sa_check_expect(ac, ex);
+    sa_test_equal(ac, ex);
     sa_free(a1);
     a_free(a2);
     a_free(ac);
@@ -327,7 +327,7 @@ static void a_concat_test(void) {
     a2 = sa_of_string("10, 20, 30");
     ac = a_concat(a1, a2);
     ex = sa_of_string("10, 20, 30");
-    sa_check_expect(ac, ex);
+    sa_test_equal(ac, ex);
     a_free(a1);
     sa_free(a2);
     a_free(ac);
@@ -337,7 +337,7 @@ static void a_concat_test(void) {
     a2 = sa_create(0, "");
     ac = a_concat(a1, a2);
     ex = sa_create(0, "");
-    sa_check_expect(ac, ex);
+    sa_test_equal(ac, ex);
     a_free(a1);
     a_free(a2);
     a_free(ac);
@@ -350,9 +350,9 @@ static void sa_contains_test(void) {
     printsln((String)__func__);
     Array array;
     array = sa_of_string("10, 20, 30");
-    check_expect_b(sa_contains(array, "10"), true);
-    check_expect_b(sa_contains(array, "11"), false);
-    check_expect_b(sa_contains(array, "30"), true);
+    test_equal_b(sa_contains(array, "10"), true);
+    test_equal_b(sa_contains(array, "11"), false);
+    test_equal_b(sa_contains(array, "30"), true);
     sa_free(array);
 }
 
@@ -383,9 +383,9 @@ static void sa_index_test(void) {
         printf("value found at index %d\n", i);
     }
 #endif
-    check_expect_i(i, -1);
-    check_expect_i(sa_index(array, "1"), 0);
-    check_expect_i(sa_index(array, "2"), 1);
+    test_equal_i(i, -1);
+    test_equal_i(sa_index(array, "1"), 0);
+    test_equal_i(sa_index(array, "2"), 1);
         
     sa_free(array);
 }
@@ -407,11 +407,11 @@ int sa_index_from(Array array, String value, int from);
 static void sa_index_from_test(void) {
     printsln((String)__func__);
     Array a = sa_of_string("10, 20, 30, 40, 50");
-    check_expect_i(sa_index_from(a, "20", 0), 1);
-    check_expect_i(sa_index_from(a, "20", 1), 1);
-    check_expect_i(sa_index_from(a, "20", 2), -1);
-    check_expect_i(sa_index_from(a, "30", -1), 2);
-    check_expect_i(sa_index_from(a, "60", 0), -1);
+    test_equal_i(sa_index_from(a, "20", 0), 1);
+    test_equal_i(sa_index_from(a, "20", 1), 1);
+    test_equal_i(sa_index_from(a, "20", 2), -1);
+    test_equal_i(sa_index_from(a, "30", -1), 2);
+    test_equal_i(sa_index_from(a, "60", 0), -1);
     sa_free(a);
 }
 
@@ -437,7 +437,7 @@ static bool is_equal_to(String s, int index, String x) {
 static void sa_index_fn_test(void) {
     printsln((String)__func__);
     Array a = sa_of_string("test, dog, a, cat");
-    check_expect_i(sa_index_fn(a, is_equal_to, "dog"), 1);
+    test_equal_i(sa_index_fn(a, is_equal_to, "dog"), 1);
     sa_free(a);
 }
 
@@ -458,9 +458,9 @@ int sa_last_index(Array array, String value);
 static void sa_last_index_test(void) {
     printsln((String)__func__);
     Array a = sa_of_string("10, 20, 30, 10, 20, 30");
-    check_expect_i(sa_last_index(a, "20"), 4);
-    check_expect_i(sa_last_index(a, "30"), 5);
-    check_expect_i(sa_last_index(a, "60"), -1);
+    test_equal_i(sa_last_index(a, "20"), 4);
+    test_equal_i(sa_last_index(a, "30"), 5);
+    test_equal_i(sa_last_index(a, "60"), -1);
     sa_free(a);
 }
 
@@ -481,11 +481,11 @@ int sa_last_index_from(Array array, String value, int from);
 static void sa_last_index_from_test(void) {
     printsln((String)__func__);
     Array a = sa_of_string("10, 20, 30, 10, 20, 30");
-    check_expect_i(sa_last_index_from(a, "20", 5), 4);
-    check_expect_i(sa_last_index_from(a, "20", 4), 4);
-    check_expect_i(sa_last_index_from(a, "20", 3), 1);
-    check_expect_i(sa_last_index_from(a, "30", 2), 2);
-    check_expect_i(sa_last_index_from(a, "30", 1), -1);
+    test_equal_i(sa_last_index_from(a, "20", 5), 4);
+    test_equal_i(sa_last_index_from(a, "20", 4), 4);
+    test_equal_i(sa_last_index_from(a, "20", 3), 1);
+    test_equal_i(sa_last_index_from(a, "30", 2), 2);
+    test_equal_i(sa_last_index_from(a, "30", 1), -1);
     sa_free(a);    
 }
 
@@ -507,7 +507,7 @@ int sa_last_index_fn(Array array, StringIntStringToBool predicate, String x);
 static void sa_last_index_fn_test(void) {
     printsln((String)__func__);
     Array a = sa_of_string("no, dog, test, dog, a, cat");
-    check_expect_i(sa_last_index_fn(a, is_equal_to, "dog"), 3);
+    test_equal_i(sa_last_index_fn(a, is_equal_to, "dog"), 3);
     sa_free(a);
 }
 
@@ -533,28 +533,28 @@ static void sa_reverse_test(void) {
     ac = sa_of_string("1, 2, 3");
     ex = sa_of_string("3, 2, 1");
     a_reverse(ac);
-    sa_check_expect(ac, ex);
+    sa_test_equal(ac, ex);
     sa_free(ac);
     sa_free(ex);
 
     ac = sa_of_string("1, 2, 3, 4");
     ex = sa_of_string("4, 3, 2, 1");
     a_reverse(ac);
-    sa_check_expect(ac, ex);
+    sa_test_equal(ac, ex);
     sa_free(ac);
     sa_free(ex);
 
     ac = sa_create(0, "");
     ex = sa_create(0, "");
     a_reverse(ac);
-    sa_check_expect(ac, ex);
+    sa_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = sa_create(0, "x");
     ex = sa_create(0, "x");
     a_reverse(ac);
-    sa_check_expect(ac, ex);
+    sa_test_equal(ac, ex);
     a_free(ac);
     a_free(ex);
 }
@@ -586,28 +586,28 @@ static void sa_sort_test(void) {
     ex = sa_of_string("1, 2, 3, 4, 5");
     a_shuffle(ac);
     sa_sort(ac);
-    sa_check_expect(ac, ex);
+    sa_test_equal(ac, ex);
     sa_free(ac);
     sa_free(ex);
 
     ac = sa_of_string("1, 2, 1, 3, 2");
     ex = sa_of_string("1, 1, 2, 2, 3");
     sa_sort(ac);
-    sa_check_expect(ac, ex);
+    sa_test_equal(ac, ex);
     sa_free(ac);
     sa_free(ex);
 
     ac = sa_of_string("");
     ex = sa_of_string("");
     sa_sort(ac);
-    sa_check_expect(ac, ex);
+    sa_test_equal(ac, ex);
     sa_free(ac);
     sa_free(ex);
 
     ac = sa_of_string("-1, -2, -3, -1");
     ex = sa_of_string("-1, -1, -2, -3"); // alphabetic, not numeric sort
     sa_sort(ac);
-    sa_check_expect(ac, ex);
+    sa_test_equal(ac, ex);
     sa_free(ac);
     sa_free(ex);
 }
@@ -635,7 +635,7 @@ static void sa_sort_ignore_case_test(void) {
     ac = sa_of_string("a, b, c, A, B");
     ex = sa_of_string("a, A, b, B, c");
     sa_sort_ignore_case(ac);
-    sa_check_expect(ac, ex);
+    sa_test_equal(ac, ex);
     sa_free(ac);
     sa_free(ex);
 }
@@ -662,28 +662,28 @@ static void sa_sort_dec_test(void) {
     ex = sa_of_string("5, 4, 3, 2, 1");
     a_shuffle(ac);
     sa_sort_dec(ac);
-    sa_check_expect(ac, ex);
+    sa_test_equal(ac, ex);
     sa_free(ac);
     sa_free(ex);
 
     ac = sa_of_string("1, 2, 1, 3, 2");
     ex = sa_of_string("3, 2, 2, 1, 1");
     sa_sort_dec(ac);
-    sa_check_expect(ac, ex);
+    sa_test_equal(ac, ex);
     sa_free(ac);
     sa_free(ex);
 
     ac = sa_of_string("");
     ex = sa_of_string("");
     sa_sort_dec(ac);
-    sa_check_expect(ac, ex);
+    sa_test_equal(ac, ex);
     sa_free(ac);
     sa_free(ex);
 
     ac = sa_of_string("-3, -2, -1");
     ex = sa_of_string("-3, -2, -1"); // decreasing order alphabetically, not numerically!
     sa_sort_dec(ac);
-    sa_check_expect(ac, ex);
+    sa_test_equal(ac, ex);
     sa_free(ac);
     sa_free(ex);
 }
@@ -711,7 +711,7 @@ static void sa_sort_dec_ignore_case_test(void) {
     ac = sa_of_string("a, b, c, A, B");
     ex = sa_of_string("c, b, B, a, A");
     sa_sort_dec_ignore_case(ac);
-    sa_check_expect(ac, ex);
+    sa_test_equal(ac, ex);
     sa_free(ac);
     sa_free(ex);
 }
@@ -776,13 +776,13 @@ static void sa_foldl_test(void) {
     
     a = sa_of_string("a, b, c");    
     s = sa_foldl(a, sa_concat, s_copy("init"));
-    check_expect_s(s, "initabc");
+    test_equal_s(s, "initabc");
     s_free(s);
     sa_free(a);
 
     a = sa_of_string("");    
     s = sa_foldl(a, sa_concat, s_copy("init"));
-    check_expect_s(s, "init");
+    test_equal_s(s, "init");
     s_free(s);
     sa_free(a);
 }
@@ -815,31 +815,31 @@ static void sa_foldl_state_test(void) {
     a = sa_of_string("11, 22, 33, 44");
     int length = 0;
     sa_foldl_state(a, f_length, &length);
-    check_expect_i(length, 8);
+    test_equal_i(length, 8);
     sa_free(a);
 
     a = sa_of_string("11, 22, 33, ");
     length = 0;
     sa_foldl_state(a, f_length, &length);
-    check_expect_i(length, 6);
+    test_equal_i(length, 6);
     sa_free(a);
 
     a = sa_of_string(",   22,   33,   ");
     length = 0;
     sa_foldl_state(a, f_length, &length);
-    check_expect_i(length, 4);
+    test_equal_i(length, 4);
     sa_free(a);
 
     a = sa_of_string(",   ,   ,   ");
     length = 0;
     sa_foldl_state(a, f_length, &length);
-    check_expect_i(length, 0);
+    test_equal_i(length, 0);
     sa_free(a);
 
     a = sa_of_string("");
     length = 0;
     sa_foldl_state(a, f_length, &length);
-    check_expect_i(length, 0);
+    test_equal_i(length, 0);
     sa_free(a);
 }
 
@@ -870,13 +870,13 @@ static void sa_foldr_test(void) {
     
     a = sa_of_string("a, b, c");    
     s = sa_foldr(a, sa_concat_r, s_copy("X"));
-    check_expect_s(s, "abcX");
+    test_equal_s(s, "abcX");
     s_free(s);
     sa_free(a);
 
     a = sa_of_string("");    
     s = sa_foldr(a, sa_concat_r, s_copy("X"));
-    check_expect_s(s, "X");
+    test_equal_s(s, "X");
     s_free(s);
     sa_free(a);
 }
@@ -919,7 +919,7 @@ static void sa_filter_test(void) {
     a = sa_of_string("Kürbis, Brombeere, Heidelbeere, Himbeere, Apfel");
     ac = sa_filter(a, f_ends_width, "beere");
     ex = sa_of_string("Brombeere, Heidelbeere, Himbeere");
-    sa_check_expect(ac, ex);
+    sa_test_equal(ac, ex);
     sa_free(a);
     a_free(ac);
     sa_free(ex);
@@ -992,7 +992,7 @@ static void sa_choose_test(void) {
     a = sa_of_string("a1, a2, b3, b4, a5, b6");
     ac = sa_choose(a, starts_with_toupper, "a");
     ex = sa_of_string("A1, A2, A5");
-    sa_check_expect(ac, ex);
+    sa_test_equal(ac, ex);
 
     sa_free(ac);
     sa_free(ex);
@@ -1058,9 +1058,9 @@ static bool sa_element_ne(String element, int index, String x) {
 static void sa_exists_test(void) {
     printsln((String)__func__);
     Array a = sa_of_string("1, 2, 3, 4, 5, 6");
-    check_expect_b(sa_exists(a, sa_element_eq, "3"), true);
-    check_expect_b(sa_exists(a, sa_element_eq, "9"), false);
-    check_expect_b(sa_exists(a, sa_element_ne, "9"), true);
+    test_equal_b(sa_exists(a, sa_element_eq, "3"), true);
+    test_equal_b(sa_exists(a, sa_element_eq, "9"), false);
+    test_equal_b(sa_exists(a, sa_element_ne, "9"), true);
     sa_free(a);
 }
 
@@ -1095,8 +1095,8 @@ bool sa_forall(Array array, StringIntStringToBool predicate, String x);
 static void sa_forall_test(void) {
     printsln((String)__func__);
     Array a = sa_of_string("1, 2, 3, 4, 5, 6");
-    check_expect_b(sa_forall(a, sa_element_eq, "3"), false);
-    check_expect_b(sa_forall(a, sa_element_ne, "9"), true);
+    test_equal_b(sa_forall(a, sa_element_eq, "3"), false);
+    test_equal_b(sa_forall(a, sa_element_ne, "9"), true);
     sa_free(a);
 }
 
@@ -1132,7 +1132,7 @@ bool sa_forall_state(Array array, StringIntStringAnyToBool predicate, String x, 
 ///////////////////////////////////////////////////////////////////////////////
 // Tests
 
-bool sa_check_expect_file_line(const char *file, const char *function, int line, Array a, String *e, int ne) {
+bool sa_test_equal_file_line(const char *file, const char *function, int line, Array a, String *e, int ne) {
     base_init();
     base_count_check();
     if (a->n != ne) {

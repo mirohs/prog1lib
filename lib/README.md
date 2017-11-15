@@ -142,7 +142,7 @@ array | int array | double array | String array | pointer array | byte array
 @ref a_choose | @ref ia_choose, @ref ia_choose_state | @ref da_choose, @ref da_choose_state | @ref sa_choose, @ref sa_choose_state | @ref pa_choose | @ref ba_choose, @ref ba_choose_state
 @ref a_exists | @ref ia_exists, @ref ia_exists_state | @ref da_exists, @ref da_exists_state | @ref sa_exists, @ref sa_exists_state | @ref pa_exists | @ref ba_exists, @ref ba_exists_state
 @ref a_forall | @ref ia_forall, @ref ia_forall_state | @ref da_forall, @ref da_forall_state | @ref sa_forall, @ref sa_forall_state | @ref pa_forall | @ref ia_forall, @ref ia_forall_state
-@ref a_check_expect | @ref ia_check_expect | @ref da_check_within | @ref sa_check_expect | @ref pa_check_expect | @ref ba_check_expect
+@ref a_test_equal | @ref ia_test_equal | @ref da_test_within | @ref sa_test_equal | @ref pa_test_equal | @ref ba_test_equal
 
 
 
@@ -192,6 +192,6 @@ list | int list | double list | String list | pointer list
 @ref l_choose | @ref il_choose, @ref il_choose_state | @ref dl_choose, @ref dl_choose_state | @ref sl_choose, @ref sl_choose_state | @ref pl_choose
 @ref l_exists | @ref il_exists, @ref il_exists_state | @ref dl_exists, @ref dl_exists_state | @ref sl_exists, @ref sl_exists_state | @ref pl_exists
 @ref l_forall | @ref il_forall, @ref il_forall_state | @ref dl_forall, @ref dl_forall_state | @ref sl_forall, @ref sl_forall_state | @ref pl_forall
-@ref l_check_expect | @ref il_check_expect | @ref dl_check_within | @ref sl_check_expect | @ref pl_check_expect
+@ref l_test_equal | @ref il_test_equal | @ref dl_test_within | @ref sl_test_equal | @ref pl_test_equal
 
 -->

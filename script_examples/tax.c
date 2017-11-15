@@ -41,15 +41,15 @@ Euro sales_tax(Euro price);
 int round_to_int(double d);
 
 static void sales_tax_test() {
-    check_expect_i(sales_tax(0), 0);
-    check_expect_i(sales_tax(537), 0);
-    check_expect_i(sales_tax(1000),
+    test_equal_i(sales_tax(0), 0);
+    test_equal_i(sales_tax(537), 0);
+    test_equal_i(sales_tax(1000),
                         round_to_int(1000 * 0.05));
-    check_expect_i(sales_tax(1282),
+    test_equal_i(sales_tax(1282),
                         round_to_int(1282 * 0.05));
-    check_expect_i(sales_tax(10000),
+    test_equal_i(sales_tax(10000),
                         round_to_int(10000 * 0.10));
-    check_expect_i(sales_tax(12017),
+    test_equal_i(sales_tax(12017),
                         round_to_int(12017 * 0.10));
 }
 
@@ -132,15 +132,15 @@ Euro sales_tax(Euro price) {
 
 7. Test the function
 static void sales_tax_test() {
-    check_expect_i(sales_tax(0), 0);
-    check_expect_i(sales_tax(537), 0);
-    check_expect_i(sales_tax(1000),
+    test_equal_i(sales_tax(0), 0);
+    test_equal_i(sales_tax(537), 0);
+    test_equal_i(sales_tax(1000),
                         round_to_int(1000 * 0.05));
-    check_expect_i(sales_tax(1282),
+    test_equal_i(sales_tax(1282),
                         round_to_int(1282 * 0.05));
-    check_expect_i(sales_tax(10000),
+    test_equal_i(sales_tax(10000),
                         round_to_int(10000 * 0.10));
-    check_expect_i(sales_tax(12017),
+    test_equal_i(sales_tax(12017),
                         round_to_int(12017 * 0.10));
 }
 

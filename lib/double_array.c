@@ -14,22 +14,22 @@ static void da_create_test(void) {
 
     array = da_create(3, 0);
     double a1[] = { 0, 0, 0 };
-    da_check_within2(array, a1, 3);
+    da_test_within2(array, a1, 3);
     a_free(array);
 
     array = da_create(5, -1);
     double a2[] = { -1, -1, -1, -1, -1 };
-    da_check_within2(array, a2, 5);
+    da_test_within2(array, a2, 5);
     a_free(array);
 
     array = da_create(1, 2);
     double a3[] = { 2 };
-    da_check_within2(array, a3, 1);
+    da_test_within2(array, a3, 1);
     a_free(array);
 
     array = da_create(0, 2);
     double a4[] = { };
-    da_check_within2(array, a4, 0);
+    da_test_within2(array, a4, 0);
     a_free(array);
 }
 
@@ -54,39 +54,39 @@ static void da_range_test(void) {
     Array array;
     array = da_range(0, 3, 1);
     double a1[] = { 0, 1, 2 };
-    da_check_within2(array, a1, 3);
+    da_test_within2(array, a1, 3);
     a_free(array);
     array = da_range(3, 2, 1);
     double a2[] = { 3 };
-    da_check_within2(array, a2, 1);
+    da_test_within2(array, a2, 1);
     a_free(array);
     array = da_range(2, 3, 1);
     double a3[] = { 2 };
-    da_check_within2(array, a3, 1);
+    da_test_within2(array, a3, 1);
     a_free(array);
     array = da_range(3, 3, 1);
     double a4[] = { };
-    da_check_within2(array, a4, 0);
+    da_test_within2(array, a4, 0);
     a_free(array);
     array = da_range(-3, -3, 1);
     double a5[] = { };
-    da_check_within2(array, a5, 0);
+    da_test_within2(array, a5, 0);
     a_free(array);
     array = da_range(1, 4, 1);
     double a6[] = { 1, 2, 3 };
-    da_check_within2(array, a6, 3);
+    da_test_within2(array, a6, 3);
     a_free(array);
     array = da_range(4, 1, 1);
     double a7[] = { 4, 3, 2 };
-    da_check_within2(array, a7, 3);
+    da_test_within2(array, a7, 3);
     a_free(array);
     array = da_range(0.0, 3.0, 0.5);
     double a8[] = { 0.0, 0.5, 1.0, 1.5, 2.0, 2.5 };
-    da_check_within2(array, a8, 6);
+    da_test_within2(array, a8, 6);
     a_free(array);
     array = da_range(3.0, 0.0, -0.5);
     double a9[] = { 3.0, 2.5, 2.0, 1.5, 1.0, 0.5 };
-    da_check_within2(array, a9, 6);
+    da_test_within2(array, a9, 6);
     a_free(array);
 }
 
@@ -131,37 +131,37 @@ static void da_of_string_test(void) {
 
     ac = da_of_string("1, 2, 3, 4, 5, 6");
     ex = da_range(1, 7, 1);
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = da_of_string("   1, 2, 3, 4, 5, 6   ");
     ex = da_range(1, 7, 1);
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = da_of_string("1xx2asdfs3");
     ex = da_range(1, 4, 1);
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = da_of_string("y1xx2asdfs3x");
     ex = da_range(1, 4, 1);
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = da_of_string("-3, -2, -1, 0, 1");
     ex = da_range(-3, 2, 1);
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = da_of_string(" -3, -2, -1 ");
     ex = da_range(-3, 0, 1);
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
 
@@ -173,7 +173,7 @@ static void da_of_string_test(void) {
     da_set(ex, 3, 1e5);
     da_set(ex, 4, -1.2e4);
     da_set(ex, 5, -1.2e-4);
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
 
@@ -182,7 +182,7 @@ static void da_of_string_test(void) {
     da_set(ex, 0, -0.1);
     da_set(ex, 1, -2.0);
     da_set(ex, 2, -0.3);
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
 
@@ -191,13 +191,13 @@ static void da_of_string_test(void) {
     da_set(ex, 0, -0.1);
     da_set(ex, 1, -2.0);
     da_set(ex, 2, -0.3);
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = da_of_string("");
     ex = da_create(0, 0);
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
 }
@@ -253,19 +253,19 @@ static void da_fn_test(void) {
     Array array;
     array = da_fn(3, two_i_plus_x, 1);
     double a1[] = { 1, 3, 5 };
-    da_check_within2(array, a1, 3);
+    da_test_within2(array, a1, 3);
     a_free(array);
     array = da_fn(4, two_i_plus_x, 1);
     double a2[] = { 1, 3, 5, 7 };
-    da_check_within2(array, a2, 4);
+    da_test_within2(array, a2, 4);
     a_free(array);
     array = da_fn(1, two_i_plus_x, 1);
     double a3[] = { 1 };
-    da_check_within2(array, a3, 1);
+    da_test_within2(array, a3, 1);
     a_free(array);
     array = da_fn(0, two_i_plus_x, 1);
     double a4[] = { };
-    da_check_within2(array, a4, 0);
+    da_test_within2(array, a4, 0);
     a_free(array);
 }
 
@@ -294,7 +294,7 @@ static void da_of_ia_test(void) {
     ia = ia_of_string("-1 2 -3 44");
     ex = da_of_string("-1 2 -3 44");
     ac = da_of_ia(ia);
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ia);
     a_free(ex);
     a_free(ac);
@@ -384,9 +384,9 @@ void da_println(Array array) {
 static void da_contains_test(void) {
     printsln((String)__func__);
     Array array = da_of_string("10, 20, 30");
-    check_expect_b(da_contains(array, 10, EPSILON), true);
-    check_expect_b(da_contains(array, 11, EPSILON), false);
-    check_expect_b(da_contains(array, 30, EPSILON), true);
+    test_equal_b(da_contains(array, 10, EPSILON), true);
+    test_equal_b(da_contains(array, 11, EPSILON), false);
+    test_equal_b(da_contains(array, 30, EPSILON), true);
     a_free(array);
 }
 
@@ -409,19 +409,19 @@ static void da_fill_test(void) {
     array = da_create(3, 0);
     da_fill(array, -1);
     double a1[] = { -1, -1, -1 };
-    da_check_within2(array, a1, 3);
+    da_test_within2(array, a1, 3);
     a_free(array);
 
     array = da_create(2, 0);
     da_fill(array, 2);
     double a2[] = { 2, 2 };
-    da_check_within2(array, a2, 2);
+    da_test_within2(array, a2, 2);
     a_free(array);
 
     array = da_create(0, 0);
     da_fill(array, 2);
     double a3[] = { };
-    da_check_within2(array, a3, 0);
+    da_test_within2(array, a3, 0);
     a_free(array);
 }
 
@@ -441,49 +441,49 @@ static void da_fill_from_to_test(void) {
     array = da_create(3, 0);
     da_fill_from_to(array, -1, 0, array->n);
     double a1[] = { -1, -1, -1 };
-    da_check_within2(array, a1, 3);
+    da_test_within2(array, a1, 3);
     a_free(array);
 
     array = da_create(3, 0);
     da_fill_from_to(array, -1, -1, array->n + 1);
     double a2[] = { -1, -1, -1 };
-    da_check_within2(array, a2, 3);
+    da_test_within2(array, a2, 3);
     a_free(array);
 
     array = da_create(3, 0);
     da_fill_from_to(array, -1, 0, 0);
     double a3[] = { 0, 0, 0 };
-    da_check_within2(array, a3, 3);
+    da_test_within2(array, a3, 3);
     a_free(array);
 
     array = da_create(3, 0);
     da_fill_from_to(array, -1, 0, 1);
     double a4[] = { -1, 0, 0 };
-    da_check_within2(array, a4, 3);
+    da_test_within2(array, a4, 3);
     a_free(array);
 
     array = da_create(3, 0);
     da_fill_from_to(array, -1, 2, 2);
     double a5[] = { 0, 0, 0 };
-    da_check_within2(array, a5, 3);
+    da_test_within2(array, a5, 3);
     a_free(array);
 
     array = da_create(3, 0);
     da_fill_from_to(array, -1, 2, 3);
     double a6[] = { 0, 0, -1 };
-    da_check_within2(array, a6, 3);
+    da_test_within2(array, a6, 3);
     a_free(array);
 
     array = da_create(3, 0);
     da_fill_from_to(array, -1, 2, 1);
     double a7[] = { 0, 0, 0 };
-    da_check_within2(array, a7, 3);
+    da_test_within2(array, a7, 3);
     a_free(array);
 
     array = da_create(3, 0);
     da_fill_from_to(array, -1, 1, 3);
     double a8[] = { 0, -1, -1 };
-    da_check_within2(array, a8, 3);
+    da_test_within2(array, a8, 3);
     a_free(array);
 }
 
@@ -511,13 +511,13 @@ static void da_index_test(void) {
         printf("value found at index %d\n", i);
     }
 #endif
-    check_expect_i(i, -1);
+    test_equal_i(i, -1);
 
     i = da_index(array, 1, EPSILON);
-    check_expect_i(i, 0);
+    test_equal_i(i, 0);
         
     i = da_index(array, 2, EPSILON);
-    check_expect_i(i, 1);
+    test_equal_i(i, 1);
         
     a_free(array);
     
@@ -538,11 +538,11 @@ int da_index(Array array, double value, double delta) {
 static void da_index_from_test(void) {
     printsln((String)__func__);
     Array a = da_of_string("10 20 30 40 50");
-    check_expect_i(da_index_from(a, 20, 0, EPSILON), 1);
-    check_expect_i(da_index_from(a, 20, 1, EPSILON), 1);
-    check_expect_i(da_index_from(a, 20, 2, EPSILON), -1);
-    check_expect_i(da_index_from(a, 30, -1, EPSILON), 2);
-    check_expect_i(da_index_from(a, 60, 0, EPSILON), -1);
+    test_equal_i(da_index_from(a, 20, 0, EPSILON), 1);
+    test_equal_i(da_index_from(a, 20, 1, EPSILON), 1);
+    test_equal_i(da_index_from(a, 20, 2, EPSILON), -1);
+    test_equal_i(da_index_from(a, 30, -1, EPSILON), 2);
+    test_equal_i(da_index_from(a, 60, 0, EPSILON), -1);
     a_free(a);
     
 }
@@ -563,8 +563,8 @@ int da_index_from(Array array, double value, int from, double delta) {
 static void da_index_fn_test(void) {
     printsln((String)__func__);
     Array a = da_of_string("1 2 3 -4 5");
-    check_expect_i(da_index_fn(a, da_gt, 0), 0);
-    check_expect_i(da_index_fn(a, da_lt, 0), 3);
+    test_equal_i(da_index_fn(a, da_gt, 0), 0);
+    test_equal_i(da_index_fn(a, da_lt, 0), 3);
     a_free(a);
 }
 
@@ -584,9 +584,9 @@ int da_index_fn(Array array, DoubleIntDoubleToBool predicate, double x) {
 static void da_last_index_test(void) {
     printsln((String)__func__);
     Array a = da_of_string("10 20 30 10 20 30");
-    check_expect_i(da_last_index(a, 20, EPSILON), 4);
-    check_expect_i(da_last_index(a, 30, EPSILON), 5);
-    check_expect_i(da_last_index(a, 60, EPSILON), -1);
+    test_equal_i(da_last_index(a, 20, EPSILON), 4);
+    test_equal_i(da_last_index(a, 30, EPSILON), 5);
+    test_equal_i(da_last_index(a, 60, EPSILON), -1);
     a_free(a);
 }
 
@@ -605,11 +605,11 @@ int da_last_index(Array array, double value, double delta) {
 static void da_last_index_from_test(void) {
     printsln((String)__func__);
     Array a = da_of_string("10 20 30 10 20 30");
-    check_expect_i(da_last_index_from(a, 20, 5, EPSILON), 4);
-    check_expect_i(da_last_index_from(a, 20, 4, EPSILON), 4);
-    check_expect_i(da_last_index_from(a, 20, 3, EPSILON), 1);
-    check_expect_i(da_last_index_from(a, 30, 2, EPSILON), 2);
-    check_expect_i(da_last_index_from(a, 30, 1, EPSILON), -1);
+    test_equal_i(da_last_index_from(a, 20, 5, EPSILON), 4);
+    test_equal_i(da_last_index_from(a, 20, 4, EPSILON), 4);
+    test_equal_i(da_last_index_from(a, 20, 3, EPSILON), 1);
+    test_equal_i(da_last_index_from(a, 30, 2, EPSILON), 2);
+    test_equal_i(da_last_index_from(a, 30, 1, EPSILON), -1);
     a_free(a);    
 }
 
@@ -629,8 +629,8 @@ int da_last_index_from(Array array, double value, int from, double delta) {
 static void da_last_index_fn_test(void) {
     printsln((String)__func__);
     Array a = da_of_string("1 2 2 3 -3 5");
-    check_expect_i(da_last_index_fn(a, da_gt, 0), 5);
-    check_expect_i(da_last_index_fn(a, da_lt, 0), 4);
+    test_equal_i(da_last_index_fn(a, da_gt, 0), 5);
+    test_equal_i(da_last_index_fn(a, da_lt, 0), 4);
     a_free(a);
 }
 
@@ -656,28 +656,28 @@ static void da_sort_test(void) {
     ac = da_of_string("1, 2, 3, 4, 5, 6, 7, 8, 9, 10");
     ex = da_of_string("1, 2, 3, 4, 5, 6, 7, 8, 9, 10");
     da_sort(ac);
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = da_of_string("4.5, 4.5, 4.5, 4.51, 2, 3, 4, 5, 6, 7, 8, 9, 10");
     ex = da_of_string("2 3 4 4.5 4.5 4.5 4.51 5 6 7 8 9 10");
     da_sort(ac);
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = da_of_string("");
     ex = da_of_string("");
     da_sort(ac);
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = da_of_string("3, 2, 1, 0.9, -0.1");
     ex = da_of_string("-0.1 0.9 1 2 3");
     da_sort(ac);
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
 }
@@ -703,28 +703,28 @@ static void da_sort_dec_test(void) {
     ac = da_of_string("1, 2, 3, 4, 5, 6, 7, 8, 9, 10");
     ex = da_of_string("10, 9, 8, 7, 6, 5, 4, 3, 2, 1");
     da_sort_dec(ac);
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = da_of_string("4.5, 4.5, 4.51, 2, 3, 9");
     ex = da_of_string("9 4.51 4.5 4.5 3 2");
     da_sort_dec(ac);
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = da_of_string("");
     ex = da_of_string("");
     da_sort_dec(ac);
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = da_of_string("3, 2, 1, 0.9, -0.1");
     ex = da_of_string("3, 2, 1, 0.9, -0.1");
     da_sort_dec(ac);
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
 }
@@ -753,42 +753,42 @@ static void da_insert_test(void) {
     ac = da_of_string("1, 2, 3, 4, 5, 6");
     da_insert(ac, 0, 9);
     ex = da_of_string("9, 1, 2, 3, 4, 5");
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = da_of_string("1, 2, 3, 4, 5, 6");
     da_insert(ac, 5, 9);
     ex = da_of_string("1, 2, 3, 4, 5, 9");
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = da_of_string("1, 2, 3, 4, 5, 6");
     da_insert(ac, 3, 9);
     ex = da_of_string("1, 2, 3, 9, 4, 5");
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = da_of_string("1");
     da_insert(ac, -1, 9);
     ex = da_of_string("1");
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = da_of_string("1");
     da_insert(ac, 1, 9);
     ex = da_of_string("1");
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = da_of_string("");
     da_insert(ac, 0, 9);
     ex = da_of_string("");
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
 }
@@ -815,49 +815,49 @@ static void da_remove_test(void) {
     ac = da_of_string("1, 2, 3, 4, 5, 6");
     da_remove(ac, 0, 9);
     ex = da_of_string("2, 3, 4, 5, 6, 9");
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = da_of_string("1, 2, 3, 4, 5, 6");
     da_remove(ac, 5, 9);
     ex = da_of_string("1, 2, 3, 4, 5, 9");
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = da_of_string("1, 2, 3, 4, 5, 6");
     da_remove(ac, 3, 9);
     ex = da_of_string("1, 2, 3, 5, 6, 9");
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = da_of_string("1");
     da_remove(ac, -1, 9);
     ex = da_of_string("1");
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = da_of_string("1");
     da_remove(ac, 1, 9);
     ex = da_of_string("1");
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = da_of_string("1");
     da_remove(ac, 0, 9);
     ex = da_of_string("9");
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
     
     ac = da_of_string("");
     da_remove(ac, 0, 9);
     ex = da_of_string("");
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
 }
@@ -939,14 +939,14 @@ static void da_each_test(void) {
     a = da_of_string("1, 2, 3, 4");
     da_each(a, da_times, 2);
     ex = da_of_string("2, 4, 6, 8");
-    da_check_within(a, ex);
+    da_test_within(a, ex);
     a_free(a);
     a_free(ex);
     
     a = da_of_string("");
     da_each(a, da_times, 3);
     ex = da_of_string("");
-    da_check_within(a, ex);
+    da_test_within(a, ex);
     a_free(a);
     a_free(ex);
 }
@@ -1012,13 +1012,13 @@ Array da_map_state(Array array, DoubleIntDoubleAnyToDouble f, double x, Any stat
 static void da_foldl_test(void) {
     printsln((String)__func__);
     Array a = da_of_string("");    
-    check_within_d(da_foldl(a, double_plus, 100), 100, EPSILON);
-    check_within_d(da_foldl(a, double_minus, 100), 100, EPSILON);
+    test_within_d(da_foldl(a, double_plus, 100), 100, EPSILON);
+    test_within_d(da_foldl(a, double_minus, 100), 100, EPSILON);
     a_free(a);
     
     a = da_of_string("1, 2, 3, 4");    
-    check_within_d(da_foldl(a, double_plus, 0),    (((0 + 1) + 2) + 3) + 4, EPSILON);
-    check_within_d(da_foldl(a, double_minus, 100), (((100 - 1) - 2) - 3) - 4, EPSILON);
+    test_within_d(da_foldl(a, double_plus, 0),    (((0 + 1) + 2) + 3) + 4, EPSILON);
+    test_within_d(da_foldl(a, double_minus, 100), (((100 - 1) - 2) - 3) - 4, EPSILON);
     a_free(a);
 }
 
@@ -1036,13 +1036,13 @@ double da_foldl(Array array, DoubleDoubleIntToDouble f, double init) {
 static void da_foldr_test(void) {
     printsln((String)__func__);
     Array a = da_of_string("");    
-    check_within_d(da_foldr(a, double_plus, 100), 100, EPSILON);
-    check_within_d(da_foldr(a, double_minus, 100), 100, EPSILON);
+    test_within_d(da_foldr(a, double_plus, 100), 100, EPSILON);
+    test_within_d(da_foldr(a, double_minus, 100), 100, EPSILON);
     a_free(a);
     
     a = da_of_string("1, 2, 3, 4");    
-    check_within_d(da_foldr(a, double_plus, 100), 1 + (2 + (3 + (4 + 100))), EPSILON);
-    check_within_d(da_foldr(a, double_minus, 0), 1 - (2 - (3 - (4 - 0))), EPSILON);
+    test_within_d(da_foldr(a, double_plus, 100), 1 + (2 + (3 + (4 + 100))), EPSILON);
+    test_within_d(da_foldr(a, double_minus, 0), 1 - (2 - (3 - (4 - 0))), EPSILON);
     a_free(a);
 }
 
@@ -1064,19 +1064,19 @@ static void da_filter_test(void) {
     a = da_of_string("1, 2, 3, 4, 5, 6");
     ac = da_filter(a, da_gt, 3);
     ex = da_of_string("4, 5, 6");
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = da_filter(a, da_lt, 4);
     ex = da_of_string("1, 2, 3");
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
 
     ac = da_filter(a, da_le, 3);
     ex = da_of_string("1, 2, 3");
-    da_check_within(ac, ex);
+    da_test_within(ac, ex);
     a_free(ac);
     a_free(ex);
     a_free(a);
@@ -1136,9 +1136,9 @@ Array da_filter_state(Array array, DoubleIntDoubleAnyToBool predicate, double x,
 static void da_exists_test(void) {
     printsln((String)__func__);
     Array a = da_of_string("1, 2, 3, 4, 5, 6");
-    check_expect_b(da_exists(a, da_gt, 3), true);
-    check_expect_b(da_exists(a, da_gt, 9), false);
-    check_expect_b(da_exists(a, da_lt, -1), false);
+    test_equal_b(da_exists(a, da_gt, 3), true);
+    test_equal_b(da_exists(a, da_gt, 9), false);
+    test_equal_b(da_exists(a, da_lt, -1), false);
     a_free(a);
 }
 
@@ -1171,9 +1171,9 @@ bool da_exists_state(Array array, DoubleIntDoubleAnyToBool predicate, double x, 
 static void da_forall_test(void) {
     printsln((String)__func__);
     Array a = da_of_string("1, 2, 3, 4, 5, 6");
-    check_expect_b(da_forall(a, da_gt, 0), true);
-    check_expect_b(da_forall(a, da_gt, 1), false);
-    check_expect_b(da_forall(a, da_lt, 7), true);
+    test_equal_b(da_forall(a, da_gt, 0), true);
+    test_equal_b(da_forall(a, da_gt, 1), false);
+    test_equal_b(da_forall(a, da_lt, 7), true);
     a_free(a);
 }
     
@@ -1207,7 +1207,7 @@ bool da_forall_state(Array array, DoubleIntDoubleAnyToBool predicate, double x, 
 ///////////////////////////////////////////////////////////////////////////////
 // Tests
 
-bool da_check_within_file_line(const char *file, const char *function, int line, Array a, double *e, int ne, double epsilon) {
+bool da_test_within_file_line(const char *file, const char *function, int line, Array a, double *e, int ne, double epsilon) {
     base_init();
     base_count_check();
     if (a->n != ne) {
@@ -1267,15 +1267,15 @@ static void da_index_option_test(void) {
         printf("value found at index %f\n", op.some);
     }
 #endif
-    check_expect_b(op.none, true);
+    test_equal_b(op.none, true);
         
     op = da_index_option(array, 1, EPSILON);
-    check_expect_b(op.none, false);
-    check_expect_i(op.some, 0);
+    test_equal_b(op.none, false);
+    test_equal_i(op.some, 0);
         
     op = da_index_option(array, 2, EPSILON);
-    check_expect_b(op.none, false);
-    check_expect_i(op.some, 1);
+    test_equal_b(op.none, false);
+    test_equal_i(op.some, 1);
         
     a_free(array);
 }

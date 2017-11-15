@@ -47,10 +47,10 @@ const double END_POSITION = 10.0;
 struct Train move_train(struct Train train, double amount);
 
 // helper function for comparing trains
-bool check_expect_train(int line, struct Train t, struct Train s) {
-    bool tags_equal = base_check_expect_i(__FILE__, line, 
+bool test_equal_train(int line, struct Train t, struct Train s) {
+    bool tags_equal = base_test_equal_i(__FILE__, line, 
                                            t.tag, s.tag);
-    bool positions_within = base_check_within_d(__FILE__, line,
+    bool positions_within = base_test_within_d(__FILE__, line,
                               t.position, s.position, EPSILON);
     return tags_equal && positions_within;
 }
@@ -60,39 +60,39 @@ static void move_train_test() {
     struct Train actual = make_train_none(); // absent train
     actual = move_train(actual, 3.0); // move absent train by 3.0 km
     struct Train expected = make_train_none(); // absent train
-    check_expect_train(__LINE__, actual, expected);
+    test_equal_train(__LINE__, actual, expected);
     // same as above, but as nested calls
-    check_expect_train(__LINE__, move_train(make_train_none(), 3.0),
+    test_equal_train(__LINE__, move_train(make_train_none(), 3.0),
                                  make_train_none());
  
     // borders
-    check_expect_train(__LINE__, move_train(make_train_at(0.0), 0.0),
+    test_equal_train(__LINE__, move_train(make_train_at(0.0), 0.0),
                                  make_train_at(0.0));
-    check_expect_train(__LINE__, move_train(make_train_at(10.0), 0.0),
+    test_equal_train(__LINE__, move_train(make_train_at(10.0), 0.0),
                                  make_train_at(10.0));
-    check_expect_train(__LINE__, move_train(make_train_at(1.0), -1.0),
+    test_equal_train(__LINE__, move_train(make_train_at(1.0), -1.0),
                                  make_train_at(0.0));
-    check_expect_train(__LINE__, move_train(make_train_at(9.0), 1.0),
+    test_equal_train(__LINE__, move_train(make_train_at(9.0), 1.0),
                                  make_train_at(10.0));
  
     // interior (both before and after advance)
-    check_expect_train(__LINE__, move_train(make_train_at(1.0), 0.0),
+    test_equal_train(__LINE__, move_train(make_train_at(1.0), 0.0),
                                  make_train_at(1.0));
-    check_expect_train(__LINE__, move_train(make_train_at(5.5), 1.5),
+    test_equal_train(__LINE__, move_train(make_train_at(5.5), 1.5),
                                  make_train_at(7.0));
-    check_expect_train(__LINE__, move_train(make_train_at(4.5), -1.0),
+    test_equal_train(__LINE__, move_train(make_train_at(4.5), -1.0),
                                  make_train_at(3.5));
  
     // leaving the section
-    check_expect_train(__LINE__, move_train(make_train_at(9.0), 1.1),
+    test_equal_train(__LINE__, move_train(make_train_at(9.0), 1.1),
                                  make_train_none());
-    check_expect_train(__LINE__, move_train(make_train_at(1.0), -1.1),
+    test_equal_train(__LINE__, move_train(make_train_at(1.0), -1.1),
                                  make_train_none());
  
     // entering the section
-    check_expect_train(__LINE__, move_train(make_train_at(-0.1), 0.1),
+    test_equal_train(__LINE__, move_train(make_train_at(-0.1), 0.1),
                                  make_train_at(0.0));
-    check_expect_train(__LINE__, move_train(make_train_at(10.1), -0.1),
+    test_equal_train(__LINE__, move_train(make_train_at(10.1), -0.1),
                                  make_train_at(10.0));
 }
 

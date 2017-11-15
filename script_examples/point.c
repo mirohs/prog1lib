@@ -28,19 +28,19 @@ struct Point make_point(double x, double y) {
 double distance_to_origin(struct Point p);
 
 static void distance_to_origin_test() {
-    check_within_d(distance_to_origin(make_point(0, 0)),
+    test_within_d(distance_to_origin(make_point(0, 0)),
         0.0, EPSILON);
-    check_within_d(distance_to_origin(make_point(1, 0)),
+    test_within_d(distance_to_origin(make_point(1, 0)),
         1.0, EPSILON);
-    check_within_d(distance_to_origin(make_point(-1, 0)),
+    test_within_d(distance_to_origin(make_point(-1, 0)),
         1.0, EPSILON);
-    check_within_d(distance_to_origin(make_point(0, 2)),
+    test_within_d(distance_to_origin(make_point(0, 2)),
         2.0, EPSILON);
-    check_within_d(distance_to_origin(make_point(0, -2)),
+    test_within_d(distance_to_origin(make_point(0, -2)),
         2.0, EPSILON);
-    check_within_d(distance_to_origin(make_point(3, 4)),
+    test_within_d(distance_to_origin(make_point(3, 4)),
         5.0, EPSILON);
-    check_within_d(distance_to_origin(make_point(3, -4)),
+    test_within_d(distance_to_origin(make_point(3, -4)),
         5.0, EPSILON);
 }
 
@@ -98,19 +98,19 @@ double distance_to_origin(struct Point p) {
 
 7. Test the function
 static void distance_to_origin_test() {
-    check_within_d(distance_to_origin(make_point(0, 0)),
+    test_within_d(distance_to_origin(make_point(0, 0)),
         0.0, EPSILON);
-    check_within_d(distance_to_origin(make_point(1, 0)),
+    test_within_d(distance_to_origin(make_point(1, 0)),
         1.0, EPSILON);
-    check_within_d(distance_to_origin(make_point(-1, 0)),
+    test_within_d(distance_to_origin(make_point(-1, 0)),
         1.0, EPSILON);
-    check_within_d(distance_to_origin(make_point(0, 2)),
+    test_within_d(distance_to_origin(make_point(0, 2)),
         2.0, EPSILON);
-    check_within_d(distance_to_origin(make_point(0, -2)),
+    test_within_d(distance_to_origin(make_point(0, -2)),
         2.0, EPSILON);
-    check_within_d(distance_to_origin(make_point(3, 4)),
+    test_within_d(distance_to_origin(make_point(3, 4)),
         5.0, EPSILON);
-    check_within_d(distance_to_origin(make_point(3, -4)),
+    test_within_d(distance_to_origin(make_point(3, -4)),
         5.0, EPSILON);
 }
 

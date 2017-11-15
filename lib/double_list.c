@@ -30,18 +30,18 @@ static void dl_repeat_test(void) {
     List list;
     
     list = dl_repeat(3, 0);
-    check_within_d(dl_get(list, 0), 0, EPSILON);
-    check_within_d(dl_get(list, 1), 0, EPSILON);
-    check_within_d(dl_get(list, 2), 0, EPSILON);
+    test_within_d(dl_get(list, 0), 0, EPSILON);
+    test_within_d(dl_get(list, 1), 0, EPSILON);
+    test_within_d(dl_get(list, 2), 0, EPSILON);
     l_free(list);
     
     list = dl_repeat(2, -1);
-    check_within_d(dl_get(list, 0), -1, EPSILON);
-    check_within_d(dl_get(list, 1), -1, EPSILON);
+    test_within_d(dl_get(list, 0), -1, EPSILON);
+    test_within_d(dl_get(list, 1), -1, EPSILON);
     l_free(list);
 
     list = dl_repeat(0, 2);
-    check_expect_i(l_length(list), 0);
+    test_equal_i(l_length(list), 0);
     l_free(list);
 }
 
@@ -119,37 +119,37 @@ static void dl_of_string_test(void) {
 
     ac = dl_of_string("1, 2, 3, 4, 5, 6");
     ex = dl_range(1, 7, 1);
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = dl_of_string("   1, 2, 3, 4, 5, 6   ");
     ex = dl_range(1, 7, 1);
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = dl_of_string("1xx2asdfs3");
     ex = dl_range(1, 4, 1);
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = dl_of_string("y1xx2asdfs3x");
     ex = dl_range(1, 4, 1);
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = dl_of_string("-3, -2, -1, 0, 1");
     ex = dl_range(-3, 2, 1);
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = dl_of_string(" -3, -2, -1 ");
     ex = dl_range(-3, 0, 1);
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
@@ -161,7 +161,7 @@ static void dl_of_string_test(void) {
     dl_append(ex, 1e5);
     dl_append(ex, -1.2e4);
     dl_append(ex, -1.2e-4);
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
@@ -170,7 +170,7 @@ static void dl_of_string_test(void) {
     dl_append(ex, -0.1);
     dl_append(ex, -2.0);
     dl_append(ex, -0.3);
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
@@ -179,13 +179,13 @@ static void dl_of_string_test(void) {
     dl_append(ex, -0.1);
     dl_append(ex, -2.0);
     dl_append(ex, -0.3);
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
     
     ac = dl_of_string("");
     ex = dl_create();
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
 }
@@ -220,25 +220,25 @@ static void dl_fn_test(void) {
 
     ac = dl_fn(3, two_d_plus_1, 0);
     ex = dl_of_string("1, 3, 5");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = dl_fn(4, two_d_plus_1, 0);
     ex = dl_of_string("1, 3, 5, 7");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = dl_fn(1, two_d_plus_1, 0);
     ex = dl_of_string("1");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = dl_fn(0, two_d_plus_1, 0);
     ex = dl_create();
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
 }
@@ -261,7 +261,7 @@ static void dl_of_il_test(void) {
     List il = il_of_string("-20, -1, 0, 1, 20");
     List ex = dl_of_string("-20, -1, 0, 1, 20");
     List ac = dl_of_il(il);
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(il);
     l_free(ex);
     l_free(ac);
@@ -385,7 +385,7 @@ static void dl_prepend_append_test(void) {
     dl_prepend(ex, 3);
     dl_prepend(ex, 2);
     dl_prepend(ex, 1);
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
 }
@@ -449,9 +449,9 @@ void dl_println(List list) {
 static void dl_contains_test(void) {
     printsln((String)__func__);
     List list = dl_of_string("10, 20, 30");
-    check_expect_b(dl_contains(list, 10, EPSILON), true);
-    check_expect_b(dl_contains(list, 11, EPSILON), false);
-    check_expect_b(dl_contains(list, 30, EPSILON), true);
+    test_equal_b(dl_contains(list, 10, EPSILON), true);
+    test_equal_b(dl_contains(list, 11, EPSILON), false);
+    test_equal_b(dl_contains(list, 30, EPSILON), true);
     l_free(list);
 }
 
@@ -473,21 +473,21 @@ static void dl_fill_test(void) {
     ac = dl_of_string("1, 1, 1");
     dl_fill(ac, -1);
     ex = dl_of_string("-1, -1, -1");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = dl_of_string("1, 1");
     dl_fill(ac, 2);
     ex = dl_of_string("2, 2");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = dl_of_string("");
     dl_fill(ac, 2);
     ex = dl_create();
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
 }
@@ -507,56 +507,56 @@ static void dl_fill_from_to_test(void) {
     ac = dl_of_string("0, 0, 0");
     dl_fill_from_to(ac, -1, 0, 3);
     ex = dl_of_string("-1, -1, -1");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = dl_of_string("0, 0, 0");
     dl_fill_from_to(ac, -1, -1, 4);
     ex = dl_of_string("-1, -1, -1");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = dl_of_string("0, 0, 0");
     dl_fill_from_to(ac, -1, 0, 0);
     ex = dl_of_string("0, 0, 0");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = dl_of_string("0, 0, 0");
     dl_fill_from_to(ac, -1, 0, 1);
     ex = dl_of_string("-1, 0, 0");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = dl_of_string("0, 0, 0");
     dl_fill_from_to(ac, -1, 2, 2);
     ex = dl_of_string("0, 0, 0");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = dl_of_string("0, 0, 0");
     dl_fill_from_to(ac, -1, 2, 3);
     ex = dl_of_string("0, 0, -1");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = dl_of_string("0, 0, 0");
     dl_fill_from_to(ac, -1, 2, 1);
     ex = dl_of_string("0, 0, 0");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = dl_of_string("0, 0, 0");
     dl_fill_from_to(ac, -1, 1, 3);
     ex = dl_of_string("0, -1, -1");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
 }
@@ -586,13 +586,13 @@ static void dl_index_test(void) {
         printf("value found at index %d\n", i);
     }
 #endif
-    check_expect_i(i, -1);
+    test_equal_i(i, -1);
 
     i = dl_index(list, 1, EPSILON);
-    check_expect_i(i, 0);
+    test_equal_i(i, 0);
         
     i = dl_index(list, 2, EPSILON);
-    check_expect_i(i, 1);
+    test_equal_i(i, 1);
         
     l_free(list);
     
@@ -613,11 +613,11 @@ int dl_index(List list, double value, double epsilon) {
 static void dl_index_from_test(void) {
     printsln((String)__func__);
     List a = dl_of_string("10 20 30 40 50");
-    check_expect_i(dl_index_from(a, 20, 0, EPSILON), 1);
-    check_expect_i(dl_index_from(a, 20, 1, EPSILON), 1);
-    check_expect_i(dl_index_from(a, 20, 2, EPSILON), -1);
-    check_expect_i(dl_index_from(a, 30, -1, EPSILON), 2);
-    check_expect_i(dl_index_from(a, 60, 0, EPSILON), -1);
+    test_equal_i(dl_index_from(a, 20, 0, EPSILON), 1);
+    test_equal_i(dl_index_from(a, 20, 1, EPSILON), 1);
+    test_equal_i(dl_index_from(a, 20, 2, EPSILON), -1);
+    test_equal_i(dl_index_from(a, 30, -1, EPSILON), 2);
+    test_equal_i(dl_index_from(a, 60, 0, EPSILON), -1);
     l_free(a);
     
 }
@@ -638,8 +638,8 @@ int dl_index_from(List list, double value, int from, double epsilon) {
 static void dl_index_fn_test(void) {
     printsln((String)__func__);
     List a = dl_of_string("1 2 3 -4 5");
-    check_expect_i(dl_index_fn(a, dl_gt, 0.0), 0);
-    check_expect_i(dl_index_fn(a, dl_lt, 0.0), 3);
+    test_equal_i(dl_index_fn(a, dl_gt, 0.0), 0);
+    test_equal_i(dl_index_fn(a, dl_lt, 0.0), 3);
     l_free(a);
 }
 
@@ -671,7 +671,7 @@ static void dl_sort_test(void) {
     ac = dl_of_string("5, 4, 3, 2, 1");
     ex = dl_of_string("1, 2, 3, 4, 5");
     as = dl_sort(ac);
-    dl_check_within(as, ex);
+    dl_test_within(as, ex);
     l_free(ac);
     l_free(ex);
     l_free(as);
@@ -679,7 +679,7 @@ static void dl_sort_test(void) {
     ac = dl_of_string("1, 2, 1, 3, 2");
     ex = dl_of_string("1, 1, 2, 2, 3");
     as = dl_sort(ac);
-    dl_check_within(as, ex);
+    dl_test_within(as, ex);
     l_free(ac);
     l_free(ex);
     l_free(as);
@@ -687,7 +687,7 @@ static void dl_sort_test(void) {
     ac = dl_of_string("");
     ex = dl_of_string("");
     as = dl_sort(ac);
-    dl_check_within(as, ex);
+    dl_test_within(as, ex);
     l_free(ac);
     l_free(ex);
     l_free(as);
@@ -695,7 +695,7 @@ static void dl_sort_test(void) {
     ac = dl_of_string("-1, -2, -3, -1");
     ex = dl_of_string("-3, -2, -1, -1");
     as = dl_sort(ac);
-    dl_check_within(as, ex);
+    dl_test_within(as, ex);
     l_free(ac);
     l_free(ex);
     l_free(as);
@@ -720,7 +720,7 @@ static void dl_sort_dec_test(void) {
     ac = dl_of_string("1, 2, 3, 4, 5");
     ex = dl_of_string("5, 4, 3, 2, 1");
     as = dl_sort_dec(ac);
-    dl_check_within(as, ex);
+    dl_test_within(as, ex);
     l_free(ac);
     l_free(ex);
     l_free(as);
@@ -728,7 +728,7 @@ static void dl_sort_dec_test(void) {
     ac = dl_of_string("1, 2, 1, 3, 2");
     ex = dl_of_string("3, 2, 2, 1, 1");
     as = dl_sort_dec(ac);
-    dl_check_within(as, ex);
+    dl_test_within(as, ex);
     l_free(ac);
     l_free(ex);
     l_free(as);
@@ -736,7 +736,7 @@ static void dl_sort_dec_test(void) {
     ac = dl_of_string("");
     ex = dl_of_string("");
     as = dl_sort_dec(ac);
-    dl_check_within(as, ex);
+    dl_test_within(as, ex);
     l_free(ac);
     l_free(ex);
     l_free(as);
@@ -744,7 +744,7 @@ static void dl_sort_dec_test(void) {
     ac = dl_of_string("-3, -2, -1");
     ex = dl_of_string("-1, -2, -3");
     as = dl_sort_dec(ac);
-    dl_check_within(as, ex);
+    dl_test_within(as, ex);
     l_free(ac);
     l_free(ex);
     l_free(as);
@@ -763,42 +763,42 @@ static void dl_insert_test(void) {
     ac = dl_of_string("1, 2, 3, 4, 5");
     dl_insert(ac, 0, 9);
     ex = dl_of_string("9, 1, 2, 3, 4, 5");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
     
     ac = dl_of_string("1, 2, 3, 4, 5");
     dl_insert(ac, 5, 9);
     ex = dl_of_string("1, 2, 3, 4, 5, 9");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
     
     ac = dl_of_string("1, 2, 3, 4, 5");
     dl_insert(ac, 3, 9);
     ex = dl_of_string("1, 2, 3, 9, 4, 5");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
     
     ac = dl_of_string("1");
     dl_insert(ac, -1, 9);
     ex = dl_of_string("1");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
     
     ac = dl_of_string("1");
     dl_insert(ac, 1, 9);
     ex = dl_of_string("1, 9");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
     
     ac = dl_of_string("");
     dl_insert(ac, 0, 9);
     ex = dl_of_string("9");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
 }
@@ -816,49 +816,49 @@ static void dl_remove_test(void) {
     ac = dl_of_string("1, 2, 3, 4, 5, 6");
     dl_remove(ac, 0);
     ex = dl_of_string("2, 3, 4, 5, 6");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
     
     ac = dl_of_string("1, 2, 3, 4, 5, 6");
     dl_remove(ac, 5);
     ex = dl_of_string("1, 2, 3, 4, 5");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
     
     ac = dl_of_string("1, 2, 3, 4, 5, 6");
     dl_remove(ac, 3);
     ex = dl_of_string("1, 2, 3, 5, 6");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
     
     ac = dl_of_string("1");
     dl_remove(ac, -1);
     ex = dl_of_string("1");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
     
     ac = dl_of_string("1");
     dl_remove(ac, 1);
     ex = dl_of_string("1");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
     
     ac = dl_of_string("1");
     dl_remove(ac, 0);
     ex = dl_of_string("");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
     
     ac = dl_of_string("");
     dl_remove(ac, 0);
     ex = dl_of_string("");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
 }
@@ -931,14 +931,14 @@ static void dl_each_test(void) {
     ac = dl_of_string("1, 2, 3, 4");
     dl_each(ac, dl_times, 2);
     ex = dl_of_string("2, 4, 6, 8");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
     
     ac = dl_of_string("");
     dl_each(ac, dl_times, 3);
     ex = dl_of_string("");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
 }
@@ -975,7 +975,7 @@ static void dl_map_test(void) {
     l = dl_of_string("1, 2, 3, 4");
     ac = dl_map(l, dl_times, 2);
     ex = dl_of_string("2, 4, 6, 8");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(l);
     l_free(ac);
     l_free(ex);
@@ -983,7 +983,7 @@ static void dl_map_test(void) {
     l = dl_of_string("");
     ac = dl_map(l, dl_times, 3);
     ex = dl_of_string("");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(l);
     l_free(ac);
     l_free(ex);
@@ -1021,13 +1021,13 @@ List dl_map_state(List list, DoubleIntDoubleAnyToDouble f, double x, Any state) 
 static void dl_foldl_test(void) {
     printsln((String)__func__);
     List a = dl_of_string("");    
-    check_within_d(dl_foldl(a, double_plus, 100), 100, EPSILON);
-    check_within_d(dl_foldl(a, double_minus, 100), 100, EPSILON);
+    test_within_d(dl_foldl(a, double_plus, 100), 100, EPSILON);
+    test_within_d(dl_foldl(a, double_minus, 100), 100, EPSILON);
     l_free(a);
     
     a = dl_of_string("1, 2, 3, 4");    
-    check_within_d(dl_foldl(a, double_plus, 0),    (((0 + 1) + 2) + 3) + 4, EPSILON);
-    check_within_d(dl_foldl(a, double_minus, 100), (((100 - 1) - 2) - 3) - 4, EPSILON);
+    test_within_d(dl_foldl(a, double_plus, 0),    (((0 + 1) + 2) + 3) + 4, EPSILON);
+    test_within_d(dl_foldl(a, double_minus, 100), (((100 - 1) - 2) - 3) - 4, EPSILON);
     l_free(a);
 }
 
@@ -1045,13 +1045,13 @@ double dl_foldl(List list, DoubleDoubleIntToDouble f, double init) {
 static void dl_foldr_test(void) {
     printsln((String)__func__);
     List a = dl_of_string("");    
-    check_within_d(dl_foldr(a, double_plus, 100), 100, EPSILON);
-    check_within_d(dl_foldr(a, double_minus, 100), 100, EPSILON);
+    test_within_d(dl_foldr(a, double_plus, 100), 100, EPSILON);
+    test_within_d(dl_foldr(a, double_minus, 100), 100, EPSILON);
     l_free(a);
     
     a = dl_of_string("1, 2, 3, 4");    
-    check_within_d(dl_foldr(a, double_plus, 100), 1 + (2 + (3 + (4 + 100))), EPSILON);
-    check_within_d(dl_foldr(a, double_minus, 0), 1 - (2 - (3 - (4 - 0))), EPSILON);
+    test_within_d(dl_foldr(a, double_plus, 100), 1 + (2 + (3 + (4 + 100))), EPSILON);
+    test_within_d(dl_foldr(a, double_minus, 0), 1 - (2 - (3 - (4 - 0))), EPSILON);
     l_free(a);
 }
 
@@ -1075,19 +1075,19 @@ static void dl_filter_test(void) {
     a = dl_of_string("1, 2, 3, 4, 5, 6");
     ac = dl_filter(a, dl_gt, 3);
     ex = dl_of_string("4, 5, 6");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = dl_filter(a, dl_lt, 4);
     ex = dl_of_string("1, 2, 3");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
 
     ac = dl_filter(a, dl_le, 3);
     ex = dl_of_string("1, 2, 3");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
     l_free(a);
@@ -1140,7 +1140,7 @@ static void dl_choose_test(void) {
     a = dl_of_string("1, 2, 3, 4, 5, 6");
     ac = dl_choose(a, gt3_times_x, 4);
     ex = dl_of_string("16, 20, 24");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
 
     l_free(ac);
     l_free(ex);
@@ -1178,7 +1178,7 @@ static void dl_choose_state_test(void) {
     double y = 4;
     ac = dl_choose_state(a, gt_x_times_y, 3, &y);
     ex = dl_of_string("16, 20, 24");
-    dl_check_within(ac, ex);
+    dl_test_within(ac, ex);
 
     l_free(ac);
     l_free(ex);
@@ -1203,9 +1203,9 @@ List dl_choose_state(List list, DoubleIntDoubleAnyToDoubleOption f, double x, An
 static void dl_exists_test(void) {
     printsln((String)__func__);
     List a = dl_of_string("1, 2, 3, 4, 5, 6");
-    check_expect_b(dl_exists(a, dl_gt, 3), true);
-    check_expect_b(dl_exists(a, dl_gt, 9), false);
-    check_expect_b(dl_exists(a, dl_lt, -1), false);
+    test_equal_b(dl_exists(a, dl_gt, 3), true);
+    test_equal_b(dl_exists(a, dl_gt, 9), false);
+    test_equal_b(dl_exists(a, dl_lt, -1), false);
     l_free(a);
 }
 
@@ -1243,9 +1243,9 @@ bool dl_exists_state(List list, DoubleIntDoubleAnyToBool predicate, double x, An
 static void dl_forall_test(void) {
     printsln((String)__func__);
     List a = dl_of_string("1, 2, 3, 4, 5, 6");
-    check_expect_b(dl_forall(a, dl_gt, 0), true);
-    check_expect_b(dl_forall(a, dl_gt, 1), false);
-    check_expect_b(dl_forall(a, dl_lt, 7), true);
+    test_equal_b(dl_forall(a, dl_gt, 0), true);
+    test_equal_b(dl_forall(a, dl_gt, 1), false);
+    test_equal_b(dl_forall(a, dl_lt, 7), true);
     l_free(a);
 }
 
@@ -1285,7 +1285,7 @@ bool dl_forall_state(List list, DoubleIntDoubleAnyToBool predicate, double x, An
 ///////////////////////////////////////////////////////////////////////////////
 // Tests
 
-bool dl_check_within_file_line(const char *file, const char *function, int line, List a, List e, double epsilon) {
+bool dl_test_within_file_line(const char *file, const char *function, int line, List a, List e, double epsilon) {
     base_count_check();
 
     if (a == NULL) {

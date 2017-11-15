@@ -22,32 +22,32 @@ static void ia_sub_test(void) {
     array = ia_of_string("1 2 3 4");
  
     sub = ia_sub(array, 0, a_length(array));
-    ia_check_expect(array, sub);
+    ia_test_equal(array, sub);
     a_free(sub);
  
     sub = ia_sub(array, -1, a_length(array) + 1);
-    ia_check_expect(array, sub);
+    ia_test_equal(array, sub);
     a_free(sub);
  
     array2 = ia_of_string("2 3 4");
     sub = ia_sub(array, 1, a_length(array));
-    ia_check_expect(array2, sub);
+    ia_test_equal(array2, sub);
     a_free(array2);
     a_free(sub);
  
     array2 = ia_of_string("2 3");
     sub = ia_sub(array, 1, a_length(array) - 1);
-    ia_check_expect(array2, sub);
+    ia_test_equal(array2, sub);
     a_free(array2);
     a_free(sub);
  
     array2 = ia_of_string("");
     sub = ia_sub(array, 1, 1);
-    ia_check_expect(array2, sub);
+    ia_test_equal(array2, sub);
     a_free(sub);
  
     sub = ia_sub(array, 2, 1);
-    ia_check_expect(array2, sub);
+    ia_test_equal(array2, sub);
     a_free(array2);
     a_free(sub);
  
@@ -113,10 +113,10 @@ int ia_sub_average(Array, int, int);
 static void ia_sub_average_test(void) {
     Array array;
     array = ia_of_string("1 2 3 4");
-    check_expect_i(ia_sub_average(array, 0, 1), 1);
-    check_expect_i(ia_sub_average(array, 3, 4), 4);
-    check_expect_i(ia_sub_average(array, 0, 4), 2);
-    check_expect_i(ia_sub_average(array, 1, 4), 3);
+    test_equal_i(ia_sub_average(array, 0, 1), 1);
+    test_equal_i(ia_sub_average(array, 3, 4), 4);
+    test_equal_i(ia_sub_average(array, 0, 4), 2);
+    test_equal_i(ia_sub_average(array, 1, 4), 3);
     a_free(array);
 }
 
