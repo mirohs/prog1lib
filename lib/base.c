@@ -468,7 +468,7 @@ double d_input(void) {
 // Files
 
 String s_read_file(String name) {
-    FILE *f = fopen(name, "r");
+    FILE *f = fopen(name, "r"); // removes \r from read content, only leaves \n
     if (f == NULL) {
         fprintf(stderr, "%s: Cannot open %s\n", (String)__func__, name); 
         exit(EXIT_FAILURE);
@@ -483,11 +483,11 @@ String s_read_file(String name) {
         exit(EXIT_FAILURE);
     }
     long sizeRead = fread(s, 1, size, f);
-    if (sizeRead != size) {
-        fprintf(stderr, "%s: Only read %ld of %ld bytes.\n", (String)__func__, sizeRead, size); 
+    if (!feof(f)) {
+        fprintf(stderr, "%s: Could not read file %s to end.\n", (String)__func__, name); 
         exit(EXIT_FAILURE);
     }
-    s[size] = '\0';
+    s[sizeRead] = '\0';
     
     fclose(f);
     return s;
@@ -529,7 +529,11 @@ int i_rnd(int i) {
         srand(time(NULL) << 10);
         srand_called = true;
     }
-    return rand() % i;
+    if (RAND_MAX == 32767) {
+        return ((rand() << 16) | rand()) % i;
+    } else {
+        return rand() % i;
+    }
 }
 
 double d_rnd(double i) {
