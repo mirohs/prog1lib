@@ -11,6 +11,7 @@
 
 
 
+// Address is used for testing.
 typedef struct Address {
     String firstname;
     String lastname;
@@ -26,7 +27,11 @@ static void a_create_test(void) {
     printsln((String)__func__);
     Array a;
     Address addr;
-    
+
+    // would violate first precondition:
+    // a = a_create(-1, sizeof(Address));
+    // would violate second precondition:
+    // a = a_create(1, 0);
     a = a_create(3, sizeof(Address));
 
     addr = make_address("Fred", "Oyster", "Hannover");
@@ -64,14 +69,8 @@ static void a_create_test(void) {
 }
 
 Array a_create(int n, int s) {
-    if (n < 0) {
-        printf("a_create: length n cannot be negative (is %d)\n", n);
-        exit(EXIT_FAILURE);
-    }
-    if (s <= 0) {
-        printf("a_create: size s has to be positive (is %d)\n", s);
-        exit(EXIT_FAILURE);
-    }
+    require2("non-negative length", n >= 0);
+    require2("positive size", s > 0);
     Array result = xmalloc(sizeof(ArrayHead));
     result->n = n;
     result->s = s;
@@ -88,6 +87,13 @@ static void a_of_buffer_test(void) {
     };
     Array a = a_of_buffer(&addr, 3, sizeof(Address));
 
+    // would violate precondition:
+    // a = a_of_buffer(NULL, 3, sizeof(Address));
+    // would violate precondition:
+    // a = a_of_buffer(&addr, -1, sizeof(Address));
+    // would violate precondition:
+    // a = a_of_buffer(&addr, 3, 0);
+
     Address *pa = a_get(a, 0);
     // printsln(pa->firstname);
     test_equal_s(pa->firstname, "Fred");
@@ -103,18 +109,9 @@ static void a_of_buffer_test(void) {
 }
 
 Array a_of_buffer(Any buffer, int n, int s) {
-    if (buffer == NULL) {
-        printf("a_create: buffer cannot be NULL\n");
-        exit(EXIT_FAILURE);
-    }
-    if (n < 0) {
-        printf("a_create: length n cannot be negative (is %d)\n", n);
-        exit(EXIT_FAILURE);
-    }
-    if (s <= 0) {
-        printf("a_create: size s has to be positive (is %d)\n", s);
-        exit(EXIT_FAILURE);
-    }
+    require_not_null(buffer);
+    require2("non-negative length", n >= 0);
+    require2("positive size", s > 0);
     Array result = xmalloc(sizeof(ArrayHead));
     result->n = n;
     result->s = s;
@@ -136,6 +133,13 @@ static void a_fn_test(void) {
 
     ac = a_fn(3, sizeof(IntPair), x_and_xsquare, NULL);
 
+    // would violate precondition:
+    // ac = a_fn(-1, sizeof(IntPair), x_and_xsquare, NULL);
+    // would violate precondition:
+    // ac = a_fn(3, 0, x_and_xsquare, NULL);
+    // would violate precondition:
+    // ac = a_fn(3, sizeof(IntPair), NULL, NULL);
+
     ex = a_create(3, sizeof(IntPair));
     ip = make_int_pair(0, 0);
     a_set(ex, 0, &ip);
@@ -151,15 +155,9 @@ static void a_fn_test(void) {
 }
 
 Array a_fn(int n, int s, AnyFn init, Any state) {
-    if (n < 0) {
-        printf("a_fn: length cannot be negative (is %d)\n", n);
-        exit(EXIT_FAILURE);
-    }
-    if (s <= 0) {
-        printf("a_fn: size has to be positive (is %d)\n", s);
-        exit(EXIT_FAILURE);
-    }
-    assert_function_not_null(init);
+    require2("non-negative length", n >= 0);
+    require2("positive size", s > 0);
+    require2("function not null", init);
     AnyIntAnyToVoid f = init;
     Byte *a = xcalloc(n, s);
     for (int i = 0; i < n; i++) {
@@ -190,6 +188,9 @@ static void a_copy_test(void) {
 
     copy = a_copy(array);
     a_test_equal(copy, array);
+
+    // would violate precondition:
+    // copy = a_copy(NULL);
     
     a_free(array);
     a_free(copy);
@@ -241,7 +242,7 @@ static void a_copy_test(void) {
 }
 
 Array a_copy(Array array) {
-    assert_argument_not_null(array);
+    require_not_null(array);
     int n = array->n * array->s;
     Any a = xmalloc(n);
     memcpy(a, array->a, n);
@@ -275,6 +276,9 @@ static void a_sub_test(void) {
     a_set(ex, 0, &ip);
     ip = make_int_pair(2, 20);
     a_set(ex, 1, &ip);
+
+    // would violate precondition:
+    // ac = a_sub(NULL, 1, 2);
     
     ac = a_sub(a, 0, 2);
     a_test_equal(ac, ex);
@@ -367,7 +371,7 @@ static void a_sub_test(void) {
 }
 
 Array a_sub(Array array, int i, int j) {
-    assert_argument_not_null(array);
+    require_not_null(array);
     if (i >= j || i >= array->n || j <= 0) {
         Array result = xmalloc(sizeof(ArrayHead));
         result->n = 0;
@@ -390,7 +394,7 @@ Array a_sub(Array array, int i, int j) {
 }
 
 Array a_of_l(List list) {
-    assert_argument_not_null(list);
+    require_not_null(list);
     int n = l_length(list);
     int i = 0;
     Array result = a_create(n, list->s);
@@ -410,6 +414,25 @@ static void a_blit_test(void) {
     a_blit(s, 0, d, 0, 5);
     e = ia_of_string("1 2 3 4 5");
     ia_test_equal(d, e);
+
+    // would violate precondition:
+    // a_blit(NULL, 0, d, 0, 5);
+    // would violate precondition:
+    // a_blit(s, -1, d, 0, 5);
+    // would violate precondition:
+    // a_blit(s, 9, d, 0, 5);
+    // would violate precondition:
+    // a_blit(s, 0, d, -1, 5);
+    // would violate precondition:
+    // a_blit(s, 0, d, 100, 5);
+    // would violate precondition:
+    // a_blit(s, 0, d, 0, 10); // src too small
+    // would violate precondition:
+    // a_blit(s, 0, d, 0, 9); // dst too small
+    // would violate precondition:
+    // s->s = 24;
+    // a_blit(s, 0, d, 0, 5);
+
     a_free(s);
     a_free(d);
     a_free(e);
@@ -494,40 +517,36 @@ static void a_blit_test(void) {
     a_free(s);
     a_free(d);
     a_free(e);
+
+    // overlapping arrays
+    s = ia_range(1, 6);
+    a_blit(s, 0, s, 1, 4);
+    e = ia_of_string("1 1 2 3 4");
+    ia_test_equal(s, e);
+    a_free(s);
+    a_free(e);
+
+    s = ia_range(1, 6);
+    a_blit(s, 1, s, 0, 4);
+    e = ia_of_string("2 3 4 5 5");
+    ia_test_equal(s, e);
+    a_free(s);
+    a_free(e);
 }
 
 void a_blit(Array source, int source_index, Array destination, int destination_index, int count) {
-    assert_argument_not_null(source);
-    assert_argument_not_null(destination);
+    require_not_null(source);
+    require_not_null(destination);
     if (count <= 0) return;
-    if (source_index < 0 || source_index >= source->n) {
-        printf("a_blit: source_index %d is out of range "
-            "(source length: %d, allowed indices: 0..%d)\n", 
-        source_index, source->n, source->n - 1);
-    }
-    if (destination_index < 0 || destination_index >= destination->n) {
-        printf("a_blit: destination_index %d is out of range "
-            "(destination length: %d, allowed indices: 0..%d)\n", 
-        destination_index, destination->n, destination->n - 1);
-    }
-    if (source_index + count > source->n) {
-        printf("a_blit: source_index (%d) + count (%d)\n"
-            "is too large for source (length: %d),\n"
-            "maximum allowed value for count would have been %d\n", 
-            source_index, count, source->n, source->n - source_index);
-        exit(EXIT_FAILURE);
-    }
-    if (destination_index + count > destination->n) {
-        printf("a_blit: destination_index (%d) + count (%d)\n"
-            "is too large for destination (length: %d),\n"
-            "maximum allowed value for count would have been %d\n", 
-            destination_index, count, destination->n, destination->n - destination_index);
-        exit(EXIT_FAILURE);
-    }
-    if (source->s != destination->s) {
-        printf("a_blit: element sizes differ: source %d, destination %d\n", source->s, destination->s);
-        exit(EXIT_FAILURE);
-    }
+    require3("equal element sizes", source->s == destination->s, "source->s == %d, destination->s == %d", source->s, destination->s);
+    require3("source_index in range", source_index >= 0 && source_index < source->n, 
+            "source_index == %d, source->n == %d", source_index, source->n);
+    require3("destination_index in range", destination_index >= 0 && destination_index < destination->n, 
+            "destination_index == %d, destination->n == %d", destination_index, destination->n);
+    require3("(source_index + count) in range", source_index + count <= source->n, 
+            "source_index + count == %d, source->n == %d", source_index + count, source->n);
+    require3("(destination_index + count) in range", destination_index + count <= destination->n, 
+            "destination_index + count == %d, destination->n == %d", destination_index + count, destination->n);
     Byte *src = (Byte*)source->a + source_index * source->s;
     Byte *dst = (Byte*)destination->a + destination_index * destination->s;
     memcpy(dst, src, count * source->s);
@@ -548,40 +567,30 @@ void a_free(Array array) {
 }
 
 Any a_get(Array array, int index) {
-    assert_argument_not_null(array);
-    if (index < 0 || index >= array->n) {
-        printf("a_get: index %d is out of range "
-            "(array length: %d, allowed indices: 0..%d)\n", 
-        index, array->n, array->n - 1);
-        exit(EXIT_FAILURE);
-    }
+    require_not_null(array);
+    require3("index in range", index >= 0 && index < array->n, "index == %d, length == %d", index, array->n);
     return (Byte*)array->a + index * array->s;
 }
 
 void a_set(Array array, int index, Any value) {
-    assert_argument_not_null(array);
-    if (index < 0 || index >= array->n) {
-        printf("a_set: index %d is out of range "
-            "(array length: %d, allowed indices: 0..%d)\n", 
-        index, array->n, array->n - 1);
-        exit(EXIT_FAILURE);
-    }
+    require_not_null(array);
+    require3("index in range", index >= 0 && index < array->n, "index == %d, length == %d", index, array->n);
     memcpy((Byte*)array->a + index * array->s, value, array->s);
 }
 
 int a_length(Array array) {
-    assert_argument_not_null(array);
+    require_not_null(array);
     return array->n;
 }
 
 int a_element_size(Array array) {
-    assert_argument_not_null(array);
+    require_not_null(array);
     return array->s;
 }
 
 void a_print(Array array, AnyFn print_element) {
-    assert_argument_not_null(array);
-    assert_function_not_null(print_element);
+    require_not_null(array);
+    require_not_null(print_element);
     AnyToVoid f = print_element;
     printf("[");
     if (array->n > 0) {
@@ -595,15 +604,15 @@ void a_print(Array array, AnyFn print_element) {
 }
 
 void a_println(Array array, AnyFn print_element) {
-    assert_argument_not_null(array);
-    assert_function_not_null(print_element);
+    require_not_null(array);
+    require_not_null(print_element);
     a_print(array, print_element);
     printf("\n");
 }
 
 bool a_equals(Array a, Array b) {
-    assert_argument_not_null(a);
-    assert_argument_not_null(b);
+    require_not_null(a);
+    require_not_null(b);
     if (a->n != b->n || a->s != b->s) return false;
     if (a->a == NULL && b->a == NULL) return true;
     if (a->a == NULL || b->a == NULL) return false;
@@ -624,6 +633,19 @@ static void a_concat_test(void) {
     a_set(a1, 1, &ip);
     ip = make_int_pair(3, 30);
     a_set(a1, 2, &ip);
+
+    // would violate precondition:
+    // a_set(NULL, 0, &ip);
+    // would violate precondition:
+    // a_set(a1, -1, &ip);
+    // would violate precondition:
+    // a_set(a1, 3, &ip);
+    // would violate precondition:
+    // a_get(NULL, 0);
+    // would violate precondition:
+    // a_get(a1, -1);
+    // would violate precondition:
+    // a_get(a1, 3);
     
     a2 = a_create(2, sizeof(IntPair));
     ip = make_int_pair(4, 40);
@@ -744,6 +766,10 @@ static void a_concat_test(void) {
 
     a1 = da_range(0, 0, 1);
     a2 = da_range(0, 0, 1);
+
+    // would violate precondition:
+    // a1->s=2;
+    
     ac = a_concat(a1, a2);
     ex = da_range(0, 0, 1);
     da_test_within(ac, ex);
@@ -754,15 +780,12 @@ static void a_concat_test(void) {
 }
 
 Array a_concat(Array x, Array y) {
-    assert_argument_not_null(x);
-    assert_argument_not_null(y);
-    if (x->s != y->s) {
-        printf("%s: element sizes are not equal (%d and %d)\n", __func__, x->s, y->s);
-        exit(EXIT_FAILURE);
-    }
+    require_not_null(x);
+    require_not_null(y);
+    require3("equal element sizes", x->s == y->s, "x->s == %d, y->s == %d", x->s, y->s);
     int n = x->n + y->n;
     Byte *a = xmalloc(n * x->s);
-    memcpy(a,             x->a, x->n * x->s);
+    memcpy(a,               x->a, x->n * x->s);
     memcpy(a + x->n * x->s, y->a, y->n * y->s);
     Array result = xmalloc(sizeof(ArrayHead));
     result->n = n;
@@ -802,8 +825,8 @@ static void a_index_fn_test(void) {
 }
 
 int a_index_fn(Array array, AnyFn predicate, Any state) {
-    assert_argument_not_null(array);
-    assert_function_not_null(predicate);
+    require_not_null(array);
+    require_not_null(predicate);
     AnyIntAnyToBool f = predicate;
     for (int i = 0; i < array->n; i++) {
         if (f((Byte*)array->a + i * array->s, i, state)) {
@@ -834,8 +857,8 @@ static void a_last_index_fn_test(void) {
 }
 
 int a_last_index_fn(Array array, AnyFn predicate, Any state) {
-    assert_argument_not_null(array);
-    assert_function_not_null(predicate);
+    require_not_null(array);
+    require_not_null(predicate);
     AnyIntAnyToBool f = predicate;
     for (int i = array->n - 1; i >= 0; i--) {
         if (f((Byte*)array->a + i * array->s, i, state)) {
@@ -881,7 +904,7 @@ static void a_reverse_test(void) {
 }
 
 void a_reverse(Array array) {
-    assert_argument_not_null(array);
+    require_not_null(array);
     if (array->n <= 1) return;
     Byte *tmp = xmalloc(array->s);
     for (int i = 0, j = array->n - 1; i < j; i++, j--) {
@@ -902,7 +925,7 @@ static void a_shuffle_test(void) {
 }
 
 void a_shuffle(Array array) {
-    assert_argument_not_null(array);
+    require_not_null(array);
     Byte *tmp = xmalloc(array->s);
     for (int i = array->n - 1; i > 0; i--) {
         int r = i_rnd(i + 1); // random number between [0,i]
@@ -915,8 +938,8 @@ void a_shuffle(Array array) {
 }
 
 static CmpResult a_compare_i(ConstAny a, ConstAny b) {
-    assert_argument_not_null(a);
-    assert_argument_not_null(b);
+    require_not_null(a);
+    require_not_null(b);
     int x = *(int*)a;
     int y = *(int*)b;
     return (x < y) ? LT : ((x > y) ? GT : EQ);
@@ -960,7 +983,8 @@ static void a_sort_test(void) {
 }
 
 void a_sort(Array array, Comparator c) {
-    assert_function_not_null(c);
+    require_not_null(array);
+    require_not_null(c);
     qsort(array->a, array->n, array->s, c);
 }
 
@@ -1027,8 +1051,9 @@ static void a_map_test(void) {
 }
 
 Array a_map(Array array, AnyFn f, int mapped_element_size, Any state) {
-    assert_argument_not_null(array);
-    assert_function_not_null(f);
+    require_not_null(array);
+    require_not_null(f);
+    require2("positive size", mapped_element_size > 0);
     AnyIntAnyAnyToVoid ff = f;
     Byte *a = xcalloc(array->n, mapped_element_size);
     for (int i = 0; i < array->n; i++) {
@@ -1078,9 +1103,9 @@ static void a_map2_test(void) {
 }
 
 Array a_map2(Array a1, Array a2, AnyFn f, int mapped_element_size, Any state) {
-    assert_argument_not_null(a1);
-    assert_argument_not_null(a2);
-    assert_function_not_null(f);
+    require_not_null(a1);
+    require_not_null(a2);
+    require_not_null(f);
     AnyAnyIntAnyAnyToVoid ff = f;
     int n = (a1->n < a2->n) ? a1->n : a2->n;
     Byte *a = xcalloc(n, mapped_element_size);
@@ -1144,10 +1169,10 @@ static void a_map3_test(void) {
 // @todo: add tests
 
 Array a_map3(Array a1, Array a2, Array a3, AnyFn f, int mapped_element_size, Any state) {
-    assert_argument_not_null(a1);
-    assert_argument_not_null(a2);
-    assert_argument_not_null(a3);
-    assert_function_not_null(f);
+    require_not_null(a1);
+    require_not_null(a2);
+    require_not_null(a3);
+    require_not_null(f);
     AnyAnyAnyIntAnyAnyToVoid ff = f;
     int n = (a1->n < a2->n && a1->n < a3->n) ? a1->n : ((a2->n < a1->n && a2->n < a3->n) ? a2->n : a3->n);
     Byte *a = xcalloc(n, mapped_element_size);
@@ -1202,8 +1227,8 @@ static void a_each_test(void) {
 }
 
 void a_each(Array array, AnyFn f, Any state) {
-    assert_argument_not_null(array);
-    assert_function_not_null(f);
+    require_not_null(array);
+    require_not_null(f);
     AnyIntAnyToVoid ff = f;
     for (int i = 0; i < array->n; i++) {
         ff((Byte*)array->a + i * array->s, i, state);
@@ -1214,9 +1239,9 @@ void a_each(Array array, AnyFn f, Any state) {
 // @todo: add tests
 
 void a_each2(Array a1, Array a2, AnyFn f, Any state) {
-    assert_argument_not_null(a1);
-    assert_argument_not_null(a2);
-    assert_function_not_null(f);
+    require_not_null(a1);
+    require_not_null(a2);
+    require_not_null(f);
     AnyAnyIntAnyToVoid ff = f;
     int n = (a1->n < a2->n) ? a1->n : a2->n;
     for (int i = 0; i < n; i++) {
@@ -1227,10 +1252,10 @@ void a_each2(Array a1, Array a2, AnyFn f, Any state) {
 // @todo: add tests
 
 void a_each3(Array a1, Array a2, Array a3, AnyFn f, Any state) {
-    assert_argument_not_null(a1);
-    assert_argument_not_null(a2);
-    assert_argument_not_null(a3);
-    assert_function_not_null(f);
+    require_not_null(a1);
+    require_not_null(a2);
+    require_not_null(a3);
+    require_not_null(f);
     AnyAnyAnyIntAnyToVoid ff = f;
     int n = (a1->n < a2->n && a1->n < a3->n) ? a1->n : ((a2->n < a1->n && a2->n < a3->n) ? a2->n : a3->n);
     for (int i = 0; i < n; i++) {
@@ -1265,8 +1290,8 @@ static void a_foldl_test(void) {
 }
 
 void a_foldl(Array array, AnyFn f, Any state) {
-    assert_argument_not_null(array);
-    assert_function_not_null(f);
+    require_not_null(array);
+    require_not_null(f);
     AnyAnyIntToVoid ff = f;
     for (int i = 0; i < array->n; i++) {
         ff(state, (Byte*)array->a + i * array->s, i);
@@ -1277,9 +1302,9 @@ void a_foldl(Array array, AnyFn f, Any state) {
 // @todo: add tests
 
 void a_foldl2(Array a1, Array a2, AnyFn f, Any state) {
-    assert_argument_not_null(a1);
-    assert_argument_not_null(a2);
-    assert_function_not_null(f);
+    require_not_null(a1);
+    require_not_null(a2);
+    require_not_null(f);
     AnyAnyAnyIntToVoid ff = f;
     int n = (a1->n < a2->n) ? a1->n : a2->n;
     for (int i = 0; i < n; i++) {
@@ -1290,10 +1315,10 @@ void a_foldl2(Array a1, Array a2, AnyFn f, Any state) {
 // @todo: add tests
 
 void a_foldl3(Array a1, Array a2, Array a3, AnyFn f, Any state) {
-    assert_argument_not_null(a1);
-    assert_argument_not_null(a2);
-    assert_argument_not_null(a3);
-    assert_function_not_null(f);
+    require_not_null(a1);
+    require_not_null(a2);
+    require_not_null(a3);
+    require_not_null(f);
     AnyAnyAnyAnyIntToVoid ff = f;
     int n = (a1->n < a2->n && a1->n < a3->n) ? a1->n : ((a2->n < a1->n && a2->n < a3->n) ? a2->n : a3->n);
     for (int i = 0; i < n; i++) {
@@ -1328,8 +1353,8 @@ static void a_foldr_test(void) {
 }
 
 void a_foldr(Array array, AnyFn f, Any state) {
-    assert_argument_not_null(array);
-    assert_function_not_null(f);
+    require_not_null(array);
+    require_not_null(f);
     AnyAnyIntToVoid ff = f;
     for (int i = array->n - 1; i >= 0; i--) {
         ff((Byte*)array->a + i * array->s, state, i);
@@ -1367,8 +1392,8 @@ static void a_filter_test(void) {
 }
 
 Array a_filter(Array array, AnyFn predicate, Any state) {
-    assert_argument_not_null(array);
-    assert_function_not_null(predicate);
+    require_not_null(array);
+    require_not_null(predicate);
     AnyIntAnyToBool f = predicate;
     bool *ps = xmalloc(array->n * sizeof(bool));
     int n = 0;
@@ -1414,8 +1439,8 @@ static void a_exists_test(void) {
 }
 
 bool a_exists(Array array, AnyFn predicate, Any state) {
-    assert_argument_not_null(array);
-    assert_function_not_null(predicate);
+    require_not_null(array);
+    require_not_null(predicate);
     AnyIntAnyToBool f = predicate;
     for (int i = 0; i < array->n; i++) {
         if (f((Byte*)array->a + i * array->s, i, state)) {
@@ -1448,8 +1473,8 @@ static void a_forall_test(void) {
 }
 
 bool a_forall(Array array, AnyFn predicate, Any state) {
-    assert_argument_not_null(array);
-    assert_function_not_null(predicate);
+    require_not_null(array);
+    require_not_null(predicate);
     AnyIntAnyToBool f = predicate;
     for (int i = 0; i < array->n; i++) {
         if (!f((Byte*)array->a + i * array->s, i, state)) {
