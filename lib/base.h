@@ -422,7 +422,7 @@ Check the given precondition. If the condition is true, do nothing. If the condi
 Example use of a precondition:
 
     int myfunction(int x) {
-        require("not too large", x < 3);
+        require2("not too large", x < 3);
         ...
     }
 
@@ -450,7 +450,7 @@ Check the given precondition. If the condition is true, do nothing. If the condi
 Example use of a precondition:
 
     int myfunction(int x) {
-        require("not too large", x < 3);
+        require3("not too large", x < 3, "x == %d", x);
         ...
     }
 
@@ -480,7 +480,7 @@ Check the given precondition. If the condition is true, do nothing. If the condi
 Example use of a precondition:
 
     int myfunction(int x) {
-        require("not too large", x < 3);
+        require4("not too large", x < 3, "x == %d", x);
         ...
     }
 
@@ -510,7 +510,7 @@ Check the given precondition. If the condition is true, do nothing. If the condi
 Example use of a precondition:
 
     int myfunction(int x) {
-        require("not too large", x < 3);
+        require5("not too large", x < 3);
         ...
     }
 
@@ -538,7 +538,7 @@ Check the given precondition. If the condition is true, do nothing. If the condi
 Example use of a precondition:
 
     int myfunction(int x) {
-        require("not too large", x < 3);
+        require6("not too large", x < 3);
         ...
     }
 

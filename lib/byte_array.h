@@ -521,14 +521,10 @@ bool ba_test_equal_file_line(const char *file, const char *function, int line, A
 Checks if array has the right element size. Fails if not.
 */
 #ifdef CHECK_ELEMENT_SIZE
-#define ba_assert_element_size(array) \
-    if ((array)->s != sizeof(Byte)) {\
-        printf("%s: wrong element size %d, "\
-            "this is not a Byte array\n", __func__, (array)->s);\
-        exit(EXIT_FAILURE);\
-    }
+#define require_element_size_byte(array) \
+    require3("element size byte", (array)->s == sizeof(Byte), "size == %d", (array)->s)
 #else
-#define ba_assert_element_size(function_name, array) 
+#define require_element_size_byte(array)
 #endif
 
 void ba_test_all(void);

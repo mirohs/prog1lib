@@ -37,10 +37,7 @@ static void pa_create_test(void) {
 }
 
 Array pa_create(int n, Any value) {
-    if (n < 0) {
-        printf("pa_create: n cannot be negative (is %d)\n", n);
-        exit(EXIT_FAILURE);
-    }
+    require2("non-negative length", n >= 0);
     Any *a = xmalloc(n * sizeof(Any));
     for (int i = 0; i < n; i++) {
         a[i] = value;
@@ -123,7 +120,7 @@ static void a_sub_test(void) {
 
 void pa_free(Array array) {
     if (array != NULL) {
-        pa_assert_element_size(array);
+        require_element_size_pointer(array);
         if (array->a != NULL) {
             for (int i = 0; i < array->n; i++) {
                 Any s = pa_get(array, i);
@@ -140,14 +137,10 @@ void pa_free(Array array) {
 
 #ifdef A_GET_SET
 Any pa_get(Array array, int index) {
-    assert_argument_not_null(array);
-    pa_assert_element_size(array);
-    if (index < 0 || index >= array->n) {
-        printf("pa_get: index %d is out of range "
-            "(array length: %d, allowed indices: 0..%d)\n", 
-        index, array->n, array->n - 1);
-        exit(EXIT_FAILURE);
-    }
+    require_not_null(array);
+    require_element_size_pointer(array);
+    require3("index in range", index >= 0 && index < array->n, 
+            "index == %d, length == %d", index, array->n);
     Any *a = array->a;
     return a[index];
 }
@@ -155,14 +148,10 @@ Any pa_get(Array array, int index) {
 
 #ifdef A_GET_SET
 void pa_set(Array array, int index, Any value) {
-    assert_argument_not_null(array);
-    pa_assert_element_size(array);
-    if (index < 0 || index >= array->n) {
-        printf("pa_set: index %d is out of range "
-            "(array length: %d, allowed indices: 0..%d)\n", 
-        index, array->n, array->n - 1);
-        exit(EXIT_FAILURE);
-    }
+    require_not_null(array);
+    require_element_size_pointer(array);
+    require3("index in range", index >= 0 && index < array->n, 
+            "index == %d, length == %d", index, array->n);
     Any *a = array->a;
     a[index] = value;
 }
@@ -170,8 +159,8 @@ void pa_set(Array array, int index, Any value) {
 
 #if 0
 void pa_print(Array array) {
-    assert_argument_not_null(array);
-    pa_assert_element_size(array);
+    require_not_null(array);
+    require_element_size_pointer(array);
     Any *a = array->a;
     printf("[");
     if (array->n > 0) {
@@ -184,8 +173,8 @@ void pa_print(Array array) {
 }
 
 void pa_println(Array array) {
-    assert_argument_not_null(array);
-    pa_assert_element_size(array);
+    require_not_null(array);
+    require_element_size_pointer(array);
     pa_print(array);
     printf("\n");
 }
@@ -248,8 +237,8 @@ static void pa_contains_test(void) {
 }
 
 bool pa_contains(Array array, Any value) {
-    assert_argument_not_null(array);
-    pa_assert_element_size(array);
+    require_not_null(array);
+    require_element_size_pointer(array);
     Any *a = array->a;
     for (int i = 0; i < array->n; i++) {
         if (a[i] == value) {
@@ -280,8 +269,8 @@ static void pa_index_test(void) {
 }
 
 int pa_index(Array array, Any value) {
-    assert_argument_not_null(array);
-    pa_assert_element_size(array);
+    require_not_null(array);
+    require_element_size_pointer(array);
     Any *a = array->a;
     for (int i = 0; i < array->n; i++) {
         if (a[i] == value) {
@@ -303,8 +292,8 @@ static void pa_index_from_test(void) {
 }
 
 int pa_index_from(Array array, Any value, int from) {
-    assert_argument_not_null(array);
-    pa_assert_element_size(array);
+    require_not_null(array);
+    require_element_size_pointer(array);
     Any *a = array->a;
     if (from < 0) from = 0;
     for (int i = from; i < array->n; i++) {
@@ -327,9 +316,9 @@ static void pa_index_fn_test(void) {
 }
 
 int pa_index_fn(Array array, AnyFn predicate, Any x) {
-    assert_argument_not_null(array);
-    pa_assert_element_size(array);
-    assert_function_not_null(predicate);
+    require_not_null(array);
+    require_element_size_pointer(array);
+    require_not_null(predicate);
     AnyIntAnyToBool f = predicate;
     Any *a = array->a;
     for (int i = 0; i < array->n; i++) {
@@ -350,8 +339,8 @@ static void pa_last_index_test(void) {
 }
 
 int pa_last_index(Array array, Any value) {
-    assert_argument_not_null(array);
-    pa_assert_element_size(array);
+    require_not_null(array);
+    require_element_size_pointer(array);
     Any *a = array->a;
     for (int i = array->n - 1; i >= 0; i--) {
         if (a[i] == value) {
@@ -373,8 +362,8 @@ static void pa_last_index_from_test(void) {
 }
 
 int pa_last_index_from(Array array, Any value, int from) {
-    assert_argument_not_null(array);
-    pa_assert_element_size(array);
+    require_not_null(array);
+    require_element_size_pointer(array);
     Any *a = array->a;
     if (from >= array->n) from = array->n - 1;
     for (int i = from; i >= 0; i--) {
@@ -393,9 +382,9 @@ static void pa_last_index_fn_test(void) {
 }
 
 int pa_last_index_fn(Array array, AnyFn predicate, Any x) {
-    assert_argument_not_null(array);
-    pa_assert_element_size(array);
-    assert_function_not_null(predicate);
+    require_not_null(array);
+    require_element_size_pointer(array);
+    require_not_null(predicate);
     AnyIntAnyToBool f = predicate;
     Any *a = array->a;
     for (int i = array->n - 1; i >= 0; i--) {
@@ -494,7 +483,7 @@ static void pa_sort_test(void) {
 }
 
 void pa_sort(Array array) {
-    pa_assert_element_size(array);
+    require_element_size_pointer(array);
     qsort(array->a, array->n, sizeof(Any), Any_compare);
 }
 
@@ -519,7 +508,7 @@ static void pa_sort_ignore_case_test(void) {
 }
 
 void pa_sort_ignore_case(Array array) {
-    pa_assert_element_size(array);
+    require_element_size_pointer(array);
     qsort(array->a, array->n, sizeof(Any), Any_compare_ignore_case);
 }
 
@@ -566,7 +555,7 @@ static void pa_sort_dec_test(void) {
 }
 
 void pa_sort_dec(Array array) {
-    pa_assert_element_size(array);
+    require_element_size_pointer(array);
     qsort(array->a, array->n, sizeof(Any), Any_compare_dec);
 }
 
@@ -591,7 +580,7 @@ static void pa_sort_dec_ignore_case_test(void) {
 }
 
 void pa_sort_dec_ignore_case(Array array) {
-    pa_assert_element_size(array);
+    require_element_size_pointer(array);
     qsort(array->a, array->n, sizeof(Any), Any_compare_dec_ignore_case);
 }
 #endif
@@ -601,9 +590,9 @@ void pa_sort_dec_ignore_case(Array array) {
 // @todo: pa_each_test
 
 void pa_each(Array array, AnyFn f, Any x) {
-    assert_argument_not_null(array);
-    pa_assert_element_size(array);
-    assert_function_not_null(f);
+    require_not_null(array);
+    require_element_size_pointer(array);
+    require_not_null(f);
     AnyIntAnyToAny ff = f;
     Any *a = array->a;
     for (int i = 0; i < array->n; i++) {
@@ -632,8 +621,8 @@ static void pa_map_test(void) {
 }
 
 Array pa_map(Array array, AnyIntToAny f) {
-    assert_function_not_null(f);
-    pa_assert_element_size(array);
+    require_not_null(f);
+    require_element_size_pointer(array);
     int n = array->n;
     Any *a = array->a;
     Any *b = xmalloc(n * sizeof(Any));
@@ -652,9 +641,9 @@ Array pa_map(Array array, AnyIntToAny f) {
 // @todo: pa_map_test
 
 Array pa_map(Array array, AnyFn f, Any x) {
-    assert_argument_not_null(array);
-    pa_assert_element_size(array);
-    assert_function_not_null(f);
+    require_not_null(array);
+    require_element_size_pointer(array);
+    require_not_null(f);
     AnyIntAnyToAny ff = f;
     int n = array->n;
     Any *a = array->a;
@@ -694,9 +683,9 @@ static void pa_foldl_test(void) {
 }
 
 Any pa_foldl(Array array, AnyFn f, Any state) {
-    assert_argument_not_null(array);
-    pa_assert_element_size(array);
-    assert_function_not_null(f);
+    require_not_null(array);
+    require_element_size_pointer(array);
+    require_not_null(f);
     AnyAnyIntToAny ff = f;
     Any *a = array->a;
     for (int i = 0; i < array->n; i++) {
@@ -751,8 +740,8 @@ static void pa_foldl_state_test(void) {
 }
 
 void pa_foldl_state(Array array, AnyAnyIntToVoid f, Any state) {
-    assert_function_not_null(f);
-    pa_assert_element_size(array);
+    require_not_null(f);
+    require_element_size_pointer(array);
     Any *a = array->a;
     for (int i = 0; i < array->n; i++) {
         f(state, a[i], i);
@@ -786,9 +775,9 @@ static void pa_foldr_test(void) {
 }
 
 Any pa_foldr(Array array, AnyFn f, Any state) {
-    assert_argument_not_null(array);
-    pa_assert_element_size(array);
-    assert_function_not_null(f);
+    require_not_null(array);
+    require_element_size_pointer(array);
+    require_not_null(f);
     AnyAnyIntToAny ff = f;
     Any *a = array->a;
     for (int i = array->n - 1; i >= 0; i--) {
@@ -829,9 +818,9 @@ static void pa_filter_test(void) {
 }
 
 Array pa_filter(Array array, AnyFn predicate, Any x) {
-    assert_argument_not_null(array);
-    pa_assert_element_size(array);
-    assert_function_not_null(predicate);
+    require_not_null(array);
+    require_element_size_pointer(array);
+    require_not_null(predicate);
     AnyIntAnyToBool f = predicate;
     bool *ps = xmalloc(array->n * sizeof(bool));
     int n = 0;
@@ -857,9 +846,9 @@ Array pa_filter(Array array, AnyFn predicate, Any x) {
 // @todo: add tests
 
 Array pa_filter_state(Array array, AnyFn predicate, Any x, Any state) {
-    assert_argument_not_null(array);
-    pa_assert_element_size(array);
-    assert_function_not_null(predicate);
+    require_not_null(array);
+    require_element_size_pointer(array);
+    require_not_null(predicate);
     AnyIntAnyAnyToBool f = predicate;
     bool *ps = xmalloc(array->n * sizeof(bool));
     int n = 0;
@@ -904,9 +893,9 @@ static void pa_choose_test(void) {
 }
 
 Array pa_choose(Array array, AnyFn f, Any x) {
-    assert_argument_not_null(array);
-    pa_assert_element_size(array);
-    assert_function_not_null(f);
+    require_not_null(array);
+    require_element_size_pointer(array);
+    require_not_null(f);
     AnyIntAnyToAny ff = f;
     Any *a = array->a;
     Any *b = xmalloc(array->n * sizeof(Any));
@@ -928,9 +917,9 @@ Array pa_choose(Array array, AnyFn f, Any x) {
 }
 
 Array pa_choose_state(Array array, AnyFn f, Any x, Any state) {
-    assert_argument_not_null(array);
-    pa_assert_element_size(array);
-    assert_function_not_null(f);
+    require_not_null(array);
+    require_element_size_pointer(array);
+    require_not_null(f);
     AnyIntAnyAnyToAny ff = f;
     Any *a = array->a;
     Any *b = xmalloc(array->n * sizeof(Any));
@@ -969,9 +958,9 @@ static void pa_exists_test(void) {
 }
 
 bool pa_exists(Array array, AnyFn predicate, Any x) {
-    assert_argument_not_null(array);
-    pa_assert_element_size(array);
-    assert_function_not_null(predicate);
+    require_not_null(array);
+    require_element_size_pointer(array);
+    require_not_null(predicate);
     AnyIntAnyToBool f = predicate;
     Any *a = array->a;
     for (int i = 0; i < a_length(array); i++) {
@@ -983,9 +972,9 @@ bool pa_exists(Array array, AnyFn predicate, Any x) {
 }
 
 bool pa_exists_state(Array array, AnyFn predicate, Any x, Any state) {
-    assert_argument_not_null(array);
-    pa_assert_element_size(array);
-    assert_function_not_null(predicate);
+    require_not_null(array);
+    require_element_size_pointer(array);
+    require_not_null(predicate);
     AnyIntAnyAnyToBool f = predicate;
     Any *a = array->a;
     for (int i = 0; i < a_length(array); i++) {
@@ -1005,9 +994,9 @@ static void pa_forall_test(void) {
 }
 
 bool pa_forall(Array array, AnyFn predicate, Any x) {
-    assert_argument_not_null(array);
-    pa_assert_element_size(array);
-    assert_function_not_null(predicate);
+    require_not_null(array);
+    require_element_size_pointer(array);
+    require_not_null(predicate);
     AnyIntAnyToBool f = predicate;
     Any *a = array->a;
     for (int i = 0; i < a_length(array); i++) {
@@ -1021,9 +1010,9 @@ bool pa_forall(Array array, AnyFn predicate, Any x) {
 // @todo: add tests
 
 bool pa_forall_state(Array array, AnyFn predicate, Any x, Any state) {
-    assert_argument_not_null(array);
-    pa_assert_element_size(array);
-    assert_function_not_null(predicate);
+    require_not_null(array);
+    require_element_size_pointer(array);
+    require_not_null(predicate);
     AnyIntAnyAnyToBool f = predicate;
     Any *a = array->a;
     for (int i = 0; i < a_length(array); i++) {

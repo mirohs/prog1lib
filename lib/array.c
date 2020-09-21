@@ -52,20 +52,6 @@ static void a_create_test(void) {
     test_equal_s(pa->lastname, "Bond");
     
     a_free(a);
-
-#if 0
-    Array ap = a_create(2, sizeof(Address*));
-    pa = &a;
-    a_set(ap, 0, &pa);
-    pa = &b;
-    a_set(ap, 1, &pa);
-
-    Address **ppa = a_get(ap, 0);
-    printsln((*ppa)->firstname);
-
-    ppa = a_get(ap, 1);
-    printsln((*ppa)->firstname);
-#endif
 }
 
 Array a_create(int n, int s) {
@@ -82,10 +68,10 @@ static void a_of_buffer_test(void) {
     printsln((String)__func__);
     Address addr[] = {
         make_address("Fred", "Oyster", "Hannover"), 
-        make_address("Frida", "Qwirin", "Hannover"), 
+        make_address("Frida", "Qwirin", "Berlin"), 
         make_address("James", "Bond", "London"), 
     };
-    Array a = a_of_buffer(&addr, 3, sizeof(Address));
+    Array a = a_of_buffer(addr, 3, sizeof(Address));
 
     // would violate precondition:
     // a = a_of_buffer(NULL, 3, sizeof(Address));
@@ -95,13 +81,13 @@ static void a_of_buffer_test(void) {
     // a = a_of_buffer(&addr, 3, 0);
 
     Address *pa = a_get(a, 0);
-    // printsln(pa->firstname);
+    printsln(pa->firstname);
     test_equal_s(pa->firstname, "Fred");
     pa = a_get(a, 1);
-    // printsln(pa->firstname);
-    test_equal_s(pa->city, "Hannover");
+    printsln(pa->city);
+    test_equal_s(pa->city, "Berlin");
     pa = a_get(a, 2);
-    // printsln(pa->firstname);
+    printsln(pa->lastname);
     test_equal_s(pa->lastname, "Bond");
     
     a_free(a);
@@ -157,7 +143,7 @@ static void a_fn_test(void) {
 Array a_fn(int n, int s, AnyFn init, Any state) {
     require2("non-negative length", n >= 0);
     require2("positive size", s > 0);
-    require2("function not null", init);
+    require_not_null(init);
     AnyIntAnyToVoid f = init;
     Byte *a = xcalloc(n, s);
     for (int i = 0; i < n; i++) {
@@ -614,8 +600,6 @@ bool a_equals(Array a, Array b) {
     require_not_null(a);
     require_not_null(b);
     if (a->n != b->n || a->s != b->s) return false;
-    if (a->a == NULL && b->a == NULL) return true;
-    if (a->a == NULL || b->a == NULL) return false;
     return memcmp(a->a, b->a, a->n * a->s) == 0;
 }
 

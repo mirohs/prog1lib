@@ -429,14 +429,10 @@ bool sa_test_equal_file_line(const char *file, const char *function, int line, A
 * String s is debug output (e.g., function name).
 */
 #ifdef CHECK_ELEMENT_SIZE
-#define sa_assert_element_size(array) \
-    if ((array)->s != sizeof(String)) {\
-        printf("%s: wrong element size %d, "\
-            "this is not a String array\n", __func__, (array)->s);\
-        exit(EXIT_FAILURE);\
-    }
+#define require_element_size_string(array) \
+    require3("element size string", (array)->s == sizeof(String), "size == %d", (array)->s)
 #else
-#define sa_assert_element_size(function_name, array) 
+#define require_element_size_string(array)
 #endif
 
 void sa_test_all(void);

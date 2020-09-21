@@ -35,10 +35,7 @@ static void ia_create_test(void) {
 }
 
 Array ia_create(int n, int value) {
-    if (n < 0) {
-        printf("%s: length cannot be negative (is %d)\n", __func__, n);
-        exit(EXIT_FAILURE);
-    }
+    require2("non-negative length", n >= 0);
     int *a = xmalloc(n * sizeof(int));
     for (int i = 0; i < n; i++) {
         a[i] = value;
@@ -191,7 +188,7 @@ static void ia_of_string_test(void) {
 }
 
 Array ia_of_string(String s) {
-    assert_argument_not_null(s);
+    require_not_null(s);
     // count number of ints in s
     int n = 0; // array length
     char *t = s;
@@ -263,11 +260,8 @@ static void ia_fn_test(void) {
 }
 
 Array ia_fn(int n, IntIntToInt init, int x) {
-    assert_function_not_null(init);
-    if (n < 0) {
-        printf("ia_fn: length cannot be negative (is %d)\n", n);
-        exit(EXIT_FAILURE);
-    }
+    require_not_null(init);
+    require2("non-negative length", n >= 0);
     int *a = xmalloc(n * sizeof(int));
     for (int i = 0; i < n; i++) {
         a[i] = init(i, x);
@@ -295,8 +289,8 @@ static void ia_of_da_test(void) {
 }
 
 Array ia_of_da(Array array) {
-    assert_argument_not_null(array);
-    da_assert_element_size(array);
+    require_not_null(array);
+    require_element_size_double(array);
     int n = a_length(array);
     Array result = ia_create(n, 0);
     double *a = array->a;
@@ -309,14 +303,10 @@ Array ia_of_da(Array array) {
 
 #ifdef A_GET_SET
 int ia_get(Array array, int index) {
-    assert_argument_not_null(array);
-    ia_assert_element_size(array);
-    if (index < 0 || index >= array->n) {
-        printf("ia_get: index %d is out of range "
-            "(array length: %d, allowed indices: 0..%d)\n", 
-        index, array->n, array->n - 1);
-        exit(EXIT_FAILURE);
-    }
+    require_not_null(array);
+    require_element_size_int(array);
+    require3("index in range", index >= 0 && index < array->n, 
+            "index == %d, length == %d", index, array->n);
     int *a = array->a;
     return a[index];
 }
@@ -324,14 +314,10 @@ int ia_get(Array array, int index) {
 
 #ifdef A_GET_SET
 void ia_set(Array array, int index, int value) {
-    assert_argument_not_null(array);
-    ia_assert_element_size(array);
-    if (index < 0 || index >= array->n) {
-        printf("ia_set: index %d is out of range "
-            "(array length: %d, allowed indices: 0..%d)\n", 
-        index, array->n, array->n - 1);
-        exit(EXIT_FAILURE);
-    }
+    require_not_null(array);
+    require_element_size_int(array);
+    require3("index in range", index >= 0 && index < array->n, 
+            "index == %d, length == %d", index, array->n);
     int *a = array->a;
     a[index] = value;
 }
@@ -339,14 +325,10 @@ void ia_set(Array array, int index, int value) {
 
 #ifdef A_GET_SET
 int ia_inc(Array array, int index, int value) {
-    assert_argument_not_null(array);
-    ia_assert_element_size(array);
-    if (index < 0 || index >= array->n) {
-        printf("ia_inc: index %d is out of range "
-            "(array length: %d, allowed indices: 0..%d)\n", 
-        index, array->n, array->n - 1);
-        exit(EXIT_FAILURE);
-    }
+    require_not_null(array);
+    require_element_size_int(array);
+    require3("index in range", index >= 0 && index < array->n, 
+            "index == %d, length == %d", index, array->n);
     int *a = array->a;
     value += a[index];
     a[index] = value;
@@ -355,8 +337,8 @@ int ia_inc(Array array, int index, int value) {
 #endif
 
 void ia_print(Array array) {
-    assert_argument_not_null(array);
-    ia_assert_element_size(array);
+    require_not_null(array);
+    require_element_size_int(array);
     int *a = array->a;
     printf("[");
     if (array->n > 0) {
@@ -369,8 +351,8 @@ void ia_print(Array array) {
 }
 
 void ia_println(Array array) {
-    assert_argument_not_null(array);
-    ia_assert_element_size(array);
+    require_not_null(array);
+    require_element_size_int(array);
     ia_print(array);
     printf("\n");
 }
@@ -388,8 +370,8 @@ static void ia_contains_test(void) {
 }
 
 bool ia_contains(Array array, int value) {
-    assert_argument_not_null(array);
-    ia_assert_element_size(array);
+    require_not_null(array);
+    require_element_size_int(array);
     int *a = array->a;
     for (int i = 0; i < array->n; i++) {
         if (a[i] == value) {
@@ -425,8 +407,8 @@ static void ia_fill_test(void) {
 }
 
 void ia_fill(Array array, int value) {
-    assert_argument_not_null(array);
-    ia_assert_element_size(array);
+    require_not_null(array);
+    require_element_size_int(array);
     int *a = array->a;
     for (int i = 0; i < array->n; i++) {
         a[i] = value;
@@ -489,8 +471,8 @@ static void ia_fill_from_to_test(void) {
 }
 
 void ia_fill_from_to(Array array, int value, int from, int to) {
-    assert_argument_not_null(array);
-    ia_assert_element_size(array);
+    require_not_null(array);
+    require_element_size_int(array);
     if (from < 0) from = 0;
     if (to > array->n) to = array->n;
     int *a = array->a;
@@ -527,8 +509,8 @@ static void ia_index_test(void) {
 }
 
 int ia_index(Array array, int value) {
-    assert_argument_not_null(array);
-    ia_assert_element_size(array);
+    require_not_null(array);
+    require_element_size_int(array);
     int *a = array->a;
     for (int i = 0; i < array->n; i++) {
         if (a[i] == value) {
@@ -553,8 +535,8 @@ static void ia_index_from_test(void) {
 }
 
 int ia_index_from(Array array, int value, int from) {
-    assert_argument_not_null(array);
-    ia_assert_element_size(array);
+    require_not_null(array);
+    require_element_size_int(array);
     if (from < 0) from = 0;
     int *a = array->a;
     for (int i = from; i < array->n; i++) {
@@ -576,9 +558,9 @@ static void ia_index_fn_test(void) {
 }
 
 int ia_index_fn(Array array, IntIntIntToBool predicate, int x) {
-    assert_argument_not_null(array);
-    assert_function_not_null(predicate);
-    ia_assert_element_size(array);
+    require_not_null(array);
+    require_not_null(predicate);
+    require_element_size_int(array);
     int *a = array->a;
     for (int i = 0; i < array->n; i++) {
         if (predicate(a[i], i, x)) {
@@ -600,8 +582,8 @@ static void ia_last_index_test(void) {
 }
 
 int ia_last_index(Array array, int value) {
-    assert_argument_not_null(array);
-    ia_assert_element_size(array);
+    require_not_null(array);
+    require_element_size_int(array);
     int *a = array->a;
     for (int i = array->n - 1; i >= 0; i--) {
         if (a[i] == value) {
@@ -625,8 +607,8 @@ static void ia_last_index_from_test(void) {
 }
 
 int ia_last_index_from(Array array, int value, int from) {
-    assert_argument_not_null(array);
-    ia_assert_element_size(array);
+    require_not_null(array);
+    require_element_size_int(array);
     if (from >= array->n) from = array->n - 1;
     int *a = array->a;
     for (int i = from; i >= 0; i--) {
@@ -648,9 +630,9 @@ static void ia_last_index_fn_test(void) {
 }
 
 int ia_last_index_fn(Array array, IntIntIntToBool predicate, int x) {
-    assert_argument_not_null(array);
-    assert_function_not_null(predicate);
-    ia_assert_element_size(array);
+    require_not_null(array);
+    require_not_null(predicate);
+    require_element_size_int(array);
     int *a = array->a;
     for (int i = array->n - 1; i >= 0; i--) {
         if (predicate(a[i], i, x)) {
@@ -663,8 +645,8 @@ int ia_last_index_fn(Array array, IntIntIntToBool predicate, int x) {
 ///////////////////////////////////////////////////////////////////////////////
 
 static CmpResult int_compare(ConstAny a, ConstAny b) {
-    assert_argument_not_null(a);
-    assert_argument_not_null(b);
+    require_not_null(a);
+    require_not_null(b);
     int x = *(int*)a;
     int y = *(int*)b;
     return (x == y) ? 0 : (x < y ? -1 : 1);
@@ -707,13 +689,14 @@ static void ia_sort_test(void) {
 }
 
 void ia_sort(Array array) {
-    ia_assert_element_size(array);
+    require_not_null(array);
+    require_element_size_int(array);
     qsort(array->a, array->n, array->s, int_compare);
 }
 
 static CmpResult int_compare_dec(ConstAny a, ConstAny b) {
-    assert_argument_not_null(a);
-    assert_argument_not_null(b);
+    require_not_null(a);
+    require_not_null(b);
     int x = *(int*)b;
     int y = *(int*)a;
     return (x == y) ? 0 : (x < y ? -1 : 1);
@@ -756,8 +739,8 @@ static void ia_sort_dec_test(void) {
 }
 
 void ia_sort_dec(Array array) {
-    assert_argument_not_null(array);
-    ia_assert_element_size(array);
+    require_not_null(array);
+    require_element_size_int(array);
     qsort(array->a, array->n, array->s, int_compare_dec);
 }
 
@@ -812,8 +795,8 @@ static void ia_insert_test(void) {
 }
 
 void ia_insert(Array array, int i, int v) {
-    assert_argument_not_null(array);
-    ia_assert_element_size(array);
+    require_not_null(array);
+    require_element_size_int(array);
     if (i < 0 || i >= array->n) return;
     // make space at i
     int *a = array->a;
@@ -881,8 +864,8 @@ static void ia_remove_test(void) {
 }
 
 void ia_remove(Array array, int i, int v) {
-    assert_argument_not_null(array);
-    ia_assert_element_size(array);
+    require_not_null(array);
+    require_element_size_int(array);
     if (i < 0 || i >= array->n) return;
     // shift down, starting from i
     int *a = array->a;
@@ -992,9 +975,9 @@ static void ia_each_test(void) {
 }
 
 void ia_each(Array array, IntIntIntToInt f, int x) {
-    assert_argument_not_null(array);
-    ia_assert_element_size(array);
-    assert_function_not_null(f);
+    require_not_null(array);
+    require_element_size_int(array);
+    require_not_null(f);
     int *a = array->a;
     for (int i = 0; i < array->n; i++) {
         a[i] = f(a[i], i, x);
@@ -1009,9 +992,9 @@ static void ia_each_state_test(void) {
 }
 
 void ia_each_state(Array array, IntIntIntAnyToInt f, int x, Any state) {
-    assert_argument_not_null(array);
-    ia_assert_element_size(array);
-    assert_function_not_null(f);
+    require_not_null(array);
+    require_element_size_int(array);
+    require_not_null(f);
     int *a = array->a;
     for (int i = 0; i < array->n; i++) {
         a[i] = f(a[i], i, x, state);
@@ -1020,9 +1003,9 @@ void ia_each_state(Array array, IntIntIntAnyToInt f, int x, Any state) {
 
 // @todo: add tests
 Array ia_map(Array array, IntIntIntToInt f, int x) {
-    assert_argument_not_null(array);
-    ia_assert_element_size(array);
-    assert_function_not_null(f);
+    require_not_null(array);
+    require_element_size_int(array);
+    require_not_null(f);
     int *a = array->a;
     int *b = xmalloc(array->n * sizeof(int));
     for (int i = 0; i < array->n; i++) {
@@ -1037,9 +1020,9 @@ Array ia_map(Array array, IntIntIntToInt f, int x) {
 
 // @todo: add tests
 Array ia_map_state(Array array, IntIntIntAnyToInt f, int x, Any state) {
-    assert_argument_not_null(array);
-    ia_assert_element_size(array);
-    assert_function_not_null(f);
+    require_not_null(array);
+    require_element_size_int(array);
+    require_not_null(f);
     int *a = array->a;
     int *b = xmalloc(array->n * sizeof(int));
     for (int i = 0; i < array->n; i++) {
@@ -1068,9 +1051,9 @@ static void ia_foldl_test(void) {
 }
 
 int ia_foldl(Array array, IntIntIntToInt f, int init) {
-    assert_argument_not_null(array);
-    ia_assert_element_size(array);
-    assert_function_not_null(f);
+    require_not_null(array);
+    require_element_size_int(array);
+    require_not_null(f);
     int *a = array->a;
     for (int i = 0; i < array->n; i++) {
         init = f(init, a[i], i);
@@ -1094,9 +1077,9 @@ static void ia_foldr_test(void) {
 }
 
 int ia_foldr(Array array, IntIntIntToInt f, int init) {
-    assert_argument_not_null(array);
-    ia_assert_element_size(array);
-    assert_function_not_null(f);
+    require_not_null(array);
+    require_element_size_int(array);
+    require_not_null(f);
     int *a = array->a;
     for (int i = array->n - 1; i >= 0; i--) {
         init = f(a[i], init, i);
@@ -1132,9 +1115,9 @@ static void ia_filter_test(void) {
 }
 
 Array ia_filter(Array array, IntIntIntToBool predicate, int x) {
-    assert_argument_not_null(array);
-    ia_assert_element_size(array);
-    assert_function_not_null(predicate);
+    require_not_null(array);
+    require_element_size_int(array);
+    require_not_null(predicate);
     int *a = array->a;
     bool *ps = xmalloc(array->n * sizeof(bool));
     int n = 0;
@@ -1158,9 +1141,9 @@ Array ia_filter(Array array, IntIntIntToBool predicate, int x) {
 
 // @todo: add tests
 Array ia_filter_state(Array array, IntIntIntAnyToBool predicate, int x, Any state) {
-    assert_argument_not_null(array);
-    ia_assert_element_size(array);
-    assert_function_not_null(predicate);
+    require_not_null(array);
+    require_element_size_int(array);
+    require_not_null(predicate);
     int *a = array->a;
     bool *ps = xmalloc(array->n * sizeof(bool));
     int n = 0;
@@ -1204,9 +1187,9 @@ static void ia_choose_test(void) {
 }
 
 Array ia_choose(Array array, IntIntIntToIntOption f, int x) {
-    assert_argument_not_null(array);
-    ia_assert_element_size(array);
-    assert_function_not_null(f);
+    require_not_null(array);
+    require_element_size_int(array);
+    require_not_null(f);
     int *a = array->a;
     int *b = xmalloc(array->n * sizeof(int));
     int n = 0;
@@ -1228,9 +1211,9 @@ Array ia_choose(Array array, IntIntIntToIntOption f, int x) {
 
 // @todo: add tests
 Array ia_choose_state(Array array, IntIntIntAnyToIntOption f, int x, Any state) {
-    assert_argument_not_null(array);
-    ia_assert_element_size(array);
-    assert_function_not_null(f);
+    require_not_null(array);
+    require_element_size_int(array);
+    require_not_null(f);
     int *a = array->a;
     int *b = xmalloc(array->n * sizeof(int));
     int n = 0;
@@ -1262,9 +1245,9 @@ static void ia_exists_test(void) {
 }
 
 bool ia_exists(Array array, IntIntIntToBool predicate, int x) {
-    assert_argument_not_null(array);
-    ia_assert_element_size(array);
-    assert_function_not_null(predicate);
+    require_not_null(array);
+    require_element_size_int(array);
+    require_not_null(predicate);
     int *a = array->a;
     for (int i = 0; i < a_length(array); i++) {
         if (predicate(a[i], i, x)) {
@@ -1276,9 +1259,9 @@ bool ia_exists(Array array, IntIntIntToBool predicate, int x) {
 
 // @todo: add tests
 bool ia_exists_state(Array array, IntIntIntAnyToBool predicate, int x, Any state) {
-    assert_argument_not_null(array);
-    ia_assert_element_size(array);
-    assert_function_not_null(predicate);
+    require_not_null(array);
+    require_element_size_int(array);
+    require_not_null(predicate);
     int *a = array->a;
     for (int i = 0; i < a_length(array); i++) {
         if (predicate(a[i], i, x, state)) {
@@ -1300,9 +1283,9 @@ static void ia_forall_test(void) {
 }
 
 bool ia_forall(Array array, IntIntIntToBool predicate, int x) {
-    assert_argument_not_null(array);
-    ia_assert_element_size(array);
-    assert_function_not_null(predicate);
+    require_not_null(array);
+    require_element_size_int(array);
+    require_not_null(predicate);
     int *a = array->a;
     for (int i = 0; i < a_length(array); i++) {
         if (!predicate(a[i], i, x)) {
@@ -1313,9 +1296,9 @@ bool ia_forall(Array array, IntIntIntToBool predicate, int x) {
 }
 
 bool ia_forall_state(Array array, IntIntIntAnyToBool predicate, int x, Any state) {
-    assert_argument_not_null(array);
-    ia_assert_element_size(array);
-    assert_function_not_null(predicate);
+    require_not_null(array);
+    require_element_size_int(array);
+    require_not_null(predicate);
     int *a = array->a;
     for (int i = 0; i < a_length(array); i++) {
         if (!predicate(a[i], i, x, state)) {

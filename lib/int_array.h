@@ -548,14 +548,10 @@ Checks if array has the right element size. Fails if not.
 String s is debug output (e.g., function name).
 */
 #ifdef CHECK_ELEMENT_SIZE
-#define ia_assert_element_size(array) \
-    if ((array)->s != sizeof(int)) {\
-        printf("%s: wrong element size %d, "\
-            "this is not an int array\n", __func__, (array)->s);\
-        exit(EXIT_FAILURE);\
-    }
+#define require_element_size_int(array) \
+    require3("element size int", (array)->s == sizeof(int), "size == %d", (array)->s)
 #else
-#define ia_assert_element_size(function_name, array) 
+#define require_element_size_int(array)
 #endif
 
 void ia_test_all(void);

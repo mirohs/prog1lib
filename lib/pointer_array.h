@@ -374,14 +374,10 @@ bool pa_test_equal_file_line(const char *file, const char *function, int line, A
 * Any s is debug output (e.g., function name).
 */
 #ifdef CHECK_ELEMENT_SIZE
-#define pa_assert_element_size(array) \
-    if ((array)->s != sizeof(Any)) {\
-        printf("%s: wrong element size %d, "\
-            "this is not a pointer array\n", __func__, (array)->s);\
-        exit(EXIT_FAILURE);\
-    }
+#define require_element_size_pointer(array) \
+    require3("element size pointer", (array)->s == sizeof(Any), "size == %d", (array)->s)
 #else
-#define pa_assert_element_size(function_name, array) 
+#define require_element_size_pointer(array)
 #endif
 
 void pa_test_all(void);

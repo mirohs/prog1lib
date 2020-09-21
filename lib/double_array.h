@@ -500,14 +500,10 @@ Checks if array has the right element size. Fails if not.
 @param[in] array array to check
 */
 #ifdef CHECK_ELEMENT_SIZE
-#define da_assert_element_size(array) \
-    if ((array)->s != sizeof(double)) {\
-        printf("%s: wrong element size %d, "\
-            "this is not a double array\n", __func__, (array)->s);\
-        exit(EXIT_FAILURE);\
-    }
+#define require_element_size_double(array) \
+    require3("element size double", (array)->s == sizeof(double), "size == %d", (array)->s)
 #else
-#define da_assert_element_size(function_name, array) 
+#define require_element_size_double(array)
 #endif
 
 void da_test_all(void);
