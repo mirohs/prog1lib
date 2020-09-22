@@ -1,7 +1,7 @@
 /*
 Compile: make file_copy
 Run: ./file_copy
-Compile & run: make file_copy && ./file_copy
+make file_copy && ./file_copy
 */
 
 #include "base.h"

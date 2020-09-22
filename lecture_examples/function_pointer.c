@@ -1,7 +1,7 @@
 /*
 Compile: make function_pointer
 Run: ./function_pointer
-Compile & run: make function_pointer && ./function_pointer
+make function_pointer && ./function_pointer
 */
  
 #include <stdio.h>

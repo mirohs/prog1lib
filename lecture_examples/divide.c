@@ -1,7 +1,7 @@
 /*
 Compile: make divide
 Run: ./divide
-Compile & run: make divide && ./divide
+make divide && ./divide
 */
 
 #include "base.h"

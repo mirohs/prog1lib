@@ -1,7 +1,7 @@
 /*
 Compile: make is_whitespace
 Run: ./is_whitespace
-Compile & run: make is_whitespace && ./is_whitespace
+make is_whitespace && ./is_whitespace
 */
 
 #include "base.h"

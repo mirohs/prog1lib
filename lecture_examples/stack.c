@@ -5,7 +5,6 @@ make stack && ./stack
 */
 
 #include "base.h"
-#include "string.h"
 
 #define STACK_SIZE 100    // stack implemented as array has fixed capacity
 double stack[STACK_SIZE];    // external double array

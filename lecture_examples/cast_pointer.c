@@ -4,9 +4,6 @@ Run: ./cast_pointer
 */
 
 #include "base.h"
-#include "string.h"
-#include <string.h>
-
 
 int main(void) {
     int i = 7; // at address 1000 (for example)

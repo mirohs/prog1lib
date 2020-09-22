@@ -1,7 +1,7 @@
 /*
 Compile: make check_point
 Run: ./check_point
-Compile & run: make check_point && ./check_point
+make check_point && ./check_point
 */
 
 #include "base.h"

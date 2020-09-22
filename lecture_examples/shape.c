@@ -1,7 +1,7 @@
 /*
 Compile: make shape
 Run: ./shape
-Compile & run: make shape && ./shape
+make shape && ./shape
 */
 
 #include "base.h"

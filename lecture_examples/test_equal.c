@@ -1,11 +1,10 @@
 /*
 Compile: make test_equal
 Run: ./test_equal
-Compile & run: make test_equal && ./test_equal
+make test_equal && ./test_equal
 */
  
 #include "base.h"
-#include "string.h"
 
 int main(void) {
     test_equal_i(s_length("hello"), 5);

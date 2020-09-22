@@ -4,9 +4,6 @@ Run: ./binary_expression_parser2
 */
 
 #include "base.h"
-#include "string.h"
-#include "array.h"
-#include "string_array.h"
 
 enum TokenType {
     UNKNOWN, 

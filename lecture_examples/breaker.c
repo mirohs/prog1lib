@@ -4,7 +4,6 @@ Run: ./breaker
 */
 
 #include "base.h"
-#include "string.h"
 
 /*
 int main(void) {

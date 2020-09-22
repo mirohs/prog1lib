@@ -5,8 +5,6 @@ make search && ./search
 */
 
 #include "base.h"
-#include "array.h"
-#include "int_array.h"
 
 IntOption linear_search(Array a, int x);
 

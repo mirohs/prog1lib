@@ -1,7 +1,7 @@
 /*
 Compile: make input
 Run: ./input
-Compile & run: make input && ./input
+make input && ./input
 */
  
 #include "base.h"

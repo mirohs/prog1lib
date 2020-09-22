@@ -1,10 +1,9 @@
 /*
-Compile: make binary_expression_parser
-Run: ./binary_expression_parser
+Compile: make binary_expression_parser3
+Run: ./binary_expression_parser3
 */
 
 #include "base.h"
-#include "string.h"
 
 enum TokenType {
     UNKNOWN, 

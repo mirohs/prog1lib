@@ -5,9 +5,6 @@ make postfix_parser && ./postfix_parser
 */
 
 #include "base.h"
-#include "string.h"
-#include "list.h"
-#include "double_list.h"
 
 List stack; // external double list
 

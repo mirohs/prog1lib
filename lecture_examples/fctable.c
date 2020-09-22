@@ -1,7 +1,7 @@
 /*
 Compile: make fctable
 Run: ./fctable
-Compile & run: make fctable && ./fctable
+make fctable && ./fctable
 */
 
 #include "base.h"

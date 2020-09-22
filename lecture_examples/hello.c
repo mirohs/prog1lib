@@ -1,7 +1,7 @@
 /*
 Compile: make hello
 Run: ./hello
-Compile & run: make hello && ./hello
+make hello && ./hello
 */
  
 #include <stdio.h>

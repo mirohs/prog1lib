@@ -1,7 +1,7 @@
 /*
 Compile: make ggt
 Run: ./ggt
-Compile & run: make ggt && ./ggt
+make ggt && ./ggt
 */
  
 #include "base.h"

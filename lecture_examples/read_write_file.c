@@ -5,7 +5,6 @@ make read_write_file && ./read_write_file
 */
 
 #include "base.h"
-//#include "string.h"
 
 int main(void) {
     String s = s_read_file("read_write_file.c");

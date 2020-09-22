@@ -4,11 +4,7 @@ Run: ./lists_map_filter_fold
 make lists_map_filter_fold && ./lists_map_filter_fold
 */
 
-#include "base.h"        // http://hci.uni-hannover.de/files/prog1lib/base_8h.html
-#include "string.h"      // http://hci.uni-hannover.de/files/prog1lib/string_8h.html
-#include "list.h"        // http://hci.uni-hannover.de/files/prog1lib/list_8h.html
-#include "string_list.h" // http://hci.uni-hannover.de/files/prog1lib/string__list_8h.html
-#include "int_list.h"
+#include "base.h"
 
 void string2length(String* element, int index, Any state, /*out*/ int* mapped_element) {
     *mapped_element = s_length(*element);
@@ -75,6 +71,5 @@ int main(void) {
     base_init();
     base_set_memory_check(true);
     lists_map_filter_fold_test();
-    test_equal_i(1,2);
     return 0;
 }
