@@ -35,7 +35,7 @@ static void ba_create_test(void) {
 }
 
 Array ba_create(int n, Byte value) {
-    require2("non-negative length", n >= 0);
+    require("non-negative length", n >= 0);
     Byte *a = xmalloc(n * sizeof(Byte));
     for (int i = 0; i < n; i++) {
         a[i] = value;
@@ -239,7 +239,7 @@ static void ba_fn_test(void) {
 }
 
 Array ba_fn(int n, IntByteToByte init, Byte x) {
-    require2("non-negative length", n >= 0);
+    require("non-negative length", n >= 0);
     require_not_null(init);
     Byte *a = xmalloc(n * sizeof(Byte));
     for (int i = 0; i < n; i++) {
@@ -255,7 +255,7 @@ Array ba_fn(int n, IntByteToByte init, Byte x) {
 #ifdef A_GET_SET
 Byte ba_get(Array array, int index) {
     require_element_size_byte(array);
-    require3("index in range", index >= 0 && index < array->n, 
+    require_x("index in range", index >= 0 && index < array->n, 
             "index == %d, length == %d", index, array->n);
     Byte *a = array->a;
     return a[index];
@@ -265,7 +265,7 @@ Byte ba_get(Array array, int index) {
 #ifdef A_GET_SET
 void ba_set(Array array, int index, Byte value) {
     require_element_size_byte(array);
-    require3("index in range", index >= 0 && index < array->n, 
+    require_x("index in range", index >= 0 && index < array->n, 
             "index == %d, length == %d", index, array->n);
     Byte *a = array->a;
     a[index] = value;

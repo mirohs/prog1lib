@@ -7,7 +7,7 @@
 #include "string.h"
 
 String s_create(String s) {
-    assert_argument_not_null(s);
+    require_not_null(s);
     int n = (strlen(s) + 1) * sizeof(char); // + 1 for '\0' termination
     char *a = xmalloc(n);
     memcpy(a, s, n);
@@ -15,7 +15,7 @@ String s_create(String s) {
 }
 
 String s_copy(String s) {
-    assert_argument_not_null(s);
+    require_not_null(s);
     int n = (strlen(s) + 1) * sizeof(char); // + 1 for '\0' termination
     char *a = xmalloc(n);
     memcpy(a, s, n);
@@ -29,10 +29,7 @@ void s_free(String s) {
 }
 
 String s_repeat(int n, char c) {
-    if (n < 0) {
-        printf("%s: length cannot be negative (is %d)\n", __func__, n);
-        exit(EXIT_FAILURE);
-    }
+    require("non-negative length", n >= 0);
     char *a = xmalloc((n + 1) * sizeof(char)); // + 1 for '\0' termination
     for (int i = 0; i < n; i++) {
         a[i] = c;
@@ -62,7 +59,7 @@ String s_range(char a, char b) {
 }
 
 String s_sub(String s, int i, int j) {
-    assert_argument_not_null(s);
+    require_not_null(s);
     int n = strlen(s);
     if (i < 0) i = 0;
     if (j > n) j = n;
@@ -80,51 +77,35 @@ String s_sub(String s, int i, int j) {
 }
 
 char s_get(String s, int i) {
-    assert_argument_not_null(s);
+    require_not_null(s);
     int n = strlen(s);
-    if (i < 0 || i >= n) {
-        printf("%s: index %d is out of range "
-            "(string length: %d, allowed indices: 0..%d)\n", 
-        __func__, i, n, n - 1);
-        exit(EXIT_FAILURE);
-    }
+    require_x("index in range", i >= 0 && i < n, "index == %d, length == %d", i, n);
     return s[i];
 }
 
 void s_set(String s, int i, char v) {
-    assert_argument_not_null(s);
+    require_not_null(s);
     int n = strlen(s);
-    if (i < 0 || i >= n) {
-        printf("%s: index %d is out of range "
-            "(string length: %d, allowed indices: 0..%d)\n", 
-        __func__, i, n, n - 1);
-        exit(EXIT_FAILURE);
-    }
+    require_x("index in range", i >= 0 && i < n, "index == %d, length == %d", i, n);
     s[i] = v;
 }
 
 void s_blit(String source, int source_index, String destination, int destination_index, int count) {
-    assert_argument_not_null(source);
-    assert_argument_not_null(destination);
+    require_not_null(source);
+    require_not_null(destination);
     if (count <= 0) return;
     // do not check for string lengths, as that would require 
     // finding '\0' and would not allow binary strings
-    if (source_index < 0) {
-        printf("%s: source_index cannot be negative (is %d)\n", 
-        __func__, source_index);
-    }
-    if (destination_index < 0) {
-        printf("%s: destination_index cannot be negative (is %d)\n", 
-        __func__, destination_index);
-    }
+    require("non-negative source index", source_index >= 0);
+    require("non-negative destination index", destination_index >= 0);
     for (int i = source_index, j = destination_index; i < source_index + count; i++, j++) {
         s_set(destination, j, s_get(source, i));
     }
 }
 
 String s_concat(String x, String y) {
-    assert_argument_not_null(x);
-    assert_argument_not_null(y);
+    require_not_null(x);
+    require_not_null(y);
     int nx = strlen(x);
     int ny = strlen(y) + 1;
     int n = nx + ny;
@@ -135,12 +116,12 @@ String s_concat(String x, String y) {
 }
 
 int s_length(String s) {
-    assert_argument_not_null(s);
+    require_not_null(s);
     return strlen(s);
 }
 
 String s_lower_case(String s) {
-    assert_argument_not_null(s);
+    require_not_null(s);
     int n = strlen(s);
     String t = xmalloc(n + 1);
     for (int i = 0; i < n; i++) {
@@ -151,7 +132,7 @@ String s_lower_case(String s) {
 }
 
 String s_upper_case(String s) {
-    assert_argument_not_null(s);
+    require_not_null(s);
     int n = strlen(s);
     String t = xmalloc(n + 1);
     for (int i = 0; i < n; i++) {
@@ -162,15 +143,15 @@ String s_upper_case(String s) {
 }
 
 CmpResult s_compare(String s, String t) {
-    assert_argument_not_null(s);
-    assert_argument_not_null(t);
+    require_not_null(s);
+    require_not_null(t);
     int c = strcmp(s, t);
     return (c == 0) ? EQ : ((c < 0) ? LT : GT);
 }
 
 CmpResult s_compare_ignore_case(String s, String t) {
-    assert_argument_not_null(s);
-    assert_argument_not_null(t);
+    require_not_null(s);
+    require_not_null(t);
     String s2 = s_lower_case(s);
     String t2 = s_lower_case(t);
     int c = strcmp(s2, t2);
@@ -187,27 +168,27 @@ bool s_equals(String s, String t) {
 }
 
 bool s_equals_ignore_case(String s, String t) {
-    assert_argument_not_null(s);
-    assert_argument_not_null(t);
+    require_not_null(s);
+    require_not_null(t);
     return s_compare_ignore_case(s, t) == EQ;
 }
 
 bool s_contains(String s, String part) {
-    assert_argument_not_null(s);
-    assert_argument_not_null(part);
+    require_not_null(s);
+    require_not_null(part);
     return strstr(s, part) != NULL;
 }
 
 bool s_starts_with(String s, String start) {
-    assert_argument_not_null(s);
-    assert_argument_not_null(start);
+    require_not_null(s);
+    require_not_null(start);
     String p = strstr(s, start);
     return p == s;
 }
 
 bool s_ends_with(String s, String end) {
-    assert_argument_not_null(s);
-    assert_argument_not_null(end);
+    require_not_null(s);
+    require_not_null(end);
     int ns = strlen(s);
     int nend = strlen(end);
     if (nend > ns) return false;
@@ -217,16 +198,16 @@ bool s_ends_with(String s, String end) {
 }
 
 int s_index(String s, String part) {
-    assert_argument_not_null(s);
-    assert_argument_not_null(part);
+    require_not_null(s);
+    require_not_null(part);
     String p = strstr(s, part);
     if (p == NULL) return -1;
     return p - s;
 }
 
 int s_index_from(String s, String part, int from) {
-    assert_argument_not_null(s);
-    assert_argument_not_null(part);
+    require_not_null(s);
+    require_not_null(part);
     if (from < 0) from = 0;
     int n = strlen(s);
     if (from >= n) return -1;
@@ -236,7 +217,7 @@ int s_index_from(String s, String part, int from) {
 }
 
 String s_reverse(String s) {
-    assert_argument_not_null(s);
+    require_not_null(s);
     int n = strlen(s);
     String t = xmalloc(n + 1);
     for (int i = 0; i < n; i++) {
@@ -247,8 +228,8 @@ String s_reverse(String s) {
 }
 
 int s_last_index(String s, String part) {
-    assert_argument_not_null(s);
-    assert_argument_not_null(part);
+    require_not_null(s);
+    require_not_null(part);
     String rs = s_reverse(s);
     String rpart = s_reverse(part);
     String p = strstr(rs, rpart);
@@ -260,14 +241,14 @@ int s_last_index(String s, String part) {
 }
 
 bool s_is_empty(String s) {
-    assert_argument_not_null(s);
+    require_not_null(s);
     return strlen(s) == 0;
 }
 
 // @todo: add tests
 
 String s_trim(String s) {
-    assert_argument_not_null(s);
+    require_not_null(s);
     int n = strlen(s);
     int l = 0;
     while (l < n && s[l] == ' ') l++;

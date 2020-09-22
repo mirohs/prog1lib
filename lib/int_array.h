@@ -548,8 +548,9 @@ Checks if array has the right element size. Fails if not.
 String s is debug output (e.g., function name).
 */
 #ifdef CHECK_ELEMENT_SIZE
+#undef require_element_size_int
 #define require_element_size_int(array) \
-    require3("element size int", (array)->s == sizeof(int), "size == %d", (array)->s)
+    require_x("element size int", (array)->s == sizeof(int), "size == %d", (array)->s)
 #else
 #define require_element_size_int(array)
 #endif

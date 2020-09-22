@@ -429,8 +429,9 @@ bool sa_test_equal_file_line(const char *file, const char *function, int line, A
 * String s is debug output (e.g., function name).
 */
 #ifdef CHECK_ELEMENT_SIZE
+#undef require_element_size_string
 #define require_element_size_string(array) \
-    require3("element size string", (array)->s == sizeof(String), "size == %d", (array)->s)
+    require_x("element size string", (array)->s == sizeof(String), "size == %d", (array)->s)
 #else
 #define require_element_size_string(array)
 #endif

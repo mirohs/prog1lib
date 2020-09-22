@@ -35,7 +35,7 @@ static void ia_create_test(void) {
 }
 
 Array ia_create(int n, int value) {
-    require2("non-negative length", n >= 0);
+    require("non-negative length", n >= 0);
     int *a = xmalloc(n * sizeof(int));
     for (int i = 0; i < n; i++) {
         a[i] = value;
@@ -261,7 +261,7 @@ static void ia_fn_test(void) {
 
 Array ia_fn(int n, IntIntToInt init, int x) {
     require_not_null(init);
-    require2("non-negative length", n >= 0);
+    require("non-negative length", n >= 0);
     int *a = xmalloc(n * sizeof(int));
     for (int i = 0; i < n; i++) {
         a[i] = init(i, x);
@@ -305,7 +305,7 @@ Array ia_of_da(Array array) {
 int ia_get(Array array, int index) {
     require_not_null(array);
     require_element_size_int(array);
-    require3("index in range", index >= 0 && index < array->n, 
+    require_x("index in range", index >= 0 && index < array->n, 
             "index == %d, length == %d", index, array->n);
     int *a = array->a;
     return a[index];
@@ -316,7 +316,7 @@ int ia_get(Array array, int index) {
 void ia_set(Array array, int index, int value) {
     require_not_null(array);
     require_element_size_int(array);
-    require3("index in range", index >= 0 && index < array->n, 
+    require_x("index in range", index >= 0 && index < array->n, 
             "index == %d, length == %d", index, array->n);
     int *a = array->a;
     a[index] = value;
@@ -327,7 +327,7 @@ void ia_set(Array array, int index, int value) {
 int ia_inc(Array array, int index, int value) {
     require_not_null(array);
     require_element_size_int(array);
-    require3("index in range", index >= 0 && index < array->n, 
+    require_x("index in range", index >= 0 && index < array->n, 
             "index == %d, length == %d", index, array->n);
     int *a = array->a;
     value += a[index];

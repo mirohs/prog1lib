@@ -335,34 +335,6 @@ Check the given condition. If the condition is true, do nothing. If the conditio
 
 #ifdef ASSERT
 /**
-Check that the given function is not null. Stop the program with an error message if it is. Typically used when a function is given as an argument to another function.
-@param[in] function function to check
-*/
-#define assert_function_not_null(function) \
-if (function == NULL) {\
-    printf("%s: function argument " #function " cannot be NULL\n", __func__);\
-    exit(EXIT_FAILURE);\
-}
-#else
-#define assert_function_not_null(function) 
-#endif
-
-#ifdef ASSERT
-/**
-Check that the given function argument is not @c NULL. Stop the program with an error message if it is. Used when a pointer argument that may not be @c NULL.
-@param[in] argument argument to check
-*/
-#define assert_argument_not_null(argument) \
-if (argument == NULL) {\
-    printf("%s: argument " #argument " cannot be NULL\n", __func__);\
-    exit(EXIT_FAILURE);\
-}
-#else
-#define assert_argument_not_null(function) 
-#endif
-
-#ifdef ASSERT
-/**
 Check that the given argument is not NULL. If so, do nothing. Otherwise report the location of the precondition and stop the program. A precondition is a special type of assertion that has to be valid at the beginning of a function.
 
 Example use of a precondition:
@@ -400,15 +372,15 @@ Example use of a precondition:
 
 Example output of failed preconditions:
 
-    myfile.c, line 18: myfunction's precondition "not too large" violated
-    myfile.c, line 18: myfunction's precondition "sorted" violated
+    myfile.c, line 18: myfunction's precondition "not too large" (x < 3) violated
+    myfile.c, line 18: myfunction's precondition "sorted" (forall(int i = 0, i < n-1, i++, a[i] <= a[i+1])) violated
 
 @param[in] description String a description of the condition that has to be valid
 @param[in] condition boolean the condition to check
 */
 #define require(description, condition) \
 if (!(condition)) {\
-    fprintf(stderr, "%s, line %d: %s's precondition \"%s\" violated\n", __FILE__, __LINE__, __func__, description);\
+    fprintf(stderr, "%s, line %d: %s's precondition \"%s\" (%s) violated\n", __FILE__, __LINE__, __func__, description, #condition);\
     exit(EXIT_FAILURE);\
 }
 #else
@@ -422,35 +394,7 @@ Check the given precondition. If the condition is true, do nothing. If the condi
 Example use of a precondition:
 
     int myfunction(int x) {
-        require2("not too large", x < 3);
-        ...
-    }
-
-Example output of failed preconditions:
-
-    myfile.c, line 18: myfunction's precondition "not too large" (x < 3) violated
-    myfile.c, line 18: myfunction's precondition "sorted" (forall(int i = 0, i < n-1, i++, a[i] <= a[i+1])) violated
-
-@param[in] description String a description of the condition that has to be valid
-@param[in] condition boolean the condition to check
-*/
-#define require2(description, condition) \
-if (!(condition)) {\
-    fprintf(stderr, "%s, line %d: %s's precondition \"%s\" (%s) violated\n", __FILE__, __LINE__, __func__, description, #condition);\
-    exit(EXIT_FAILURE);\
-}
-#else
-#define require2(description, condition)
-#endif
-
-#ifdef ASSERT
-/**
-Check the given precondition. If the condition is true, do nothing. If the condition is false, report the location of the precondition and stop the program. A precondition is a special type of assertion that has to be valid at the beginning of a function.
-
-Example use of a precondition:
-
-    int myfunction(int x) {
-        require3("not too large", x < 3, "x == %d", x);
+        require_x("not too large", x < 3, "x == %d", x);
         ...
     }
 
@@ -462,7 +406,7 @@ Example output of failed preconditions:
 @param[in] description String a description of the condition that has to be valid
 @param[in] condition boolean the condition to check
 */
-#define require3(description, condition, ...) \
+#define require_x(description, condition, ...) \
 if (!(condition)) {\
     fprintf(stderr, "%s, line %d: %s's precondition \"%s\" violated: ", __FILE__, __LINE__, __func__, description);\
     fprintf(stderr, __VA_ARGS__);\
@@ -470,96 +414,9 @@ if (!(condition)) {\
     exit(EXIT_FAILURE);\
 }
 #else
-#define require3(description, condition)
+#define require_x(description, condition)
 #endif
 
-#ifdef ASSERT
-/**
-Check the given precondition. If the condition is true, do nothing. If the condition is false, report the location of the precondition and stop the program. A precondition is a special type of assertion that has to be valid at the beginning of a function.
-
-Example use of a precondition:
-
-    int myfunction(int x) {
-        require4("not too large", x < 3, "x == %d", x);
-        ...
-    }
-
-Example output of failed preconditions:
-
-    myfile.c, line 18: myfunction's precondition "not too large" (x < 3) violated: x == 3
-    myfile.c, line 18: myfunction's precondition "sorted" (forall(int i = 0, i < n-1, i++, a[i] <= a[i+1])) violated: a[2] == 5 && a[3] == 4
-
-@param[in] description String a description of the condition that has to be valid
-@param[in] condition boolean the condition to check
-*/
-#define require4(description, condition, ...) \
-if (!(condition)) {\
-    fprintf(stderr, "%s, line %d: %s's precondition \"%s\" (%s) violated: ", __FILE__, __LINE__, __func__, description, #condition);\
-    fprintf(stderr, __VA_ARGS__);\
-    fprintf(stderr, "\n");\
-    exit(EXIT_FAILURE);\
-}
-#else
-#define require4(description, condition)
-#endif
-
-#ifdef ASSERT
-/**
-Check the given precondition. If the condition is true, do nothing. If the condition is false, report the location of the precondition and stop the program. A precondition is a special type of assertion that has to be valid at the beginning of a function.
-
-Example use of a precondition:
-
-    int myfunction(int x) {
-        require5("not too large", x < 3);
-        ...
-    }
-
-Example output of failed preconditions:
-
-    myfile.c, line 18: myfunction's precondition (x < 3) violated
-    myfile.c, line 18: myfunction's precondition (forall(int i = 0, i < n-1, i++, a[i] <= a[i+1])) violated
-
-@param[in] description String a description of the condition that has to be valid
-@param[in] condition boolean the condition to check
-*/
-#define require5(condition) \
-if (!(condition)) {\
-    fprintf(stderr, "%s, line %d: %s's precondition (%s) violated\n", __FILE__, __LINE__, __func__, #condition);\
-    exit(EXIT_FAILURE);\
-}
-#else
-#define require5(description, condition)
-#endif
-
-#ifdef ASSERT
-/**
-Check the given precondition. If the condition is true, do nothing. If the condition is false, report the location of the precondition and stop the program. A precondition is a special type of assertion that has to be valid at the beginning of a function.
-
-Example use of a precondition:
-
-    int myfunction(int x) {
-        require6("not too large", x < 3);
-        ...
-    }
-
-Example output of failed preconditions:
-
-    myfile.c, line 18: myfunction's precondition (x < 3) violated: x == 3
-    myfile.c, line 18: myfunction's precondition (forall(int i = 0, i < n-1, i++, a[i] <= a[i+1])) violated: a[2] == 5 && a[3] == 4
-
-@param[in] description String a description of the condition that has to be valid
-@param[in] condition boolean the condition to check
-*/
-#define require6(condition, ...) \
-if (!(condition)) {\
-    fprintf(stderr, "%s, line %d: %s's precondition (%s) violated: ", __FILE__, __LINE__, __func__, #condition);\
-    fprintf(stderr, __VA_ARGS__);\
-    fprintf(stderr, "\n");\
-    exit(EXIT_FAILURE);\
-}
-#else
-#define require6(description, condition)
-#endif
 
 
 #ifdef ASSERT

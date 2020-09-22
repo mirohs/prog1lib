@@ -374,8 +374,9 @@ bool pa_test_equal_file_line(const char *file, const char *function, int line, A
 * Any s is debug output (e.g., function name).
 */
 #ifdef CHECK_ELEMENT_SIZE
+#undef require_element_size_pointer
 #define require_element_size_pointer(array) \
-    require3("element size pointer", (array)->s == sizeof(Any), "size == %d", (array)->s)
+    require_x("element size pointer", (array)->s == sizeof(Any), "size == %d", (array)->s)
 #else
 #define require_element_size_pointer(array)
 #endif

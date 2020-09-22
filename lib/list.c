@@ -20,7 +20,7 @@
  * Appends a zero-initialized node to list.
  */
 static ListNode *l_append_empty(List list) {
-    assert_argument_not_null(list);
+    require_not_null(list);
     // allocate memory for next-pointer and content
     Any a = xcalloc(1, sizeof(ListNode*) + list->s);
     // if this is the first element of the result set first pointer
@@ -39,6 +39,7 @@ static ListNode *l_append_empty(List list) {
 
 List l_create(int s);
 
+// Address is used within testing.
 typedef struct Address {
     String firstname;
     String lastname;
@@ -58,7 +59,7 @@ static void l_create_test(void) {
     list = l_create(sizeof(Address));
     addr = make_address("Fred", "Oyster", "Hannover");
     l_append(list, &addr);
-    addr = make_address("Frida", "Qwirin", "Hannover");
+    addr = make_address("Frida", "Qwirin", "Berlin");
     l_append(list, &addr);
     addr = make_address("James", "Bond", "London");
     l_append(list, &addr);
@@ -70,30 +71,16 @@ static void l_create_test(void) {
     test_equal_s(pa->firstname, "Fred");
     pa = l_get(list, 1);
     printsln(pa->firstname);
-    test_equal_s(pa->city, "Hannover");
+    test_equal_s(pa->city, "Berlin");
     pa = l_get(list, 2);
     printsln(pa->firstname);
     test_equal_s(pa->lastname, "Bond");
     
     l_free(list);
-
-#if 0
-    List lp = l_create(sizeof(Address*));
-    pa = &addr;
-    l_append(lp, &pa);
-
-    Address **ppa = l_get(lp, 0);
-    printsln((*ppa)->firstname);
-    
-    l_free(lp);
-#endif
 }
 
 List l_create(int s) {
-    if (s <= 0) {
-        printf("l_create: size s has to be positive (is %d)\n", s);
-        exit(EXIT_FAILURE);
-    }
+    require("positive size", s > 0);
     ListHead *lh = xcalloc(1, sizeof(ListHead));
     lh->s = s; // content size
     return lh;
@@ -105,38 +92,28 @@ static void l_of_buffer_test(void) {
     printsln((String)__func__);
     Address addr[] = {
         make_address("Fred", "Oyster", "Hannover"), 
-        make_address("Frida", "Qwirin", "Hannover"), 
+        make_address("Frida", "Qwirin", "Berlin"), 
         make_address("James", "Bond", "London"), 
     };
     List l = l_of_buffer(&addr, 3, sizeof(Address));
 
     Address *pa = l_get(l, 0);
-    // printsln(pa->firstname);
+    printsln(pa->firstname);
     test_equal_s(pa->firstname, "Fred");
     pa = l_get(l, 1);
-    // printsln(pa->firstname);
-    test_equal_s(pa->city, "Hannover");
+    printsln(pa->firstname);
+    test_equal_s(pa->city, "Berlin");
     pa = l_get(l, 2);
-    // printsln(pa->firstname);
+    printsln(pa->firstname);
     test_equal_s(pa->lastname, "Bond");
     
     l_free(l);
-    
 }
 
 List l_of_buffer(Any buffer, int n, int s) {
-    if (buffer == NULL) {
-        printf("%s: buffer cannot be NULL\n", __func__);
-        exit(EXIT_FAILURE);
-    }
-    if (n < 0) {
-        printf("%s: length n cannot be negative (is %d)\n", __func__, n);
-        exit(EXIT_FAILURE);
-    }
-    if (s <= 0) {
-        printf("%s: size s has to be positive (is %d)\n", __func__, s);
-        exit(EXIT_FAILURE);
-    }
+    require_not_null(buffer);
+    require("non-negative length", n >= 0);
+    require("positive size", s > 0);
     List list = l_create(s);
     Byte *p = buffer;
     for (int i = 0; i < n; i++) {
@@ -176,15 +153,9 @@ static void l_fn_test(void) {
 }
 
 List l_fn(int n, int s, AnyFn init, Any state) {
-    if (n < 0) {
-        printf("l_fn: length cannot be negative (is %d)\n", n);
-        exit(EXIT_FAILURE);
-    }
-    if (s <= 0) {
-        printf("l_fn: size has to be positive (is %d)\n", s);
-        exit(EXIT_FAILURE);
-    }
-    assert_function_not_null(init);
+    require("non-negative length", n >= 0);
+    require("positive size", s > 0);
+    require_not_null(init);
     AnyIntAnyToVoid finit = init;
     List list = l_create(s);
     for (int i = 0; i < n; i++) {
@@ -279,7 +250,7 @@ static void l_copy_test(void) {
 }
 
 List l_copy(List list) {
-    assert_argument_not_null(list);
+    require_not_null(list);
     List result = l_create(list->s);
     for (ListNode *node = list->first; node != NULL; node = node->next) {
         l_append(result, node + 1);
@@ -418,7 +389,7 @@ static void l_sub_test(void) {
 }
 
 List l_sub(List list, int i, int j) {
-    assert_argument_not_null(list);
+    require_not_null(list);
     List result = l_create(list->s);
     if (i >= j || j <= 0) {
         return result;
@@ -459,7 +430,7 @@ static void l_of_a_test(void) {
 }
 
 List l_of_a(Array array) {
-    // assert_argument_not_null(array);
+    require_not_null(array);
     List result = l_create(array->s);
     for (int i = 0; i < array->n; i++) {
         Any element = a_get(array, i);
@@ -485,22 +456,20 @@ void l_free(List list) {
 }
 
 Any l_get(List list, int index) {
-    assert_argument_not_null(list);
+    require_not_null(list);
     int i = 0;
     for (ListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (i == index) {
             return node + 1;
         }
     }
-    printf("l_get: index %d is out of range "
-        "(current list length: %d, allowed indices: 0..%d)\n", 
-        index, i, i - 1);
+    fprintf(stderr, "%s, line %d: %s's precondition \"index in range\" violated: index == %d\n", __FILE__, __LINE__, __func__, index);
     exit(EXIT_FAILURE);
     return NULL;
 }
 
 void l_set(List list, int index, Any value) {
-    assert_argument_not_null(list);
+    require_not_null(list);
     int i = 0;
     for (ListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (i == index) {
@@ -508,9 +477,7 @@ void l_set(List list, int index, Any value) {
             return;
         }
     }
-    printf("l_set: index %d is out of range "
-        "(current list length: %d, allowed indices: 0..%d)\n", 
-        index, i, i - 1);
+    fprintf(stderr, "%s, line %d: %s's precondition \"index in range\" violated: index == %d\n", __FILE__, __LINE__, __func__, index);
     exit(EXIT_FAILURE);
 }
 
@@ -548,17 +515,14 @@ bool l_has_next(ListIterator iter) {
 }
 
 Any l_next(ListIterator *iter) {
-    if (*iter == NULL) {
-        printf("%s: iterator does not have a next value\n", __func__);
-        exit(EXIT_FAILURE);
-    }
+    require("iterator has more values", *iter);
     Any value = VALUE(*iter);
     *iter = (*iter)->next;
     return value;
 }
 
 void l_append(List list, Any value) {
-    assert_argument_not_null(list);
+    require_not_null(list);
     // allocate memory for next-pointer and content
     Any a = xcalloc(1, sizeof(ListNode*) + list->s);
     // copy content, leave next-pointer NULL
@@ -577,7 +541,7 @@ void l_append(List list, Any value) {
 }
 
 void l_prepend(List list, Any value) {
-    assert_argument_not_null(list);
+    require_not_null(list);
     // allocate memory for next-pointer and content
     Any a = xcalloc(1, sizeof(ListNode*) + list->s);
     // copy content, leave next-pointer NULL
@@ -591,7 +555,7 @@ void l_prepend(List list, Any value) {
 }
 
 int l_length(List list) {
-    assert_argument_not_null(list);
+    require_not_null(list);
     int n = 0;
     for (ListNode *node = list->first; node != NULL; node = node->next) {
         n++;
@@ -600,13 +564,13 @@ int l_length(List list) {
 }
 
 int l_element_size(List list) {
-    assert_argument_not_null(list);
+    require_not_null(list);
     return list->s;
 }
 
 void l_print(List list, AnyFn print_element) {
-    assert_argument_not_null(list);
-    assert_function_not_null(print_element);
+    require_not_null(list);
+    require_not_null(print_element);
     AnyToVoid fprint_element = print_element;
     printf("[");
     ListNode *node = list->first;
@@ -622,8 +586,8 @@ void l_print(List list, AnyFn print_element) {
 }
 
 void l_println(List list, AnyFn print_element) {
-    assert_argument_not_null(list);
-    assert_function_not_null(print_element);
+    require_not_null(list);
+    require_not_null(print_element);
     l_print(list, print_element);
     printf("\n");
 }
@@ -775,12 +739,9 @@ static void l_concat_test(void) {
 }
 
 List l_concat(List x, List y) {
-    assert_argument_not_null(x);
-    assert_argument_not_null(y);
-    if (x->s != y->s) {
-        printf("l_concat: element sizes are not equal (%d and %d)\n", x->s, y->s);
-        exit(EXIT_FAILURE);
-    }
+    require_not_null(x);
+    require_not_null(y);
+    require_x("equal element sizes", x->s == y->s, "x->s == %d, y->s == %d", x->s, y->s);
     List result = l_create(x->s);
     for (ListNode *node = x->first; node != NULL; node = node->next) {
         l_append(result, node + 1);
@@ -826,8 +787,8 @@ static void l_index_fn_test(void) {
 }
 
 int l_index_fn(List list, AnyFn predicate, Any state) {
-    assert_argument_not_null(list);
-    assert_function_not_null(predicate);
+    require_not_null(list);
+    require_not_null(predicate);
     AnyIntAnyToBool fpredicate = predicate;
     int i = 0;
     for (ListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -839,8 +800,8 @@ int l_index_fn(List list, AnyFn predicate, Any state) {
 }
 
 Any l_find(List list, AnyFn predicate, Any state) {
-    assert_argument_not_null(list);
-    assert_function_not_null(predicate);
+    require_not_null(list);
+    require_not_null(predicate);
     AnyIntAnyToBool fpredicate = predicate;
     int i = 0;
     for (ListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -898,7 +859,7 @@ static void l_reverse_test(void) {
 }
 
 List l_reverse(List list) {
-    assert_argument_not_null(list);
+    require_not_null(list);
     List result = l_create(list->s);
     for (ListNode *node = list->first; node != NULL; node = node->next) {
         l_prepend(result, node + 1);
@@ -933,7 +894,7 @@ static void l_shuffle_test(void) {
 }
 
 List l_shuffle(List list) {
-    assert_argument_not_null(list);
+    require_not_null(list);
     int n = l_length(list);
     Array indices = ia_range(0, n);
     a_shuffle(indices);
@@ -947,6 +908,8 @@ List l_shuffle(List list) {
 }
 
 static CmpResult l_compare_i(ConstAny a, ConstAny b) {
+    require_not_null(a);
+    require_not_null(b);
     int x = *(int*)a;
     int y = *(int*)b;
     return (x < y) ? LT : ((x > y) ? GT : EQ);
@@ -1009,8 +972,8 @@ static void l_sort_test(void) {
 }
 
 List l_sort(List list, Comparator c) {
-    assert_argument_not_null(list);
-    assert_function_not_null(c);
+    require_not_null(list);
+    require_not_null(c);
     int n = l_length(list);
     Array a = a_create(n, list->s);
     int i = 0;
@@ -1072,7 +1035,7 @@ static void l_insert_test(void) {
 }
 
 void l_insert(List list, int index, Any value) {
-    assert_argument_not_null(list);
+    require_not_null(list);
     if (index < 0) return;
     if (index == 0) {
         l_prepend(list, value);
@@ -1166,7 +1129,7 @@ static void l_remove_test(void) {
 }
 
 void l_remove(List list, int index) {
-    assert_argument_not_null(list);
+    require_not_null(list);
     if (index < 0 || list->first == NULL) return;
     // assert: index >= 0 && list->first != NULL
     if (index == 0) {
@@ -1258,8 +1221,9 @@ static void l_map_test(void) {
 }
 
 List l_map(List list, AnyFn f, int mapped_element_size, Any state) {
-    assert_argument_not_null(list);
-    assert_function_not_null(f);
+    require_not_null(list);
+    require_not_null(f);
+    require("positive size", mapped_element_size > 0);
     AnyIntAnyAnyToVoid ff = f;
     List result = l_create(mapped_element_size);
     int i = 0;
@@ -1315,9 +1279,9 @@ static void l_map2_test(void) {
 }
 
 List l_map2(AnyAnyIntAnyAnyToVoid f, int mapped_element_size, Any state, List l1, List l2) {
-    assert_function_not_null(f);
-    assert_argument_not_null(l1);
-    assert_argument_not_null(l2);
+    require_not_null(f);
+    require_not_null(l1);
+    require_not_null(l2);
     List result = l_create(mapped_element_size);
     int i = 0;
     ListNode *n1 = l1->first;
@@ -1395,10 +1359,10 @@ static void l_map3_test(void) {
 List l_map3(AnyAnyAnyIntAnyAnyToVoid f, int mapped_element_size,
              Any state, List l1, List l2, List l3) 
 {
-    assert_function_not_null(f);
-    assert_argument_not_null(l1);
-    assert_argument_not_null(l2);
-    assert_argument_not_null(l3);
+    require_not_null(f);
+    require_not_null(l1);
+    require_not_null(l2);
+    require_not_null(l3);
     List result = l_create(mapped_element_size);
     int i = 0;
     ListNode *n1 = l1->first;
@@ -1452,8 +1416,8 @@ static void l_each_test(void) {
 }
 
 void l_each(List list, AnyFn f, Any state) {
-    assert_argument_not_null(list);
-    assert_function_not_null(f);
+    require_not_null(list);
+    require_not_null(f);
     AnyIntAnyToVoid ff = f;
     int i = 0;
     for (ListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -1464,9 +1428,9 @@ void l_each(List list, AnyFn f, Any state) {
 // @todo: add tests
 
 void l_each2(AnyAnyIntAnyToVoid f, Any state, List l1, List l2) {
-    assert_function_not_null(f);
-    assert_argument_not_null(l1);
-    assert_argument_not_null(l2);
+    require_not_null(f);
+    require_not_null(l1);
+    require_not_null(l2);
     int i = 0;
     ListNode *n1 = l1->first;
     ListNode *n2 = l2->first;
@@ -1478,10 +1442,10 @@ void l_each2(AnyAnyIntAnyToVoid f, Any state, List l1, List l2) {
 // @todo: add tests
 
 void l_each3(AnyAnyAnyIntAnyToVoid f, Any state, List l1, List l2, List l3) {
-    assert_function_not_null(f);
-    assert_argument_not_null(l1);
-    assert_argument_not_null(l2);
-    assert_argument_not_null(l3);
+    require_not_null(f);
+    require_not_null(l1);
+    require_not_null(l2);
+    require_not_null(l3);
     int i = 0;
     ListNode *n1 = l1->first;
     ListNode *n2 = l2->first;
@@ -1521,8 +1485,8 @@ static void l_foldl_test(void) {
 }
 
 void l_foldl(List list, AnyFn f, Any state) {
-    assert_argument_not_null(list);
-    assert_function_not_null(f);
+    require_not_null(list);
+    require_not_null(f);
     AnyAnyIntToVoid ff = f;
     int i = 0;
     for (ListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -1534,9 +1498,9 @@ void l_foldl(List list, AnyFn f, Any state) {
 // @todo: add tests
 
 void l_foldl2(AnyAnyAnyIntToVoid f, Any state, List l1, List l2) {
-    assert_function_not_null(f);
-    assert_argument_not_null(l1);
-    assert_argument_not_null(l2);
+    require_not_null(f);
+    require_not_null(l1);
+    require_not_null(l2);
     int i = 0;
     ListNode *n1 = l1->first;
     ListNode *n2 = l2->first;
@@ -1548,10 +1512,10 @@ void l_foldl2(AnyAnyAnyIntToVoid f, Any state, List l1, List l2) {
 // @todo: add tests
 
 void l_foldl3(AnyAnyAnyAnyIntToVoid f, Any state, List l1, List l2, List l3) {
-    assert_function_not_null(f);
-    assert_argument_not_null(l1);
-    assert_argument_not_null(l2);
-    assert_argument_not_null(l3);
+    require_not_null(f);
+    require_not_null(l1);
+    require_not_null(l2);
+    require_not_null(l3);
     int i = 0;
     ListNode *n1 = l1->first;
     ListNode *n2 = l2->first;
@@ -1591,8 +1555,8 @@ static void l_foldr_test(void) {
 }
 
 void l_foldr(List list, AnyFn f, Any state) {
-    assert_argument_not_null(list);
-    assert_function_not_null(f);
+    require_not_null(list);
+    require_not_null(f);
     AnyAnyIntToVoid ff = f;
     List elements = l_create(sizeof(Any));
     for (ListNode *node = list->first; node != NULL; node = node->next) {
@@ -1638,8 +1602,8 @@ static void l_filter_test(void) {
 }
 
 List l_filter(List list, AnyFn predicate, Any state) {
-    assert_argument_not_null(list);
-    assert_function_not_null(predicate);
+    require_not_null(list);
+    require_not_null(predicate);
     AnyIntAnyToBool f = predicate;
     List result = l_create(list->s);
     int i = 0;
@@ -1692,8 +1656,8 @@ static void l_choose_test(void) {
 }
 
 List l_choose(List list, AnyIntAnyAnyToBool f, int mapped_element_size, Any state) {
-    assert_function_not_null(f);
-    assert_argument_not_null(list);
+    require_not_null(f);
+    require_not_null(list);
     List result = l_create(mapped_element_size);
     Any mapped_content = xcalloc(1, mapped_element_size);
     int i = 0;
@@ -1743,8 +1707,8 @@ static void l_exists_test(void) {
 }
 
 bool l_exists(List list, AnyFn predicate, Any state) {
-    assert_argument_not_null(list);
-    assert_function_not_null(predicate);
+    require_not_null(list);
+    require_not_null(predicate);
     AnyIntAnyToBool f = predicate;
     int i = 0;
     for (ListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -1780,8 +1744,8 @@ static void l_forall_test(void) {
 }
 
 bool l_forall(List list, AnyFn predicate, Any state) {
-    assert_argument_not_null(list);
-    assert_function_not_null(predicate);
+    require_not_null(list);
+    require_not_null(predicate);
     AnyIntAnyToBool f = predicate;
     int i = 0;
     for (ListNode *node = list->first; node != NULL; node = node->next, i++) {

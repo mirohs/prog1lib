@@ -89,10 +89,7 @@ static void dl_range_test(void) {
 }
 
 List dl_range(double a, double b, double step) {
-    if (fabs(step) < 0.000001) {
-        printf("%s: step too small (is %g)\n", __func__, step);
-        exit(EXIT_FAILURE);
-    }
+    require_x("step not too small", fabs(step) > 0.000001, "step == %g", step);
     ListHead *list = xcalloc(1, sizeof(ListHead));
     list->s = sizeof(double); // content size
     if (a <= b) {
@@ -191,7 +188,7 @@ static void dl_of_string_test(void) {
 }
 
 List dl_of_string(String s) {
-    assert_argument_not_null(s);
+    require_not_null(s);
     ListHead *list = xcalloc(1, sizeof(ListHead));
     list->s = sizeof(double); // content size
     char *t = s;
@@ -244,11 +241,8 @@ static void dl_fn_test(void) {
 }
 
 List dl_fn(int n, IntDoubleToDouble init, double x) {
-    assert_function_not_null(init);
-    if (n < 0) {
-        printf("%s: length cannot be negative (is %d)\n", __func__, n);
-        exit(EXIT_FAILURE);
-    }
+    require("non-negative length", n >= 0);
+    require_not_null(init);
     List result = dl_create();
     for (int i = 0; i < n; i++) {
         dl_append(result, init(i, x));
@@ -268,8 +262,8 @@ static void dl_of_il_test(void) {
 }
 
 List dl_of_il(List list) {
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_int(list);
     List result = dl_create();
     for (IntListNode *node = list->first; node != NULL; node = node->next) {
         dl_append(result, node->value);
@@ -278,24 +272,22 @@ List dl_of_il(List list) {
 }
 
 double dl_get(List list, int index) {
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_double(list);
     int i = 0;
     for (DoubleListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (i == index) {
             return node->value;
         }
     }
-    printf("%s: index %d is out of range "
-        "(current list length: %d, allowed indices: 0..%d)\n", 
-        __func__, index, i, i - 1);
+    fprintf(stderr, "%s, line %d: %s's precondition \"index in range\" violated: index == %d\n", __FILE__, __LINE__, __func__, index);
     exit(EXIT_FAILURE);
     return 0;
 }
 
 void dl_set(List list, int index, double value) {
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_double(list);
     int i = 0;
     for (DoubleListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (i == index) {
@@ -303,15 +295,13 @@ void dl_set(List list, int index, double value) {
             return;
         }
     }
-    printf("%s: index %d is out of range "
-        "(current list length: %d, allowed indices: 0..%d)\n", 
-        __func__, index, i, i - 1);
+    fprintf(stderr, "%s, line %d: %s's precondition \"index in range\" violated: index == %d\n", __FILE__, __LINE__, __func__, index);
     exit(EXIT_FAILURE);
 }
 
 void dl_inc(List list, int index, double value) {
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_double(list);
     int i = 0;
     for (DoubleListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (i == index) {
@@ -319,9 +309,7 @@ void dl_inc(List list, int index, double value) {
             return;
         }
     }
-    printf("%s: index %d is out of range "
-        "(current list length: %d, allowed indices: 0..%d)\n", 
-        __func__, index, i, i - 1);
+    fprintf(stderr, "%s, line %d: %s's precondition \"index in range\" violated: index == %d\n", __FILE__, __LINE__, __func__, index);
     exit(EXIT_FAILURE);
 }
 
@@ -363,10 +351,7 @@ static void dl_iterator_test(void) {
 }
 
 double dl_next(ListIterator *iter) {
-    if (*iter == NULL) {
-        printf("%s: iterator does not have a next value\n", __func__);
-        exit(EXIT_FAILURE);
-    }
+    require("iterator has more values", *iter);
     double value = VALUE(*iter);
     *iter = (*iter)->next;
     return value;
@@ -391,8 +376,8 @@ static void dl_prepend_append_test(void) {
 }
 
 void dl_append(List list, double value) {
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_double(list);
     // allocate memory for next-pointer and content
     DoubleListNode *node = xcalloc(1, sizeof(ListNode*) + sizeof(value));
     // copy content, leave next-pointer NULL
@@ -411,8 +396,8 @@ void dl_append(List list, double value) {
 }
 
 void dl_prepend(List list, double value) {
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_double(list);
     // allocate memory for next-pointer and content
     DoubleListNode *node = xcalloc(1, sizeof(ListNode*) + sizeof(value));
     // copy content, leave next-pointer NULL
@@ -425,8 +410,8 @@ void dl_prepend(List list, double value) {
 }
 
 void dl_print(List list) {
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_double(list);
     ListNode *node = list->first;
     printf("[");
     if (node != NULL) {
@@ -440,8 +425,8 @@ void dl_print(List list) {
 }
 
 void dl_println(List list) {
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_double(list);
     dl_print(list);
     printf("\n");
 }
@@ -456,8 +441,8 @@ static void dl_contains_test(void) {
 }
 
 bool dl_contains(List list, double value, double epsilon) {
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_double(list);
     for (DoubleListNode *node = list->first; node != NULL; node = node->next) {
         if (fabs(node->value - value) < epsilon) {
             return true;
@@ -493,8 +478,8 @@ static void dl_fill_test(void) {
 }
 
 void dl_fill(List list, double value) {
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_double(list);
     for (DoubleListNode *node = list->first; node != NULL; node = node->next) {
         node->value = value;
     }
@@ -562,8 +547,8 @@ static void dl_fill_from_to_test(void) {
 }
 
 void dl_fill_from_to(List list, double value, int from, int to) {
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_double(list);
     if (from < 0) from = 0;
     int i = 0;
     for (DoubleListNode *node = list->first; node != NULL && i < to; node = node->next, i++) {
@@ -599,8 +584,8 @@ static void dl_index_test(void) {
 }
 
 int dl_index(List list, double value, double epsilon) {
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_double(list);
     int i = 0;
     for (DoubleListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (fabs(node->value - value) < epsilon) {
@@ -623,8 +608,8 @@ static void dl_index_from_test(void) {
 }
 
 int dl_index_from(List list, double value, int from, double epsilon) {
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_double(list);
     if (from < 0) from = 0;
     int i = 0;
     for (DoubleListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -644,9 +629,9 @@ static void dl_index_fn_test(void) {
 }
 
 int dl_index_fn(List list, DoubleIntDoubleToBool predicate, double x) {
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
-    assert_function_not_null(predicate);
+    require_not_null(list);
+    require_element_size_double(list);
+    require_not_null(predicate);
     int i = 0;
     for (DoubleListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (predicate(node->value, i, x)) {
@@ -659,6 +644,8 @@ int dl_index_fn(List list, DoubleIntDoubleToBool predicate, double x) {
 ///////////////////////////////////////////////////////////////////////////////
 
 static CmpResult double_compare(ConstAny a, ConstAny b) {
+    require_not_null(a);
+    require_not_null(b);
     double x = *(double*)a;
     double y = *(double*)b;
     return (x == y) ? EQ : (x < y ? LT : GT);
@@ -702,12 +689,14 @@ static void dl_sort_test(void) {
 }
 
 List dl_sort(List list) {
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_double(list);
     return l_sort(list, double_compare);
 }
 
 static CmpResult double_compare_dec(ConstAny a, ConstAny b) {
+    require_not_null(a);
+    require_not_null(b);
     double x = *(double*)b;
     double y = *(double*)a;
     return (x == y) ? EQ : (x < y ? LT : GT);
@@ -751,8 +740,8 @@ static void dl_sort_dec_test(void) {
 }
 
 List dl_sort_dec(List list) {
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_double(list);
     return l_sort(list, double_compare_dec);
 }
 
@@ -804,8 +793,8 @@ static void dl_insert_test(void) {
 }
 
 void dl_insert(List list, int index, double value) {
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_double(list);
     l_insert(list, index, &value);
 }
 
@@ -864,8 +853,8 @@ static void dl_remove_test(void) {
 }
 
 void dl_remove(List list, int index) {
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_double(list);
     l_remove(list, index);
 }
 
@@ -944,9 +933,9 @@ static void dl_each_test(void) {
 }
 
 void dl_each(List list, DoubleIntDoubleToDouble f, double x) {
-    assert_function_not_null(f);
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(f);
+    require_not_null(list);
+    require_element_size_double(list);
     int i = 0;
     for (DoubleListNode *node = list->first; node != NULL; node = node->next, i++) {
         node->value = f(node->value, i, x);
@@ -959,9 +948,9 @@ static void dl_each_state_test(void) {
 }
 
 void dl_each_state(List list, DoubleIntDoubleAnyToDouble f, double x, Any state) {
-    assert_function_not_null(f);
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(f);
+    require_not_null(list);
+    require_element_size_double(list);
     int i = 0;
     for (DoubleListNode *node = list->first; node != NULL; node = node->next, i++) {
         node->value = f(node->value, i, x, state);
@@ -990,9 +979,9 @@ static void dl_map_test(void) {
 }
 
 List dl_map(List list, DoubleIntDoubleToDouble f, double x) {
-    assert_function_not_null(f);
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(f);
+    require_not_null(list);
+    require_element_size_double(list);
     List result = dl_create();
     int i = 0;
     for (DoubleListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -1007,9 +996,9 @@ static void dl_map_state_test(void) {
 }
 
 List dl_map_state(List list, DoubleIntDoubleAnyToDouble f, double x, Any state) {
-    assert_function_not_null(f);
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(f);
+    require_not_null(list);
+    require_element_size_double(list);
     List result = dl_create();
     int i = 0;
     for (DoubleListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -1032,9 +1021,9 @@ static void dl_foldl_test(void) {
 }
 
 double dl_foldl(List list, DoubleDoubleIntToDouble f, double init) {
-    assert_function_not_null(f);
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(f);
+    require_not_null(list);
+    require_element_size_double(list);
     int i = 0;
     for (DoubleListNode *node = list->first; node != NULL; node = node->next, i++) {
         init = f(init, node->value, i);
@@ -1056,9 +1045,9 @@ static void dl_foldr_test(void) {
 }
 
 double dl_foldr(List list, DoubleDoubleIntToDouble f, double init) {
-    assert_function_not_null(f);
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(f);
+    require_not_null(list);
+    require_element_size_double(list);
     List rev = l_reverse(list);
     int i = l_length(list) - 1;
     for (DoubleListNode *node = rev->first; node != NULL; node = node->next, i--) {
@@ -1094,9 +1083,9 @@ static void dl_filter_test(void) {
 }
 
 List dl_filter(List list, DoubleIntDoubleToBool predicate, double x) {
-    assert_function_not_null(predicate);
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(predicate);
+    require_not_null(list);
+    require_element_size_double(list);
     List result = dl_create();
     int i = 0;
     for (DoubleListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -1113,9 +1102,9 @@ static void dl_filter_state_test(void) {
 }
 
 List dl_filter_state(List list, DoubleIntDoubleAnyToBool predicate, double x, Any state) {
-    assert_function_not_null(predicate);
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(predicate);
+    require_not_null(list);
+    require_element_size_double(list);
     List result = dl_create();
     int i = 0;
     for (DoubleListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -1148,9 +1137,9 @@ static void dl_choose_test(void) {
 }
 
 List dl_choose(List list, DoubleIntDoubleToDoubleOption f, double x) {
-    assert_function_not_null(f);
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(f);
+    require_not_null(list);
+    require_element_size_double(list);
     List result = dl_create();
     int i = 0;
     for (DoubleListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -1186,9 +1175,9 @@ static void dl_choose_state_test(void) {
 }
 
 List dl_choose_state(List list, DoubleIntDoubleAnyToDoubleOption f, double x, Any state) {
-    assert_function_not_null(f);
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(f);
+    require_not_null(list);
+    require_element_size_double(list);
     List result = dl_create();
     int i = 0;
     for (DoubleListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -1210,9 +1199,9 @@ static void dl_exists_test(void) {
 }
 
 bool dl_exists(List list, DoubleIntDoubleToBool predicate, double x) {
-    assert_function_not_null(predicate);
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(predicate);
+    require_not_null(list);
+    require_element_size_double(list);
     int i = 0;
     for (DoubleListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (predicate(node->value, i, x)) {
@@ -1228,9 +1217,9 @@ static void dl_exists_state_test(void) {
 }
 
 bool dl_exists_state(List list, DoubleIntDoubleAnyToBool predicate, double x, Any state) {
-    assert_function_not_null(predicate);
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(predicate);
+    require_not_null(list);
+    require_element_size_double(list);
     int i = 0;
     for (DoubleListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (predicate(node->value, i, x, state)) {
@@ -1250,9 +1239,9 @@ static void dl_forall_test(void) {
 }
 
 bool dl_forall(List list, DoubleIntDoubleToBool predicate, double x) {
-    assert_function_not_null(predicate);
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(predicate);
+    require_not_null(list);
+    require_element_size_double(list);
     int i = 0;
     for (DoubleListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (!predicate(node->value, i, x)) {
@@ -1268,9 +1257,9 @@ static void dl_forall_state_test(void) {
 }
 
 bool dl_forall_state(List list, DoubleIntDoubleAnyToBool predicate, double x, Any state) {
-    assert_function_not_null(predicate);
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(predicate);
+    require_not_null(list);
+    require_element_size_double(list);
     int i = 0;
     for (DoubleListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (!predicate(node->value, i, x, state)) {

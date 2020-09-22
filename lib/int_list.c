@@ -44,10 +44,7 @@ static void il_repeat_test(void) {
 }
 
 List il_repeat(int n, int value) {
-    if (n < 0) {
-        printf("%s: length cannot be negative (is %d)\n", __func__, n);
-        exit(EXIT_FAILURE);
-    }
+    require("non-negative length", n >= 0);
     ListHead *lh = xcalloc(1, sizeof(ListHead));
     lh->s = sizeof(value); // content size
     for (int i = 0; i < n; i++) {
@@ -177,7 +174,7 @@ static void il_of_string_test(void) {
 }
 
 List il_of_string(String s) {
-    assert_argument_not_null(s);
+    require_not_null(s);
     ListHead *list = xcalloc(1, sizeof(ListHead));
     list->s = sizeof(int); // content size
 
@@ -234,11 +231,8 @@ static void il_fn_test(void) {
 }
 
 List il_fn(int n, IntIntToInt init, int x) {
-    assert_function_not_null(init);
-    if (n < 0) {
-        printf("il_fn: length cannot be negative (is %d)\n", n);
-        exit(EXIT_FAILURE);
-    }
+    require_not_null(init);
+    require("non-negative length", n >= 0);
     List result = il_create();
     for (int i = 0; i < n; i++) {
         il_append(result, init(i, x));
@@ -260,8 +254,8 @@ static void il_of_dl_test(void) {
 }
 
 List il_of_dl(List list) {
-    assert_argument_not_null(list);
-    dl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_double(list);
     List result = il_create();
     for (DoubleListNode *node = list->first; node != NULL; node = node->next) {
         il_append(result, round(node->value));
@@ -270,24 +264,22 @@ List il_of_dl(List list) {
 }
 
 int il_get(List list, int index) {
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_int(list);
     int i = 0;
     for (IntListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (i == index) {
             return node->value;
         }
     }
-    printf("%s: index %d is out of range "
-        "(current list length: %d, allowed indices: 0..%d)\n", 
-        __func__, index, i, i - 1);
+    fprintf(stderr, "%s, line %d: %s's precondition \"index in range\" violated: index == %d\n", __FILE__, __LINE__, __func__, index);
     exit(EXIT_FAILURE);
     return 0;
 }
 
 void il_set(List list, int index, int value) {
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_int(list);
     int i = 0;
     for (IntListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (i == index) {
@@ -295,15 +287,13 @@ void il_set(List list, int index, int value) {
             return;
         }
     }
-    printf("%s: index %d is out of range "
-        "(current list length: %d, allowed indices: 0..%d)\n", 
-        __func__, index, i, i - 1);
+    fprintf(stderr, "%s, line %d: %s's precondition \"index in range\" violated: index == %d\n", __FILE__, __LINE__, __func__, index);
     exit(EXIT_FAILURE);
 }
 
 void il_inc(List list, int index, int value) {
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_int(list);
     int i = 0;
     for (IntListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (i == index) {
@@ -311,9 +301,7 @@ void il_inc(List list, int index, int value) {
             return;
         }
     }
-    printf("%s: index %d is out of range "
-        "(current list length: %d, allowed indices: 0..%d)\n", 
-        __func__, index, i, i - 1);
+    fprintf(stderr, "%s, line %d: %s's precondition \"index in range\" violated: index == %d\n", __FILE__, __LINE__, __func__, index);
     exit(EXIT_FAILURE);
 }
 
@@ -383,8 +371,8 @@ static void il_prepend_append_test(void) {
 }
 
 void il_append(List list, int value) {
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_int(list);
     // allocate memory for next-pointer and content
     IntListNode *node = xcalloc(1, sizeof(ListNode*) + sizeof(value));
     // copy content, leave next-pointer NULL
@@ -403,8 +391,8 @@ void il_append(List list, int value) {
 }
 
 void il_prepend(List list, int value) {
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_int(list);
     // allocate memory for next-pointer and content
     IntListNode *node = xcalloc(1, sizeof(ListNode*) + sizeof(value));
     // copy content, leave next-pointer NULL
@@ -417,8 +405,8 @@ void il_prepend(List list, int value) {
 }
 
 void il_print(List list) {
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_int(list);
     ListNode *node = list->first;
     printf("[");
     if (node != NULL) {
@@ -432,8 +420,8 @@ void il_print(List list) {
 }
 
 void il_println(List list) {
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_int(list);
     il_print(list);
     printf("\n");
 }
@@ -451,8 +439,8 @@ static void il_contains_test(void) {
 }
 
 bool il_contains(List list, int value) {
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_int(list);
     for (IntListNode *node = list->first; node != NULL; node = node->next) {
         if (node->value == value) {
             return true;
@@ -490,8 +478,8 @@ static void il_fill_test(void) {
 }
 
 void il_fill(List list, int value) {
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_int(list);
     for (IntListNode *node = list->first; node != NULL; node = node->next) {
         node->value = value;
     }
@@ -561,8 +549,8 @@ static void il_fill_from_to_test(void) {
 }
 
 void il_fill_from_to(List list, int value, int from, int to) {
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_int(list);
     if (from < 0) from = 0;
     int i = 0;
     for (IntListNode *node = list->first; node != NULL && i < to; node = node->next, i++) {
@@ -600,8 +588,8 @@ static void il_index_test(void) {
 }
 
 int il_index(List list, int value) {
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_int(list);
     int i = 0;
     for (IntListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (node->value == value) {
@@ -626,8 +614,8 @@ static void il_index_from_test(void) {
 }
 
 int il_index_from(List list, int value, int from) {
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_int(list);
     if (from < 0) from = 0;
     int i = 0;
     for (IntListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -649,9 +637,9 @@ static void il_index_fn_test(void) {
 }
 
 int il_index_fn(List list, IntIntIntToBool predicate, int x) {
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
-    assert_function_not_null(predicate);
+    require_not_null(list);
+    require_element_size_int(list);
+    require_not_null(predicate);
     int i = 0;
     for (IntListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (predicate(node->value, i, x)) {
@@ -664,6 +652,8 @@ int il_index_fn(List list, IntIntIntToBool predicate, int x) {
 ///////////////////////////////////////////////////////////////////////////////
 
 static CmpResult int_compare(ConstAny a, ConstAny b) {
+    require_not_null(a);
+    require_not_null(b);
     int x = *(int*)a;
     int y = *(int*)b;
     return (x == y) ? 0 : (x < y ? -1 : 1);
@@ -709,12 +699,14 @@ static void il_sort_test(void) {
 }
 
 List il_sort(List list) {
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_int(list);
     return l_sort(list, int_compare);
 }
 
 static CmpResult int_compare_dec(ConstAny a, ConstAny b) {
+    require_not_null(a);
+    require_not_null(b);
     int x = *(int*)b;
     int y = *(int*)a;
     return (x == y) ? 0 : (x < y ? -1 : 1);
@@ -760,8 +752,8 @@ static void il_sort_dec_test(void) {
 }
 
 List il_sort_dec(List list) {
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_int(list);
     return l_sort(list, int_compare_dec);
 }
 
@@ -815,8 +807,8 @@ static void il_insert_test(void) {
 }
 
 void il_insert(List list, int index, int value) {
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_int(list);
     l_insert(list, index, &value);
 }
 
@@ -877,8 +869,8 @@ static void il_remove_test(void) {
 }
 
 void il_remove(List list, int index) {
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_int(list);
     l_remove(list, index);
 }
 
@@ -967,9 +959,9 @@ static void il_each_test(void) {
 }
 
 void il_each(List list, IntIntIntToInt f, int x) {
-    assert_function_not_null(f);
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(f);
+    require_not_null(list);
+    require_element_size_int(list);
     int i = 0;
     for (IntListNode *node = list->first; node != NULL; node = node->next, i++) {
         node->value = f(node->value, i, x);
@@ -984,9 +976,9 @@ static void il_each_state_test(void) {
 }
 
 void il_each_state(List list, IntIntIntAnyToInt f, int x, Any state) {
-    assert_function_not_null(f);
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(f);
+    require_not_null(list);
+    require_element_size_int(list);
     int i = 0;
     for (IntListNode *node = list->first; node != NULL; node = node->next, i++) {
         node->value = f(node->value, i, x, state);
@@ -995,9 +987,9 @@ void il_each_state(List list, IntIntIntAnyToInt f, int x, Any state) {
 
 // @todo: add tests
 List il_map(List list, IntIntIntToInt f, int x) {
-    assert_function_not_null(f);
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(f);
+    require_not_null(list);
+    require_element_size_int(list);
     List result = il_create();
     int i = 0;
     for (IntListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -1008,9 +1000,9 @@ List il_map(List list, IntIntIntToInt f, int x) {
 
 // @todo: add tests
 List il_map_state(List list, IntIntIntAnyToInt f, int x, Any state) {
-    assert_function_not_null(f);
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(f);
+    require_not_null(list);
+    require_element_size_int(list);
     List result = il_create();
     int i = 0;
     for (IntListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -1035,9 +1027,9 @@ static void il_foldl_test(void) {
 }
 
 int il_foldl(List list, IntIntIntToInt f, int init) {
-    assert_function_not_null(f);
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(f);
+    require_not_null(list);
+    require_element_size_int(list);
     int i = 0;
     for (IntListNode *node = list->first; node != NULL; node = node->next, i++) {
         init = f(init, node->value, i);
@@ -1061,9 +1053,9 @@ static void il_foldr_test(void) {
 }
 
 int il_foldr(List list, IntIntIntToInt f, int init) {
-    assert_function_not_null(f);
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(f);
+    require_not_null(list);
+    require_element_size_int(list);
     List rev = l_reverse(list);
     int i = l_length(list) - 1;
     for (IntListNode *node = rev->first; node != NULL; node = node->next, i--) {
@@ -1101,9 +1093,9 @@ static void il_filter_test(void) {
 }
 
 List il_filter(List list, IntIntIntToBool predicate, int x) {
-    assert_function_not_null(predicate);
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(predicate);
+    require_not_null(list);
+    require_element_size_int(list);
     List result = il_create();
     int i = 0;
     for (IntListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -1122,9 +1114,9 @@ static void il_filter_state_test(void) {
 }
 
 List il_filter_state(List list, IntIntIntAnyToBool predicate, int x, Any state) {
-    assert_function_not_null(predicate);
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(predicate);
+    require_not_null(list);
+    require_element_size_int(list);
     List result = il_create();
     int i = 0;
     for (IntListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -1159,9 +1151,9 @@ static void il_choose_test(void) {
 }
 
 List il_choose(List list, IntIntIntToIntOption f, int x) {
-    assert_function_not_null(f);
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(f);
+    require_not_null(list);
+    require_element_size_int(list);
     List result = il_create();
     int i = 0;
     for (IntListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -1197,9 +1189,9 @@ static void il_choose_state_test(void) {
 }
 
 List il_choose_state(List list, IntIntIntAnyToIntOption f, int x, Any state) {
-    assert_function_not_null(f);
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(f);
+    require_not_null(list);
+    require_element_size_int(list);
     List result = il_create();
     int i = 0;
     for (IntListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -1224,9 +1216,9 @@ static void il_exists_test(void) {
 
 
 bool il_exists(List list, IntIntIntToBool predicate, int x) {
-    assert_function_not_null(predicate);
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(predicate);
+    require_not_null(list);
+    require_element_size_int(list);
     int i = 0;
     for (IntListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (predicate(node->value, i, x)) {
@@ -1244,9 +1236,9 @@ static void il_exists_state_test(void) {
 }
 
 bool il_exists_state(List list, IntIntIntAnyToBool predicate, int x, Any state) {
-    assert_function_not_null(predicate);
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(predicate);
+    require_not_null(list);
+    require_element_size_int(list);
     int i = 0;
     for (IntListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (predicate(node->value, i, x, state)) {
@@ -1268,9 +1260,9 @@ static void il_forall_test(void) {
 }
 
 bool il_forall(List list, IntIntIntToBool predicate, int x) {
-    assert_function_not_null(predicate);
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(predicate);
+    require_not_null(list);
+    require_element_size_int(list);
     int i = 0;
     for (IntListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (!predicate(node->value, i, x)) {
@@ -1288,9 +1280,9 @@ static void il_forall_state_test(void) {
 }
 
 bool il_forall_state(List list, IntIntIntAnyToBool predicate, int x, Any state) {
-    assert_function_not_null(predicate);
-    assert_argument_not_null(list);
-    il_assert_element_size(list);
+    require_not_null(predicate);
+    require_not_null(list);
+    require_element_size_int(list);
     int i = 0;
     for (IntListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (!predicate(node->value, i, x, state)) {

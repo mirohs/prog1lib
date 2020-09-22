@@ -258,6 +258,7 @@ double d_of_s(String s) {
 }
 
 double d_of_s_sub(String s, int start, int end) {
+    require_not_null(s);
     int n = s_length(s);
     if (n <= 0 || end <= 0 || start >= n || start >= end) return 0.0;
     String t = s_sub(s, start, end);
@@ -296,10 +297,12 @@ void printcln(char c) {
 
 
 void prints(String s) {
+    require_not_null(s);
     printf("%s", s);
 }
 
 void printsln(String s) {
+    require_not_null(s);
     printf("%s\n", s);
 }
 
@@ -316,6 +319,7 @@ void println() {
 }
 
 void printia(int *a, int n) {
+    require_not_null(a);
     putchar('[');
     if (n > 0) {
         printf("%d", a[0]);
@@ -327,11 +331,13 @@ void printia(int *a, int n) {
 }
 
 void printialn(int *a, int n) {
+    require_not_null(a);
     printia(a, n);
     println();
 }
 
 void printda(double *a, int n) {
+    require_not_null(a);
     putchar('[');
     if (n > 0) {
         printf("%g", a[0]);
@@ -343,11 +349,13 @@ void printda(double *a, int n) {
 }
 
 void printdaln(double *a, int n) {
+    require_not_null(a);
     printda(a, n);
     println();
 }
 
 void printsa(String *a, int n) {
+    require_not_null(a);
     putchar('[');
     if (n > 0) {
         printf("\"%s\"", a[0]);
@@ -359,11 +367,13 @@ void printsa(String *a, int n) {
 }
 
 void printsaln(String *a, int n) {
+    require_not_null(a);
     printsa(a, n);
     println();
 }
 
 void printca(char *a, int n) {
+    require_not_null(a);
     putchar('[');
     if (n > 0) {
         printf("'%c'", a[0]);
@@ -375,11 +385,13 @@ void printca(char *a, int n) {
 }
 
 void printcaln(char *a, int n) {
+    require_not_null(a);
     printca(a, n);
     println();
 }
 
 void printba(Byte *a, int n) {
+    require_not_null(a);
     putchar('[');
     if (n > 0) {
         printf("%d", a[0]);
@@ -391,11 +403,13 @@ void printba(Byte *a, int n) {
 }
 
 void printbaln(Byte *a, int n) {
+    require_not_null(a);
     printba(a, n);
     println();
 }
 
 void printboa(bool *a, int n) {
+    require_not_null(a);
     putchar('[');
     if (n > 0) {
         printf("%s", a[0] ? "true" : "false");
@@ -407,6 +421,7 @@ void printboa(bool *a, int n) {
 }
 
 void printboaln(bool *a, int n) {
+    require_not_null(a);
     printboa(a, n);
     println();
 }
@@ -417,14 +432,8 @@ void printboaln(bool *a, int n) {
 // Input
 
 void get_line(char *line, int n) {
-    if (line == NULL) {
-        printf("%s: line cannot be NULL\n", (String)__func__);
-        exit(EXIT_FAILURE);
-    }
-    if (n < 8) {
-        printf("%s: n = %d (has to be 8 or greater)\n", (String)__func__, n);
-        exit(EXIT_FAILURE);
-    }
+    require_not_null(line);
+    require("not too small", n >= 8);
     fgets(line, n, stdin);
     n = strlen(line);
     if (n >= 1 && (line[n-1] == '\n' || line[n-1] == '\r')) line[n-1] = '\0'; 
@@ -468,6 +477,8 @@ double d_input(void) {
 // Files
 
 String s_read_file(String name) {
+    require_not_null(name);
+    
     FILE *f = fopen(name, "r"); // removes \r from read content, only leaves \n
     if (f == NULL) {
         fprintf(stderr, "%s: Cannot open %s\n", (String)__func__, name); 
@@ -475,6 +486,7 @@ String s_read_file(String name) {
     }
     fseek (f, 0, SEEK_END);
     long size = ftell(f);
+    printiln(size);
     rewind(f);
     
     char *s = base_malloc(__FILE__, __func__, __LINE__, size + 1);
@@ -483,7 +495,7 @@ String s_read_file(String name) {
         exit(EXIT_FAILURE);
     }
     long sizeRead = fread(s, 1, size, f);
-    if (!feof(f)) {
+    if (sizeRead != size) {
         fprintf(stderr, "%s: Could not read file %s to end.\n", (String)__func__, name); 
         exit(EXIT_FAILURE);
     }
@@ -494,6 +506,9 @@ String s_read_file(String name) {
 }
 
 void s_write_file(String name, String data) {
+    require_not_null(name);
+    require_not_null(data);
+    
     FILE *f = fopen(name, "w");
     if (f == NULL) {
         fprintf(stderr, "%s: Cannot open %s\n", (String)__func__, name); 
@@ -506,6 +521,10 @@ void s_write_file(String name, String data) {
 }
 
 void write_file_data(String name, Byte *data, int n) {
+    require_not_null(name);
+    require_not_null(data);
+    require("non-negative length", n >= 0);
+
     FILE *f = fopen(name, "w");
     if (f == NULL) {
         fprintf(stderr, "%s: Cannot open %s\n", (String)__func__, name); 
@@ -525,6 +544,7 @@ void write_file_data(String name, Byte *data, int n) {
 static bool srand_called = false;
 
 int i_rnd(int i) {
+    require("positive range", i > 0);
     if (!srand_called) {
         srand(time(NULL) << 10);
         srand_called = true;
@@ -537,6 +557,7 @@ int i_rnd(int i) {
 }
 
 double d_rnd(double i) {
+    require("positive range", i > 0);
     if (!srand_called) {
         srand(time(NULL) << 10);
         srand_called = true;

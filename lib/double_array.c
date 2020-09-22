@@ -34,7 +34,7 @@ static void da_create_test(void) {
 }
 
 Array da_create(int n, double init) {
-    require2("non-negative length", n >= 0);
+    require("non-negative length", n >= 0);
     double *a = xmalloc(n * sizeof(double));
     for (int i = 0; i < n; i++) {
         a[i] = init;
@@ -88,7 +88,7 @@ static void da_range_test(void) {
 }
 
 Array da_range(double a, double b, double step) {
-    require3("step not too small", fabs(step) > 0.000001, "step == %g", step);
+    require_x("step not too small", fabs(step) > 0.000001, "step == %g", step);
     int n = 0; 
     if (a <= b) {
         if (step < 0) {
@@ -264,11 +264,8 @@ static void da_fn_test(void) {
 }
 
 Array da_fn(int n, IntDoubleToDouble init, double x) {
+    require("non-negative length", n >= 0);
     require_not_null(init);
-    if (n < 0) {
-        printf("da_fn: n cannot be negative (is %d)\n", n);
-        exit(EXIT_FAILURE);
-    }
     require_not_null(init);
     double *a = xmalloc(n * sizeof(double));
     for (int i = 0; i < n; i++) {
@@ -311,7 +308,7 @@ Array da_of_ia(Array array) {
 double da_get(Array array, int i) {
     require_not_null(array);
     require_element_size_double(array);
-    require3("index in range", i >= 0 && i < array->n, "index == %d, length == %d", i, array->n);
+    require_x("index in range", i >= 0 && i < array->n, "index == %d, length == %d", i, array->n);
     double *a = array->a;
     return a[i];
 }
@@ -321,7 +318,7 @@ double da_get(Array array, int i) {
 void da_set(Array array, int i, double v) {
     require_not_null(array);
     require_element_size_double(array);
-    require3("index in range", i >= 0 && i < array->n, "index == %d, length == %d", i, array->n);
+    require_x("index in range", i >= 0 && i < array->n, "index == %d, length == %d", i, array->n);
     double *a = array->a;
     a[i] = v;
 }
@@ -331,7 +328,7 @@ void da_set(Array array, int i, double v) {
 void da_inc(Array array, int i, double v) {
     require_not_null(array);
     require_element_size_double(array);
-    require3("index in range", i >= 0 && i < array->n, "index == %d, length == %d", i, array->n);
+    require_x("index in range", i >= 0 && i < array->n, "index == %d, length == %d", i, array->n);
     double *a = array->a;
     a[i] += v;
 }

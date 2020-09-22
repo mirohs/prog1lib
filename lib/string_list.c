@@ -41,10 +41,7 @@ static void sl_repeat_test(void) {
 }
 
 List sl_repeat(int n, String value) {
-    if (n < 0) {
-        printf("%s: length cannot be negative (is %d)\n", __func__, n);
-        exit(EXIT_FAILURE);
-    }
+    require("non-negative length", n >= 0);
     List list = sl_create();
     for (int i = 0; i < n; i++) {
         sl_append(list, value);
@@ -100,7 +97,7 @@ static void sl_of_string_test(void) {
 }
 
 List sl_of_string(String s) {
-    assert_argument_not_null(s);
+    require_not_null(s);
     List list = sl_create();
     char *t = s;
     char *start = s;
@@ -154,7 +151,7 @@ static void sl_split_test(void) {
 }
 
 List sl_split(String s, char separator) {
-    assert_argument_not_null(s);
+    require_not_null(s);
     List list = sl_create();
     char *t = s;
     char *start = s;
@@ -200,8 +197,8 @@ static void s_join_test(void) {
 }
 
 String s_join(List list, char joiner) {
-    assert_argument_not_null(list);
-    sl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_string(list);
     assert(joiner != '\0');
     int numberOfElements = 0;
     int numberOfCharacters = 0;
@@ -232,7 +229,7 @@ String s_join(List list, char joiner) {
 
 void sl_free(List list) {
     if (list != NULL) {
-        sl_assert_element_size(list);
+        require_element_size_string(list);
         for (StringListNode *node = list->first; node != NULL; node = node->next) {
             s_free(node->value);
         }
@@ -241,24 +238,22 @@ void sl_free(List list) {
 }
 
 String sl_get(List list, int index) {
-    assert_argument_not_null(list);
-    sl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_string(list);
     int i = 0;
     for (StringListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (i == index) {
             return node->value;
         }
     }
-    printf("%s: index %d is out of range "
-        "(current list length: %d, allowed indices: 0..%d)\n", 
-        __func__, index, i, i - 1);
+    fprintf(stderr, "%s, line %d: %s's precondition \"index in range\" violated: index == %d\n", __FILE__, __LINE__, __func__, index);
     exit(EXIT_FAILURE);
     return 0;
 }
 
 void sl_set(List list, int index, String value) {
-    assert_argument_not_null(list);
-    sl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_string(list);
     int i = 0;
     for (StringListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (i == index) {
@@ -266,9 +261,7 @@ void sl_set(List list, int index, String value) {
             return;
         }
     }
-    printf("%s: index %d is out of range "
-        "(current list length: %d, allowed indices: 0..%d)\n", 
-        __func__, index, i, i - 1);
+    fprintf(stderr, "%s, line %d: %s's precondition \"index in range\" violated: index == %d\n", __FILE__, __LINE__, __func__, index);
     exit(EXIT_FAILURE);
 }
 
@@ -309,10 +302,7 @@ static void sl_iterator_test(void) {
 }
 
 String sl_next(ListIterator *iter) {
-    if (*iter == NULL) {
-        printf("%s: iterator does not have a next value\n", __func__);
-        exit(EXIT_FAILURE);
-    }
+    require("iterator has more values", *iter);
     StringListNode *node = *(StringListNode**)iter;
     String value = node->value;
     *iter = (*iter)->next;
@@ -338,8 +328,8 @@ static void sl_prepend_append_test(void) {
 }
 
 void sl_append(List list, String value) {
-    assert_argument_not_null(list);
-    sl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_string(list);
     // allocate memory for next-pointer and content
     StringListNode *node = xcalloc(1, sizeof(ListNode*) + sizeof(value));
     // copy content, leave next-pointer NULL
@@ -358,8 +348,8 @@ void sl_append(List list, String value) {
 }
 
 void sl_prepend(List list, String value) {
-    assert_argument_not_null(list);
-    sl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_string(list);
     // allocate memory for next-pointer and content
     StringListNode *node = xcalloc(1, sizeof(ListNode*) + sizeof(value));
     // copy content, leave next-pointer NULL
@@ -372,8 +362,8 @@ void sl_prepend(List list, String value) {
 }
 
 void sl_print(List list) {
-    assert_argument_not_null(list);
-    sl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_string(list);
     StringListNode *node = (StringListNode*)list->first;
     printf("[");
     if (node != NULL) {
@@ -387,8 +377,8 @@ void sl_print(List list) {
 }
 
 void sl_println(List list) {
-    assert_argument_not_null(list);
-    sl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_string(list);
     sl_print(list);
     printf("\n");
 }
@@ -405,8 +395,8 @@ static void sl_contains_test(void) {
 }
 
 bool sl_contains(List list, String value) {
-    assert_argument_not_null(list);
-    sl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_string(list);
     for (StringListNode *node = list->first; node != NULL; node = node->next) {
         if (s_equals(node->value, value)) {
             return true;
@@ -436,8 +426,8 @@ static void sl_index_test(void) {
 }
 
 int sl_index(List list, String value) {
-    assert_argument_not_null(list);
-    sl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_string(list);
     int i = 0;
     for (StringListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (s_equals(node->value, value)) {
@@ -461,8 +451,8 @@ static void sl_index_from_test(void) {
 }
 
 int sl_index_from(List list, String value, int from) {
-    assert_argument_not_null(list);
-    sl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_string(list);
     if (from < 0) from = 0;
     int i = 0;
     for (StringListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -492,9 +482,9 @@ static void sl_index_fn_test(void) {
 }
 
 int sl_index_fn(List list, StringIntStringToBool predicate, String x) {
-    assert_argument_not_null(list);
-    sl_assert_element_size(list);
-    assert_function_not_null(predicate);
+    require_not_null(list);
+    require_element_size_string(list);
+    require_not_null(predicate);
     int i = 0;
     for (StringListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (predicate(node->value, i, x)) {
@@ -507,9 +497,9 @@ int sl_index_fn(List list, StringIntStringToBool predicate, String x) {
 String sl_find(List list, StringIntStringToBool predicate, String x);
 
 String sl_find(List list, StringIntStringToBool predicate, String x) {
-    assert_argument_not_null(list);
-    sl_assert_element_size(list);
-    assert_function_not_null(predicate);
+    require_not_null(list);
+    require_element_size_string(list);
+    require_not_null(predicate);
     int i = 0;
     for (StringListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (predicate(node->value, i, x)) {
@@ -522,6 +512,8 @@ String sl_find(List list, StringIntStringToBool predicate, String x) {
 ///////////////////////////////////////////////////////////////////////////////
 
 static CmpResult String_compare(ConstAny a, ConstAny b) {
+    require_not_null(a);
+    require_not_null(b);
     String x = *(String*)a;
     String y = *(String*)b;
     return s_compare(x, y);
@@ -567,12 +559,14 @@ static void sl_sort_test(void) {
 }
 
 List sl_sort(List list) {
-    assert_argument_not_null(list);
-    sl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_string(list);
     return l_sort(list, String_compare);
 }
 
 static CmpResult String_compare_dec(ConstAny a, ConstAny b) {
+    require_not_null(a);
+    require_not_null(b);
     String x = *(String*)a;
     String y = *(String*)b;
     return s_compare(y, x);
@@ -618,8 +612,8 @@ static void sl_sort_dec_test(void) {
 }
 
 List sl_sort_dec(List list) {
-    assert_argument_not_null(list);
-    sl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_string(list);
     return l_sort(list, String_compare_dec);
 }
 
@@ -673,8 +667,8 @@ static void sl_insert_test(void) {
 }
 
 void sl_insert(List list, int index, String value) {
-    assert_argument_not_null(list);
-    sl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_string(list);
     l_insert(list, index, &value);
 }
 
@@ -748,8 +742,8 @@ static void sl_remove_test(void) {
 }
 
 void sl_remove(List list, int index) {
-    assert_argument_not_null(list);
-    sl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_string(list);
     l_remove(list, index);
 }
 
@@ -797,9 +791,9 @@ static void sl_each_test(void) {
 }
 
 void sl_each(List list, StringIntStringToString f, String x) {
-    assert_function_not_null(f);
-    assert_argument_not_null(list);
-    sl_assert_element_size(list);
+    require_not_null(f);
+    require_not_null(list);
+    require_element_size_string(list);
     int i = 0;
     for (StringListNode *node = list->first; node != NULL; node = node->next, i++) {
         node->value = f(node->value, i, x);
@@ -814,9 +808,9 @@ static void sl_each_state_test(void) {
 }
 
 void sl_each_state(List list, StringIntStringAnyToString f, String x, Any state) {
-    assert_function_not_null(f);
-    assert_argument_not_null(list);
-    sl_assert_element_size(list);
+    require_not_null(f);
+    require_not_null(list);
+    require_element_size_string(list);
     int i = 0;
     for (StringListNode *node = list->first; node != NULL; node = node->next, i++) {
         node->value = f(node->value, i, x, state);
@@ -851,9 +845,9 @@ static void sl_map_test(void) {
 }
 
 List sl_map(List list, StringIntStringToString f, String x) {
-    assert_function_not_null(f);
-    assert_argument_not_null(list);
-    sl_assert_element_size(list);
+    require_not_null(f);
+    require_not_null(list);
+    require_element_size_string(list);
     List result = sl_create();
     int i = 0;
     for (StringListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -870,9 +864,9 @@ static void sl_map_state_test(void) {
 }
 
 List sl_map_state(List list, StringIntStringAnyToString f, String x, Any state) {
-    assert_function_not_null(f);
-    assert_argument_not_null(list);
-    sl_assert_element_size(list);
+    require_not_null(f);
+    require_not_null(list);
+    require_element_size_string(list);
     List result = sl_create();
     int i = 0;
     for (StringListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -908,9 +902,9 @@ static void sl_foldl_test(void) {
 }
 
 String sl_foldl(List list, StringStringIntToString f, String state) {
-    assert_function_not_null(f);
-    assert_argument_not_null(list);
-    sl_assert_element_size(list);
+    require_not_null(f);
+    require_not_null(list);
+    require_element_size_string(list);
     int i = 0;
     for (StringListNode *node = list->first; node != NULL; node = node->next, i++) {
         state = f(state, node->value, i);
@@ -946,9 +940,9 @@ static void sl_foldr_test(void) {
 }
 
 String sl_foldr(List list, StringStringIntToString f, String state) {
-    assert_function_not_null(f);
-    assert_argument_not_null(list);
-    sl_assert_element_size(list);
+    require_not_null(f);
+    require_not_null(list);
+    require_element_size_string(list);
     List rev = l_reverse(list);
     int i = l_length(list) - 1;
     for (StringListNode *node = rev->first; node != NULL; node = node->next, i--) {
@@ -978,9 +972,9 @@ static void sl_filter_test(void) {
 }
 
 List sl_filter(List list, StringIntStringToBool predicate, String x) {
-    assert_function_not_null(predicate);
-    assert_argument_not_null(list);
-    sl_assert_element_size(list);
+    require_not_null(predicate);
+    require_not_null(list);
+    require_element_size_string(list);
     List result = sl_create();
     int i = 0;
     for (StringListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -999,9 +993,9 @@ static void sl_filter_state_test(void) {
 }
 
 List sl_filter_state(List list, StringIntStringAnyToBool predicate, String x, Any state) {
-    assert_function_not_null(predicate);
-    assert_argument_not_null(list);
-    sl_assert_element_size(list);
+    require_not_null(predicate);
+    require_not_null(list);
+    require_element_size_string(list);
     List result = sl_create();
     int i = 0;
     for (StringListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -1037,9 +1031,9 @@ static void sl_choose_test(void) {
 }
 
 List sl_choose(List list, StringIntStringToStringOption f, String x) {
-    assert_function_not_null(f);
-    assert_argument_not_null(list);
-    sl_assert_element_size(list);
+    require_not_null(f);
+    require_not_null(list);
+    require_element_size_string(list);
     List result = sl_create();
     int i = 0;
     for (StringListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -1059,9 +1053,9 @@ static void sl_choose_state_test(void) {
 }
 
 List sl_choose_state(List list, StringIntStringAnyToStringOption f, String x, Any state) {
-    assert_function_not_null(f);
-    assert_argument_not_null(list);
-    sl_assert_element_size(list);
+    require_not_null(f);
+    require_not_null(list);
+    require_element_size_string(list);
     List result = sl_create();
     int i = 0;
     for (StringListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -1093,9 +1087,9 @@ static void sl_exists_test(void) {
 }
 
 bool sl_exists(List list, StringIntStringToBool predicate, String x) {
-    assert_function_not_null(predicate);
-    assert_argument_not_null(list);
-    sl_assert_element_size(list);
+    require_not_null(predicate);
+    require_not_null(list);
+    require_element_size_string(list);
     int i = 0;
     for (StringListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (predicate(node->value, i, x)) {
@@ -1113,9 +1107,9 @@ static void sl_exists_state_test(void) {
 }
 
 bool sl_exists_state(List list, StringIntStringAnyToBool predicate, String x, Any state) {
-    assert_function_not_null(predicate);
-    assert_argument_not_null(list);
-    sl_assert_element_size(list);
+    require_not_null(predicate);
+    require_not_null(list);
+    require_element_size_string(list);
     int i = 0;
     for (StringListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (predicate(node->value, i, x, state)) {
@@ -1134,9 +1128,9 @@ static void sl_forall_test(void) {
 }
 
 bool sl_forall(List list, StringIntStringToBool predicate, String x) {
-    assert_function_not_null(predicate);
-    assert_argument_not_null(list);
-    sl_assert_element_size(list);
+    require_not_null(predicate);
+    require_not_null(list);
+    require_element_size_string(list);
     int i = 0;
     for (StringListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (!predicate(node->value, i, x)) {
@@ -1152,9 +1146,9 @@ static void sl_forall_state_test(void) {
 }
 
 bool sl_forall_state(List list, StringIntStringAnyToBool predicate, String x, Any state) {
-    assert_function_not_null(predicate);
-    assert_argument_not_null(list);
-    sl_assert_element_size(list);
+    require_not_null(predicate);
+    require_not_null(list);
+    require_element_size_string(list);
     int i = 0;
     for (StringListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (!predicate(node->value, i, x, state)) {
@@ -1392,7 +1386,7 @@ void sl_test_all(void) {
         
 }
 
-#if 0
+#if 1
 int main(void) {
     base_init();
     sl_test_all();

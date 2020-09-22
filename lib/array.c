@@ -55,8 +55,8 @@ static void a_create_test(void) {
 }
 
 Array a_create(int n, int s) {
-    require2("non-negative length", n >= 0);
-    require2("positive size", s > 0);
+    require("non-negative length", n >= 0);
+    require("positive size", s > 0);
     Array result = xmalloc(sizeof(ArrayHead));
     result->n = n;
     result->s = s;
@@ -96,8 +96,8 @@ static void a_of_buffer_test(void) {
 
 Array a_of_buffer(Any buffer, int n, int s) {
     require_not_null(buffer);
-    require2("non-negative length", n >= 0);
-    require2("positive size", s > 0);
+    require("non-negative length", n >= 0);
+    require("positive size", s > 0);
     Array result = xmalloc(sizeof(ArrayHead));
     result->n = n;
     result->s = s;
@@ -141,8 +141,8 @@ static void a_fn_test(void) {
 }
 
 Array a_fn(int n, int s, AnyFn init, Any state) {
-    require2("non-negative length", n >= 0);
-    require2("positive size", s > 0);
+    require("non-negative length", n >= 0);
+    require("positive size", s > 0);
     require_not_null(init);
     AnyIntAnyToVoid f = init;
     Byte *a = xcalloc(n, s);
@@ -524,14 +524,14 @@ void a_blit(Array source, int source_index, Array destination, int destination_i
     require_not_null(source);
     require_not_null(destination);
     if (count <= 0) return;
-    require3("equal element sizes", source->s == destination->s, "source->s == %d, destination->s == %d", source->s, destination->s);
-    require3("source_index in range", source_index >= 0 && source_index < source->n, 
+    require_x("equal element sizes", source->s == destination->s, "source->s == %d, destination->s == %d", source->s, destination->s);
+    require_x("source_index in range", source_index >= 0 && source_index < source->n, 
             "source_index == %d, source->n == %d", source_index, source->n);
-    require3("destination_index in range", destination_index >= 0 && destination_index < destination->n, 
+    require_x("destination_index in range", destination_index >= 0 && destination_index < destination->n, 
             "destination_index == %d, destination->n == %d", destination_index, destination->n);
-    require3("(source_index + count) in range", source_index + count <= source->n, 
+    require_x("(source_index + count) in range", source_index + count <= source->n, 
             "source_index + count == %d, source->n == %d", source_index + count, source->n);
-    require3("(destination_index + count) in range", destination_index + count <= destination->n, 
+    require_x("(destination_index + count) in range", destination_index + count <= destination->n, 
             "destination_index + count == %d, destination->n == %d", destination_index + count, destination->n);
     Byte *src = (Byte*)source->a + source_index * source->s;
     Byte *dst = (Byte*)destination->a + destination_index * destination->s;
@@ -554,13 +554,13 @@ void a_free(Array array) {
 
 Any a_get(Array array, int index) {
     require_not_null(array);
-    require3("index in range", index >= 0 && index < array->n, "index == %d, length == %d", index, array->n);
+    require_x("index in range", index >= 0 && index < array->n, "index == %d, length == %d", index, array->n);
     return (Byte*)array->a + index * array->s;
 }
 
 void a_set(Array array, int index, Any value) {
     require_not_null(array);
-    require3("index in range", index >= 0 && index < array->n, "index == %d, length == %d", index, array->n);
+    require_x("index in range", index >= 0 && index < array->n, "index == %d, length == %d", index, array->n);
     memcpy((Byte*)array->a + index * array->s, value, array->s);
 }
 
@@ -766,7 +766,7 @@ static void a_concat_test(void) {
 Array a_concat(Array x, Array y) {
     require_not_null(x);
     require_not_null(y);
-    require3("equal element sizes", x->s == y->s, "x->s == %d, y->s == %d", x->s, y->s);
+    require_x("equal element sizes", x->s == y->s, "x->s == %d, y->s == %d", x->s, y->s);
     int n = x->n + y->n;
     Byte *a = xmalloc(n * x->s);
     memcpy(a,               x->a, x->n * x->s);
@@ -1037,7 +1037,7 @@ static void a_map_test(void) {
 Array a_map(Array array, AnyFn f, int mapped_element_size, Any state) {
     require_not_null(array);
     require_not_null(f);
-    require2("positive size", mapped_element_size > 0);
+    require("positive size", mapped_element_size > 0);
     AnyIntAnyAnyToVoid ff = f;
     Byte *a = xcalloc(array->n, mapped_element_size);
     for (int i = 0; i < array->n; i++) {

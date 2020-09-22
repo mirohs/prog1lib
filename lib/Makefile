@@ -44,7 +44,7 @@ $(LIBRARY): $(OBJS)
 # include dependency rules
 -include $(OBJS:.o=.d)
 
-string_array: *.o string_array.c string_array.h
+string_list: *.o string_list.c string_list.h
 	$(CC) $(CFLAGS) *.o -o $@ 
 
 # do not treat "clean" as a file name

@@ -401,14 +401,11 @@ Checks if list has the right element size. Fails if not.
 String s is debug output (e.g., function name).
 */
 #ifdef CHECK_ELEMENT_SIZE
-#define pl_assert_element_size(list) \
-    if ((list) != NULL && (list)->s != sizeof(Any)) {\
-        printf("%s: wrong element size %d, "\
-            "this is not a pointer list\n", __func__, (list)->s);\
-        exit(EXIT_FAILURE);\
-    }
+#undef require_element_size_pointer
+#define require_element_size_pointer(list) \
+    require_x("element size pointer", (list)->s == sizeof(Any), "size == %d", (list)->s)
 #else
-#define pl_assert_element_size(function_name, list) 
+#define require_element_size_pointer(list)
 #endif
 
 void pl_test_all(void);

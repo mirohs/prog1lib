@@ -38,7 +38,7 @@ static void sa_create_test(void) {
 }
 
 Array sa_create(int n, String value) {
-    require2("non-negative length", n >= 0);
+    require("non-negative length", n >= 0);
     String *a = xmalloc(n * sizeof(String));
     for (int i = 0; i < n; i++) {
         a[i] = value;
@@ -248,7 +248,7 @@ void sa_free(Array array) {
 String sa_get(Array array, int index) {
     require_not_null(array);
     require_element_size_string(array);
-    require3("index in range", index >= 0 && index < array->n, 
+    require_x("index in range", index >= 0 && index < array->n, 
             "index == %d, length == %d", index, array->n);
     String *a = array->a;
     return a[index];
@@ -259,7 +259,7 @@ String sa_get(Array array, int index) {
 void sa_set(Array array, int index, String value) {
     require_not_null(array);
     require_element_size_string(array);
-    require3("index in range", index >= 0 && index < array->n, 
+    require_x("index in range", index >= 0 && index < array->n, 
             "index == %d, length == %d", index, array->n);
     String *a = array->a;
     a[index] = value;
@@ -1201,7 +1201,7 @@ void sa_test_all(void) {
     sa_forall_test();
 }
 
-#if 1
+#if 0
 int main(void) {
     sa_test_all();
     return 0;

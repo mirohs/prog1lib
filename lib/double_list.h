@@ -549,15 +549,13 @@ Checks if list has the right element size. Fails if not.
 String s is debug output (e.g., function name).
 */
 #ifdef CHECK_ELEMENT_SIZE
-#define dl_assert_element_size(list) \
-    if ((list) != NULL && (list)->s != sizeof(double)) {\
-        printf("%s: wrong element size %d, "\
-            "this is not a double list\n", __func__, (list)->s);\
-        exit(EXIT_FAILURE);\
-    }
+#undef require_element_size_double
+#define require_element_size_double(list) \
+    require_x("element size double", (list)->s == sizeof(double), "size == %d", (list)->s)
 #else
-#define dl_assert_element_size(function_name, list) 
+#define require_element_size_double(list)
 #endif
+
 
 void dl_test_all(void);
 

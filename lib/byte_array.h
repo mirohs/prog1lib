@@ -522,7 +522,7 @@ Checks if array has the right element size. Fails if not.
 */
 #ifdef CHECK_ELEMENT_SIZE
 #define require_element_size_byte(array) \
-    require3("element size byte", (array)->s == sizeof(Byte), "size == %d", (array)->s)
+    require_x("element size byte", (array)->s == sizeof(Byte), "size == %d", (array)->s)
 #else
 #define require_element_size_byte(array)
 #endif

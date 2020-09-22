@@ -56,7 +56,7 @@ List pl_repeat(int n, Any value) {
 
 void pl_free(List list) {
     if (list != NULL) {
-        pl_assert_element_size(list);
+        require_element_size_pointer(list);
         for (PointerListNode *node = list->first; node != NULL; node = node->next) {
             free(node->value);
         }
@@ -66,8 +66,8 @@ void pl_free(List list) {
 
 void pl_free_with_destructor(List list, AnyFn element_destructor) {
     if (list != NULL) {
-        pl_assert_element_size(list);
-        assert_function_not_null(element_destructor);
+        require_element_size_pointer(list);
+        require_not_null(element_destructor);
         AnyToVoid f = element_destructor;
         for (PointerListNode *node = list->first; node != NULL; node = node->next) {
             f(node->value);
@@ -77,24 +77,22 @@ void pl_free_with_destructor(List list, AnyFn element_destructor) {
 }
 
 Any pl_get(List list, int index) {
-    assert_argument_not_null(list);
-    pl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_pointer(list);
     int i = 0;
     for (PointerListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (i == index) {
             return node->value;
         }
     }
-    printf("%s: index %d is out of range "
-        "(current list length: %d, allowed indices: 0..%d)\n", 
-        __func__, index, i, i - 1);
+    fprintf(stderr, "%s, line %d: %s's precondition \"index in range\" violated: index == %d\n", __FILE__, __LINE__, __func__, index);
     exit(EXIT_FAILURE);
     return 0;
 }
 
 void pl_set(List list, int index, Any value) {
-    assert_argument_not_null(list);
-    pl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_pointer(list);
     int i = 0;
     for (PointerListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (i == index) {
@@ -102,9 +100,7 @@ void pl_set(List list, int index, Any value) {
             return;
         }
     }
-    printf("%s: index %d is out of range "
-        "(current list length: %d, allowed indices: 0..%d)\n", 
-        __func__, index, i, i - 1);
+    fprintf(stderr, "%s, line %d: %s's precondition \"index in range\" violated: index == %d\n", __FILE__, __LINE__, __func__, index);
     exit(EXIT_FAILURE);
 }
 
@@ -147,10 +143,7 @@ static void pl_iterator_test(void) {
 }
 
 Any pl_next(ListIterator *iter) {
-    if (*iter == NULL) {
-        printf("%s: iterator does not have a next value\n", __func__);
-        exit(EXIT_FAILURE);
-    }
+    require("iterator has more values", *iter);
     PointerListNode *node = *(PointerListNode**)iter;
     Any value = node->value;
     *iter = (*iter)->next;
@@ -176,8 +169,8 @@ static void pl_prepend_append_test(void) {
 }
 
 void pl_append(List list, Any value) {
-    assert_argument_not_null(list);
-    pl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_pointer(list);
     // allocate memory for next-pointer and content
     PointerListNode *node = xcalloc(1, sizeof(ListNode*) + sizeof(value));
     // copy content, leave next-pointer NULL
@@ -196,8 +189,8 @@ void pl_append(List list, Any value) {
 }
 
 void pl_prepend(List list, Any value) {
-    assert_argument_not_null(list);
-    pl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_pointer(list);
     // allocate memory for next-pointer and content
     PointerListNode *node = xcalloc(1, sizeof(ListNode*) + sizeof(value));
     // copy content, leave next-pointer NULL
@@ -228,9 +221,9 @@ static void pl_print_test(void) {
 }
 
 void pl_print(List list, AnyFn print_element) {
-    assert_argument_not_null(list);
-    pl_assert_element_size(list);
-    assert_function_not_null(print_element);
+    require_not_null(list);
+    require_element_size_pointer(list);
+    require_not_null(print_element);
     AnyToVoid f = print_element;
     PointerListNode *node = (PointerListNode*)list->first;
     printf("[");
@@ -246,9 +239,9 @@ void pl_print(List list, AnyFn print_element) {
 }
 
 void pl_println(List list, AnyFn print_element) {
-    assert_argument_not_null(list);
-    pl_assert_element_size(list);
-    assert_function_not_null(print_element);
+    require_not_null(list);
+    require_element_size_pointer(list);
+    require_not_null(print_element);
     pl_print(list, print_element);
     printf("\n");
 }
@@ -269,8 +262,8 @@ static void pl_contains_test(void) {
 }
 
 bool pl_contains(List list, Any value) {
-    assert_argument_not_null(list);
-    pl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_pointer(list);
     for (PointerListNode *node = list->first; node != NULL; node = node->next) {
         if (node->value == value) {
             return true;
@@ -303,8 +296,8 @@ static void pl_index_test(void) {
 }
 
 int pl_index(List list, Any value) {
-    assert_argument_not_null(list);
-    pl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_pointer(list);
     int i = 0;
     for (PointerListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (node->value == value) {
@@ -326,8 +319,8 @@ static void pl_index_from_test(void) {
 }
 
 int pl_index_from(List list, Any value, int from) {
-    assert_argument_not_null(list);
-    pl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_pointer(list);
     if (from < 0) from = 0;
     int i = 0;
     for (PointerListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -356,9 +349,9 @@ static void pl_index_fn_test(void) {
 }
 
 int pl_index_fn(List list, AnyFn predicate, Any x) {
-    assert_argument_not_null(list);
-    pl_assert_element_size(list);
-    assert_function_not_null(predicate);
+    require_not_null(list);
+    require_element_size_pointer(list);
+    require_not_null(predicate);
     AnyIntAnyToBool f = predicate;
     int i = 0;
     for (PointerListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -372,8 +365,8 @@ int pl_index_fn(List list, AnyFn predicate, Any x) {
 // @todo: add test
 
 Any pl_find(List list, AnyFn predicate, Any x) {
-    assert_argument_not_null(list);
-    assert_function_not_null(predicate);
+    require_not_null(list);
+    require_not_null(predicate);
     AnyIntAnyToBool f = predicate;
     int i = 0;
     for (PointerListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -432,8 +425,8 @@ static void pl_insert_test(void) {
 }
 
 void pl_insert(List list, int index, Any value) {
-    assert_argument_not_null(list);
-    pl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_pointer(list);
     l_insert(list, index, &value);
 }
 
@@ -503,8 +496,8 @@ static void pl_remove_test(void) {
 }
 
 void pl_remove(List list, int index) {
-    assert_argument_not_null(list);
-    pl_assert_element_size(list);
+    require_not_null(list);
+    require_element_size_pointer(list);
     l_remove(list, index);
 }
 
@@ -534,9 +527,9 @@ static void pl_each_test(void) {
 }
 
 void pl_each(List list, AnyFn f, Any x) {
-    assert_argument_not_null(list);
-    pl_assert_element_size(list);
-    assert_function_not_null(f);
+    require_not_null(list);
+    require_element_size_pointer(list);
+    require_not_null(f);
     AnyIntAnyToAny ff = f;
     int i = 0;
     for (PointerListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -570,9 +563,9 @@ static void pl_map_test(void) {
 }
 
 List pl_map(List list, AnyFn f, Any x) {
-    assert_argument_not_null(list);
-    pl_assert_element_size(list);
-    assert_function_not_null(f);
+    require_not_null(list);
+    require_element_size_pointer(list);
+    require_not_null(f);
     AnyIntAnyToAny ff = f;
     List result = pl_create();
     int i = 0;
@@ -607,9 +600,9 @@ static void pl_foldl_test(void) {
 }
 
 Any pl_foldl(List list, AnyFn f, Any state) {
-    assert_argument_not_null(list);
-    pl_assert_element_size(list);
-    assert_function_not_null(f);
+    require_not_null(list);
+    require_element_size_pointer(list);
+    require_not_null(f);
     AnyAnyIntToAny ff = f;
     int i = 0;
     for (PointerListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -644,9 +637,9 @@ static void pl_foldr_test(void) {
 }
 
 Any pl_foldr(List list, AnyFn f, Any init) {
-    assert_argument_not_null(list);
-    pl_assert_element_size(list);
-    assert_function_not_null(f);
+    require_not_null(list);
+    require_element_size_pointer(list);
+    require_not_null(f);
     AnyAnyIntToAny ff = f;
     List rev = l_reverse(list);
     int i = l_length(list) - 1;
@@ -675,9 +668,9 @@ static void pl_filter_test(void) {
 }
 
 List pl_filter(List list, AnyFn predicate, Any x) {
-    assert_argument_not_null(list);
-    pl_assert_element_size(list);
-    assert_function_not_null(predicate);
+    require_not_null(list);
+    require_element_size_pointer(list);
+    require_not_null(predicate);
     AnyIntAnyToBool f = predicate;
     List result = pl_create();
     int i = 0;
@@ -711,9 +704,9 @@ static void pl_choose_test(void) {
 }
 
 List pl_choose(List list, AnyFn f, Any x) {
-    assert_argument_not_null(list);
-    pl_assert_element_size(list);
-    assert_function_not_null(f);
+    require_not_null(list);
+    require_element_size_pointer(list);
+    require_not_null(f);
     AnyIntAnyToAny ff = f;
     List result = pl_create();
     int i = 0;
@@ -744,9 +737,9 @@ static void pl_exists_test(void) {
 }
 
 bool pl_exists(List list, AnyFn predicate, Any x) {
-    assert_argument_not_null(list);
-    pl_assert_element_size(list);
-    assert_function_not_null(predicate);
+    require_not_null(list);
+    require_element_size_pointer(list);
+    require_not_null(predicate);
     AnyIntAnyToBool f = predicate;
     int i = 0;
     for (PointerListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -766,9 +759,9 @@ static void pl_forall_test(void) {
 }
 
 bool pl_forall(List list, AnyFn predicate, Any x) {
-    assert_argument_not_null(list);
-    pl_assert_element_size(list);
-    assert_function_not_null(predicate);
+    require_not_null(list);
+    require_element_size_pointer(list);
+    require_not_null(predicate);
     AnyIntAnyToBool f = predicate;
     int i = 0;
     for (PointerListNode *node = list->first; node != NULL; node = node->next, i++) {
