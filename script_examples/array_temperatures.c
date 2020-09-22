@@ -53,8 +53,8 @@ bool contains_negative(Array array) {
     // If there is no negative value, answer false.
     int n = a_length(array);
     for (int i = 0; i < n; i++) {
-        assert(i < n);
-        assert(i >= 0);
+        assert("i < n", i < n);
+        assert("not negative", i >= 0);
         if (ia_get(array, i) < 0) {
             return true;
         }
@@ -126,8 +126,8 @@ Array every_other(Array array) {
     // Iterate over the even indices in the original order.
     // Copy each element at an even index to the result array.
     for (int i = 0; i < n; i += 2) {
-        assert(i < n);
-        assert(i >= 0 && (i % 2) == 0);
+        assert("i < n", i < n);
+        assert("not negative and even", i >= 0 && (i % 2) == 0);
         // printiln(i);
         ia_set(result, i / 2, ia_get(array, i));
     }

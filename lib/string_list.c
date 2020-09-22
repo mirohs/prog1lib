@@ -1386,7 +1386,7 @@ void sl_test_all(void) {
         
 }
 
-#if 1
+#if 0
 int main(void) {
     base_init();
     sl_test_all();

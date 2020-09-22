@@ -11,13 +11,13 @@ int main(void) {
     // Output the square of each of these values.
     int i = 30;
     while (i >= 3) {
-        assert(i >= 3);
-        assert(i <= 30);
+        assert("while condition", i >= 3);
+        assert("initialization", i <= 30);
         // printiln(i); // for inspecting the iteration variable
         printiln(i * i); // square the iterated values
         i = i - 3;
     }
-    assert(!(i >= 3)); // inverse of condition (not)
+    assert("inverse of while condition", !(i >= 3)); // inverse of condition (not)
     return 0;
 }
 

@@ -5,7 +5,6 @@ make stars && ./stars
 */
 
 #include "base.h"
-#include "string.h"
 
 // typedef char* String;
 

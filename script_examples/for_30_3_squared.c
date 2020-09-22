@@ -10,8 +10,8 @@ int main(void) {
     // Iterate over the multiples of 3, from 30 down to 3.
     // Output the square of each of these values.
     for (int i = 30; i >= 3; i = i - 3) {
-        assert(i >= 3);
-        assert(i <= 30);
+        assert("loop condition", i >= 3);
+        assert("loop initialization", i <= 30);
         // printiln(i); // for inspecting the iteration variable
         printiln(i * i); // square the iterated values
     }

@@ -63,16 +63,16 @@ Array ia_sub(Array array, int start_index, int end_index) {
     {
         return ia_create(0, 0);
     }
-    assert(start_index < end_index);
-    assert(start_index < a_length(array));
-    assert(end_index > 0);
+    assert("start < end", start_index < end_index);
+    assert("start < length", start_index < a_length(array));
+    assert("positive end", end_index > 0);
     if (start_index < 0) start_index = 0;
     if (end_index > a_length(array)) end_index = a_length(array);
     int n = end_index - start_index;
     Array result = ia_create(n, 0);
     for (int i = start_index, j = 0; i < end_index; i++, j++) {
-        assert(i < end_index);
-        assert(i >= start_index);
+        assert("i < end", i < end_index);
+        assert("i >= start", i >= start_index);
         int value = ia_get(array, i); // read from input array
         ia_set(result, j, value); // write to output array
     }

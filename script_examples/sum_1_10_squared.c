@@ -12,13 +12,13 @@ int main(void) {
     int sum = 0; // <--- new variable for intermediary (and final) result
     int i = 1;
     while (i <= 10) {
-        assert(i <= 10);
-        assert(i >= 1);
+        assert("while condition", i <= 10);
+        assert("initialization", i >= 1);
         // printiln(i); // for inspecting the iteration variable
         sum = sum + i * i; // <--- adding the next squared value
         i = i + 1;
     }
-    assert(!(i <= 10)); // inverse of condition (not)
+    assert("inverse of while condition", !(i <= 10)); // inverse of condition (not)
     prints("sum = "); // <--- output
     printiln(sum);    // <--- output (value and newline)
     return 0;

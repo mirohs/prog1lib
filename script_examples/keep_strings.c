@@ -4,10 +4,7 @@ Run: ./keep_strings
 make keep_strings && ./keep_strings
 */
 
-#include "base.h"        // http://hci.uni-hannover.de/files/prog1lib/base_8h.html
-#include "string.h"      // http://hci.uni-hannover.de/files/prog1lib/string_8h.html
-#include "list.h"        // http://hci.uni-hannover.de/files/prog1lib/list_8h.html
-#include "string_list.h" // http://hci.uni-hannover.de/files/prog1lib/string__list_8h.html
+#include "base.h"
 #include "arrays_lists.h"
 
 static bool contains(String element, int index, String x) {
