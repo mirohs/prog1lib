@@ -301,7 +301,7 @@ Array ia_of_da(Array array) {
     return result;
 }
 
-#ifdef A_GET_SET
+#ifndef NO_GET_SET
 int ia_get(Array array, int index) {
     require_not_null(array);
     require_element_size_int(array);
@@ -312,7 +312,7 @@ int ia_get(Array array, int index) {
 }
 #endif
 
-#ifdef A_GET_SET
+#ifndef NO_GET_SET
 void ia_set(Array array, int index, int value) {
     require_not_null(array);
     require_element_size_int(array);
@@ -323,7 +323,7 @@ void ia_set(Array array, int index, int value) {
 }
 #endif
 
-#ifdef A_GET_SET
+#ifndef NO_GET_SET
 int ia_inc(Array array, int index, int value) {
     require_not_null(array);
     require_element_size_int(array);

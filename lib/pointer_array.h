@@ -32,10 +32,10 @@ Return array element at index.
 @param[in] index index of array element to return
 @return array element
 */
-#ifdef A_GET_SET
-Any pa_get(Array array, int index);
-#else
+#ifdef NO_GET_SET
 #define pa_get(array, index) ((Any*)((array)->a))[index]
+#else
+Any pa_get(Array array, int index);
 #endif
 
 /**
@@ -44,10 +44,10 @@ Set array element at index to value.
 @param[in] index index of array element to set
 @param[in] value value to set
 */
-#ifdef A_GET_SET
-void pa_set(Array array, int index, Any value);
-#else
+#ifdef NO_GET_SET
 #define pa_set(array, index, value) ((Any*)((array)->a))[index] = value;
+#else
+void pa_set(Array array, int index, Any value);
 #endif
 
 #if 0
@@ -373,12 +373,12 @@ bool pa_test_equal_file_line(const char *file, const char *function, int line, A
 * Checks if array has the right element size. Fails if not.
 * Any s is debug output (e.g., function name).
 */
-#ifdef CHECK_ELEMENT_SIZE
 #undef require_element_size_pointer
+#ifdef NO_CHECK_ELEMENT_SIZE
+#define require_element_size_pointer(array)
+#else
 #define require_element_size_pointer(array) \
     require_x("element size pointer", (array)->s == sizeof(Any), "size == %d", (array)->s)
-#else
-#define require_element_size_pointer(array)
 #endif
 
 void pa_test_all(void);

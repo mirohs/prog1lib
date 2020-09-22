@@ -82,10 +82,10 @@ Return array element at index.
 @param[in] index index of array element to return
 @return array element
 */
-#ifdef A_GET_SET
-double da_get(Array array, int index);
-#else
+#ifdef NO_GET_SET
 #define da_get(array, index) ((double*)array.a)[index]
+#else
+double da_get(Array array, int index);
 #endif
 
 /**
@@ -94,10 +94,10 @@ Set array element at index to value.
 @param[in] index index of array element to set
 @param[in] value value to set
 */
-#ifdef A_GET_SET
-void da_set(Array array, int index, double value);
-#else
+#ifdef NO_GET_SET
 #define da_set(array, index, value) ((double*)array->a)[index] = value;
+#else
+void da_set(Array array, int index, double value);
 #endif
 
 /**
@@ -106,10 +106,10 @@ Increment array element at index by value. Avoids common pattern: set(a, i, get(
 @param[in] index index of array element to increment
 @param[in] value value to increment
 */
-#ifdef A_GET_SET
-void da_inc(Array array, int index, double value);
-#else
+#ifdef NO_GET_SET
 #define da_inc(array, index, value) ia_set(array, index, ia_get(array, index) + (value));
+#else
+void da_inc(Array array, int index, double value);
 #endif
 
 /**
@@ -499,11 +499,12 @@ bool da_test_within_file_line(const char *file, const char *function, int line, 
 Checks if array has the right element size. Fails if not.
 @param[in] array array to check
 */
-#ifdef CHECK_ELEMENT_SIZE
+#undef require_element_size_double
+#ifdef NO_CHECK_ELEMENT_SIZE
+#define require_element_size_double(array)
+#else
 #define require_element_size_double(array) \
     require_x("element size double", (array)->s == sizeof(double), "size == %d", (array)->s)
-#else
-#define require_element_size_double(array)
 #endif
 
 void da_test_all(void);

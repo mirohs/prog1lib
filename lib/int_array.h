@@ -102,10 +102,10 @@ Return array element at index.
 @param[in] index index of array element to return
 @return array element
 */
-#ifdef A_GET_SET
-int ia_get(Array array, int index);
-#else
+#ifdef NO_GET_SET
 #define ia_get(array, i) ((int*)((array)->a))[i]
+#else
+int ia_get(Array array, int index);
 #endif
 
 /**
@@ -114,10 +114,10 @@ Set array element at index to value.
 @param[in] index index of array element to set
 @param[in] value value to set
 */
-#ifdef A_GET_SET
-void ia_set(Array array, int index, int value);
-#else
+#ifdef NO_GET_SET
 #define ia_set(array, index, value) ((int*)((array)->a))[index] = value;
+#else
+void ia_set(Array array, int index, int value);
 #endif
 
 /**
@@ -127,10 +127,10 @@ Increment array element at index by value. Avoids common pattern: set(a, i, get(
 @param[in] value value to increment
 @return the incremented value
 */
-#ifdef A_GET_SET
-int ia_inc(Array array, int index, int value);
-#else
+#ifdef NO_GET_SET
 #define ia_inc(array, index, value) ia_set(array, index, ia_get(array, index) + (value));
+#else
+int ia_inc(Array array, int index, int value);
 #endif
 
 /**
@@ -547,12 +547,12 @@ bool ia_test_equal_file_line(const char *file, const char *function, int line, A
 Checks if array has the right element size. Fails if not.
 String s is debug output (e.g., function name).
 */
-#ifdef CHECK_ELEMENT_SIZE
 #undef require_element_size_int
+#ifdef NO_CHECK_ELEMENT_SIZE
+#define require_element_size_int(array)
+#else
 #define require_element_size_int(array) \
     require_x("element size int", (array)->s == sizeof(int), "size == %d", (array)->s)
-#else
-#define require_element_size_int(array)
 #endif
 
 void ia_test_all(void);

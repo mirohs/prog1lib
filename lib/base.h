@@ -27,11 +27,16 @@ Constants, such as @c NULL or @c EQ, are written in upper case. This is independ
 
 <h3>Type Declarations</h3>
 
+The type @c String is simply defined as a pointer to a character:
+@code{.c}
+typedef char* String;
+@endcode
+
 There are several type declarations for functions. Example: 
 @code{.c}
 typedef String (*IntStringToString)(int, String);
 @endcode
-The type @c IntStringToString represents a function that takes an integer and a String and returns a String.
+The type @c IntStringToString represents a pointer to a function that takes an integer and a String and returns a String.
 
 <h3>Dynamic Memory</h3>
 
@@ -60,11 +65,11 @@ last line
 @endcode
 To read this file into a list of strings:
 @code{.c}
-String s = s_read_file("example.txt");
-List sl = sl_split(s, '\n'); // split file content into lines
-s_free(s); // free file content
-sl_println(sl);
-sl_free(sl); // free list and elements
+String s = s_read_file("example.txt"); // read the complete file
+List sl = sl_split(s, '\n'); // split file contents into lines
+s_free(s); // free the string
+sl_println(sl); // print the list of strings
+sl_free(sl); // free the list and its elements
 @endcode
 
 Output:
@@ -96,7 +101,7 @@ last line
 <h4>Example 3: Write 100 random double values between 0 and 10 to a file</h4>
 @code{.c}
 List list = sl_create();
-for (int i = 0; i < 100; i++){
+for (int i = 0; i < 100; i++) {
     double d = d_rnd(10);
     sl_append(list, s_of_double(d));
 }
@@ -118,7 +123,7 @@ Output (into file @c random-doubles.txt):
 See test functions in .c file for more examples.
 
 @author Michael Rohs
-@date 15.10.2015
+@date 15.10.2015, 22.09.2020
 @copyright Apache License, Version 2.0
 */
 
@@ -282,93 +287,97 @@ StringOption make_string_some(String some);
 
 /**
 Switching assertion checking on and off.
-If @c ASSERT is not defined (e.g. the @c define commented out), assert statements will not be compiled.
-@see assert, assert_function_not_null, assert_argument_not_null
+If @cn NO_ASSERT is defined, then assertions will not be compiled.
 */
-#ifndef NO_ASSERT
-#define ASSERT
-#endif
+#define NO_ASSERT_DOC
 
-#ifdef ASSERT
 /**
-Check the given condition. If the condition is true, do nothing. If the condition is false, report the file and line of the assert statement and stop the program. Assert statements are used to check for conditions that the programmer knows must be met at a particular point.
-@param[in] b boolean condition to check
+Switching assertion checking on and off.
+If @cn NO_REQUIRE is defined, then preconditions will not be compiled.
 */
-#define assert(b) {\
-    if (!(b)) {\
-        printf("%s, line %d, %s: assertion violated\n", __FILE__, __LINE__, __func__);\
-        exit(EXIT_FAILURE);\
-    }\
-}
-#else
-#define assert(b) 
-#endif
+#define NO_REQUIRE_DOC
 
-#ifdef ASSERT
 /**
-Check the given condition. If the condition is true, do nothing. If the condition is false, report the file and line of the assert statement and stop the program. Assert statements are used to check for conditions that the programmer knows must be met at a particular point.
-@param[in] description String a description of the condition that has to be valid
-@param[in] condition boolean the condition to check
+Switching assertion checking on and off.
+If @cn NO_ENSURE is defined, then postconditions will not be compiled.
 */
-#define assert2(description, condition) {\
-    if (!(condition)) {\
-        printf("%s, line %d, %s: assertion \"%s\" violated\n", __FILE__, __LINE__, __func__, description);\
-        exit(EXIT_FAILURE);\
-    }\
-}
-#else
-#define assert2(description, condition)
-#endif
+#define NO_ENSURE_DOC
 
-#if 1
-#define assert3(description, condition, ...) {\
-    if (!(condition)) {\
-        printf("%s, line %d, %s: assertion \"%s\" violated (", __FILE__, __LINE__, __func__, description);\
-        printf(__VA_ARGS__);\
-        printf(")\n");\
-        exit(EXIT_FAILURE);\
-    }\
-}
-#else
-#define assert3(description, condition, ...)
-#endif
 
-#ifdef ASSERT
+
+#ifdef NO_ASSERT
+#define assert(description, condition)
+#else
 /**
-Check that the given argument is not NULL. If so, do nothing. Otherwise report the location of the precondition and stop the program. A precondition is a special type of assertion that has to be valid at the beginning of a function.
+Check the given condition. If the condition is true, do nothing. If the condition is false, report the file and line of the assertion  and stop the program. Assertions are used to check for conditions that have to be valid at a particular point.
 
-Example use of a precondition:
-
-    int myfunction(String s) {
-        require_not_null(s);
-        ...
-    }
+Example use of an assertion:
+@code{.c}
+    ...
+    assert("not too large", x < 3);
+    ...
+@endcode
 
 Example output of failed preconditions:
 
-    myfile.c, line 18: myfunction's precondition "not null" (s) violated
+    myfile.c, line 18: assertion "not too large" (x < 3) violated
+    myfile.c, line 18: assertion "sorted" (forall(int i = 0, i < n-1, i++, a[i] <= a[i+1])) violated
 
-@param[in] argument pointer a pointer that must not be null
+@param[in] description String a description of the condition that has to be valid
+@param[in] condition boolean the condition to check
 */
-#define require_not_null(argument) \
-if (argument == NULL) {\
-    fprintf(stderr, "%s, line %d: %s's precondition \"not null\" (" #argument ") violated\n", __FILE__, __LINE__, __func__);\
+#define assert(description, condition) \
+if (!(condition)) {\
+    fprintf(stderr, "%s, line %d: assertion \"%s\" (%s) violated\n", __FILE__, __LINE__, description, #condition);\
     exit(EXIT_FAILURE);\
 }
-#else
-#define require_not_null(argument)
 #endif
 
-#ifdef ASSERT
+#ifdef NO_ASSERT
+#define assert_x(description, condition)
+#else
+/**
+Check the given condition. If the condition is true, do nothing. If the condition is false, report the file and line of the assertion  and stop the program. Assertions are used to check for conditions that have to be valid at a particular point.
+
+Example use of an assertion:
+@code{.c}
+    ...
+    assert_x("not too large", x < 3, "x == %d", x);
+    ...
+@endcode
+
+Example output of failed preconditions:
+
+    myfile.c, line 18: assertion "not too large" violated: x == 3
+    myfile.c, line 18: assertion "sorted" violated: a[2] == 5 && a[3] == 4
+
+@param[in] description String a description of the condition that has to be valid
+@param[in] condition boolean the condition to check
+*/
+#define assert_x(description, condition, ...) \
+if (!(condition)) {\
+    fprintf(stderr, "%s, line %d: assertion \"%s\" violated: ", __FILE__, __LINE__, description);\
+    fprintf(stderr, __VA_ARGS__);\
+    fprintf(stderr, "\n");\
+    exit(EXIT_FAILURE);\
+}
+#endif
+
+
+
+#ifdef NO_REQUIRE
+#define require(description, condition)
+#else
 /**
 Check the given precondition. If the condition is true, do nothing. If the condition is false, report the location of the precondition and stop the program. A precondition is a special type of assertion that has to be valid at the beginning of a function.
 
 Example use of a precondition:
-
+@code{.c}
     int myfunction(int x) {
         require("not too large", x < 3);
         ...
     }
+@endcode
 
 Example output of failed preconditions:
 
@@ -383,20 +392,21 @@ if (!(condition)) {\
     fprintf(stderr, "%s, line %d: %s's precondition \"%s\" (%s) violated\n", __FILE__, __LINE__, __func__, description, #condition);\
     exit(EXIT_FAILURE);\
 }
-#else
-#define require(description, condition)
 #endif
 
-#ifdef ASSERT
+#ifdef NO_REQUIRE
+#define require_x(description, condition)
+#else
 /**
 Check the given precondition. If the condition is true, do nothing. If the condition is false, report the location of the precondition and stop the program. A precondition is a special type of assertion that has to be valid at the beginning of a function.
 
 Example use of a precondition:
-
+@code{.c}
     int myfunction(int x) {
         require_x("not too large", x < 3, "x == %d", x);
         ...
     }
+@endcode
 
 Example output of failed preconditions:
 
@@ -413,83 +423,165 @@ if (!(condition)) {\
     fprintf(stderr, "\n");\
     exit(EXIT_FAILURE);\
 }
+#endif
+
+#ifdef NO_REQUIRE
+#define require_not_null(argument)
 #else
-#define require_x(description, condition)
+/**
+Check that the given argument is not NULL. If so, do nothing. Otherwise report the location of the precondition and stop the program. A precondition is a special type of assertion that has to be valid at the beginning of a function.
+
+Example use of a precondition:
+@code{.c}
+    int myfunction(String s) {
+        require_not_null(s);
+        ...
+    }
+@endcode
+
+Example output of failed preconditions:
+
+    myfile.c, line 18: myfunction's precondition "not null" (s) violated
+
+@param[in] argument pointer a pointer that must not be null
+*/
+#define require_not_null(argument) \
+if (argument == NULL) {\
+    fprintf(stderr, "%s, line %d: %s's precondition \"not null\" (" #argument ") violated\n", __FILE__, __LINE__, __func__);\
+    exit(EXIT_FAILURE);\
+}
 #endif
 
 
 
-#ifdef ASSERT
+#ifdef NO_ENSURE
+#define ensure(description, condition)
+#else
 /**
 Check the given postcondition. If the condition is true, do nothing. If the condition is false, report the location of the postcondition and stop the program. A postcondition is a special type of assertion that has to be valid before returning from a function.
+
+Example use of a postcondition:
+@code{.c}
+    int myfunction(...) {
+        int result = 0;
+        ...
+        ensure("not negative", result >= 0);
+        return result;
+    }
+@endcode
+
+Example output of failed postconditions:
+
+    myfile.c, line 18: myfunction's postcondition "not negative" (result >= 0) violated
+    myfile.c, line 18: myfunction's postcondition "sorted" (forall(int i = 0, i < n-1, i++, a[i] <= a[i+1])) violated
+
 @param[in] description String a description of the condition that has to be valid
 @param[in] condition boolean the condition to check
 */
-#define ensure(description, condition) {\
-    if (!(condition)) {\
-        fprintf(stderr, "%s, line %d: %s's postcondition \"%s\" violated\n", __FILE__, __LINE__, __func__, description);\
-        exit(EXIT_FAILURE);\
-    }\
+#define ensure(description, condition) \
+if (!(condition)) {\
+    fprintf(stderr, "%s, line %d: %s's postcondition \"%s\" (%s) violated\n", __FILE__, __LINE__, __func__, description, #condition);\
+    exit(EXIT_FAILURE);\
 }
-#else
-#define ensure(description, condition)
 #endif
 
-#ifdef ASSERT
+#ifdef NO_ENSURE
+#define ensure_x(description, condition)
+#else
 /**
-Check that the given condition is true for all steps of the iteration. Primarily for use in preconditions and postconditions.
+Check the given postcondition. If the condition is true, do nothing. If the condition is false, report the location of the postcondition and stop the program. A postcondition is a special type of assertion that has to be valid before returning from a function.
+
+Example use of a postcondition:
+@code{.c}
+    int myfunction(...) {
+        int result = 0;
+        ...
+        ensure_x("not negative", result >= 0, "result == %d", result);
+        return result;
+    }
+@endcode
+
+Example output of failed postconditions:
+
+    myfile.c, line 18: myfunction's postcondition "not negative" (result >= 0) violated
+    myfile.c, line 18: myfunction's postcondition "sorted" violated: a[2] == 5 && a[3] == 4
+
+
+@param[in] description String a description of the condition that has to be valid
+@param[in] condition boolean the condition to check
+*/
+#define ensure_x(description, condition, ...) \
+if (!(condition)) {\
+    fprintf(stderr, "%s, line %d: %s's postcondition \"%s\" violated: ", __FILE__, __LINE__, __func__, description);\
+    fprintf(stderr, __VA_ARGS__);\
+    fprintf(stderr, "\n");\
+    exit(EXIT_FAILURE);\
+}
+#endif
+
+/**
+Write code that is later used in a postcondition. Indicates that this code is used for a postcondition. It is removed if NO_ENSURE is defined.
+
+Example:
+@code{.c}
+    int inc(int x) {
+        ensure_code(int old_x = x); // save old value for postcondition
+        x = x + 1;
+        ensure("incremented", x == old_x + 1); // check whether new value is as expected
+        return x;
+    }
+@endcode
+*/
+#ifdef NO_ENSURE
+#define ensure_code(x)
+#else
+#define ensure_code(x) x;
+#endif
+
+
+/**
+Check that the given condition is true for all steps of an iteration. Primarily for use in assertions, preconditions, and postconditions.
 
 Example: Checking that an int-array of n elements is sorted:
-
+@code{.c}
     bool is_sorted = forall(int i = 0, i < n-1, i++, a[i] <= a[i+1]);
-
+@endcode
  */
 #define forall(init, has_more_steps, do_step, condition) ({\
    bool result = true;\
    for (init; has_more_steps; do_step) { if (!(condition)) { result = false; break; } }\
    result;\
 })
-#else
-#define forall(init, has_more_steps, do_step, condition) 0
-#endif
 
-#ifdef ASSERT
 /**
-Check that the given condition is true for at least one step of the iteration. Primarily for use in preconditions and postconditions.
+Check that the given condition is true for all steps of an iteration. Primarily for use in assertions, preconditions, and postconditions.
 
 Example: Checking whether an int-array of n elements contains negative elements:
-
+@code{.c}
     bool has_negative_elements = exists(int i = 0, i < n, i++, a[i] < 0);
-
+@endcode
  */
 #define exists(init, has_more_steps, do_step, condition) ({\
    bool result = false;\
    for (init; has_more_steps; do_step) { if (condition) { result = true; break; } }\
    result;\
 })
-#else
-#define exists(init, has_more_steps, do_step, condition) 0
-#endif
 
-/*
-#define forall2(it, condition) ({\
-   bool result = true;\
-   for (it) { if (!(condition)) { result = false; break; } }\
-   result;\
-})
-*/
+
 
 ////////////////////////////////////////////////////////////////////////////
 // Timing
 
 /**
-Switching assertion checking on and off.
-If @c TIMING is not defined (e.g. the @c define commented out), timing will not be compiled.
+Switching timing measurements on and off.
+If @c NO_TIMING is defined, then timing code will not be compiled.
 @see time_function
 */
-#define TIMING
+#define NO_TIMING_DOC
 
-#ifdef TIMING
+#ifdef NO_TIMING
+#define time_function(f);
+#else
 /**
 Print the execution time of a function (in milliseconds).
 @param[in] f function to time
@@ -500,8 +592,6 @@ Print the execution time of a function (in milliseconds).
     t = clock() - t;\
     printf("time: %g ms\n", t * 1000.0 / CLOCKS_PER_SEC);\
 }
-#else
-#define time_function(f);
 #endif
 
 
@@ -751,14 +841,14 @@ bool b_rnd(void);
 
 /**
 Switching element size checking for arrays and lists on and off.
-If @c CHECK_ELEMENT_SIZE is not defined (e.g. the @c define commented out), element size checking will not be performed.
+If @c NO_CHECK_ELEMENT_SIZE is defined, then element size checking will not be performed.
 */
-#define CHECK_ELEMENT_SIZE
+#define NO_CHECK_ELEMENT_SIZE_DOC
 
 /**
-If @c A_GET_SET is defined, use array accessor functions. These perform bounds checking, but are less efficient than unchecked array element access.
+If @c NO_GET_SET is defined, then use direct array access instead of accessor functions. Accessor functions perform bounds checking, but are less efficient than unchecked array element access.
 */
-#define A_GET_SET
+#define NO_GET_SET_DOC
 
 
 

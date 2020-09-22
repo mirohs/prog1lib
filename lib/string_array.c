@@ -244,7 +244,7 @@ void sa_free(Array array) {
     }
 }
 
-#ifdef A_GET_SET
+#ifndef NO_GET_SET
 String sa_get(Array array, int index) {
     require_not_null(array);
     require_element_size_string(array);
@@ -255,7 +255,7 @@ String sa_get(Array array, int index) {
 }
 #endif
 
-#ifdef A_GET_SET
+#ifndef NO_GET_SET
 void sa_set(Array array, int index, String value) {
     require_not_null(array);
     require_element_size_string(array);

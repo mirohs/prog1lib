@@ -56,10 +56,10 @@ Return array element at index.
 @param[in] index index of array element to return
 @return array element
 */
-#ifdef A_GET_SET
-String sa_get(Array array, int index);
-#else
+#ifdef NO_GET_SET
 #define sa_get(array, index) ((String*)((array)->a))[index]
+#else
+String sa_get(Array array, int index);
 #endif
 
 /**
@@ -68,10 +68,10 @@ Set array element at index to value.
 @param[in] index index of array element to set
 @param[in] value value to set
 */
-#ifdef A_GET_SET
-void sa_set(Array array, int index, String value);
-#else
+#ifdef NO_GET_SET
 #define sa_set(array, index, value) ((String*)((array)->a))[index] = value;
+#else
+void sa_set(Array array, int index, String value);
 #endif
 
 /**
@@ -428,12 +428,12 @@ bool sa_test_equal_file_line(const char *file, const char *function, int line, A
 * Checks if array has the right element size. Fails if not.
 * String s is debug output (e.g., function name).
 */
-#ifdef CHECK_ELEMENT_SIZE
 #undef require_element_size_string
+#ifdef NO_CHECK_ELEMENT_SIZE
+#define require_element_size_string(array)
+#else
 #define require_element_size_string(array) \
     require_x("element size string", (array)->s == sizeof(String), "size == %d", (array)->s)
-#else
-#define require_element_size_string(array)
 #endif
 
 void sa_test_all(void);

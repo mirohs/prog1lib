@@ -400,12 +400,12 @@ bool pl_test_equal_file_line(const char *file, const char *function, int line, L
 Checks if list has the right element size. Fails if not.
 String s is debug output (e.g., function name).
 */
-#ifdef CHECK_ELEMENT_SIZE
 #undef require_element_size_pointer
+#ifdef NO_CHECK_ELEMENT_SIZE
+#define require_element_size_pointer(list)
+#else
 #define require_element_size_pointer(list) \
     require_x("element size pointer", (list)->s == sizeof(Any), "size == %d", (list)->s)
-#else
-#define require_element_size_pointer(list)
 #endif
 
 void pl_test_all(void);

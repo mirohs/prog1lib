@@ -199,7 +199,7 @@ static void s_join_test(void) {
 String s_join(List list, char joiner) {
     require_not_null(list);
     require_element_size_string(list);
-    assert(joiner != '\0');
+    require("valid joiner", joiner != '\0');
     int numberOfElements = 0;
     int numberOfCharacters = 0;
     for (StringListNode *node = list->first; node != NULL; node = node->next) {

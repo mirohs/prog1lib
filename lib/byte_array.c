@@ -252,7 +252,7 @@ Array ba_fn(int n, IntByteToByte init, Byte x) {
     return result;
 }
 
-#ifdef A_GET_SET
+#ifndef NO_GET_SET
 Byte ba_get(Array array, int index) {
     require_element_size_byte(array);
     require_x("index in range", index >= 0 && index < array->n, 
@@ -262,7 +262,7 @@ Byte ba_get(Array array, int index) {
 }
 #endif
 
-#ifdef A_GET_SET
+#ifndef NO_GET_SET
 void ba_set(Array array, int index, Byte value) {
     require_element_size_byte(array);
     require_x("index in range", index >= 0 && index < array->n, 

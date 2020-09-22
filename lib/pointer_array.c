@@ -135,7 +135,7 @@ void pa_free(Array array) {
     }
 }
 
-#ifdef A_GET_SET
+#ifndef NO_GET_SET
 Any pa_get(Array array, int index) {
     require_not_null(array);
     require_element_size_pointer(array);
@@ -146,7 +146,7 @@ Any pa_get(Array array, int index) {
 }
 #endif
 
-#ifdef A_GET_SET
+#ifndef NO_GET_SET
 void pa_set(Array array, int index, Any value) {
     require_not_null(array);
     require_element_size_pointer(array);

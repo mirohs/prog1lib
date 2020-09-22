@@ -548,12 +548,12 @@ bool dl_test_within_file_line(const char *file, const char *function, int line, 
 Checks if list has the right element size. Fails if not.
 String s is debug output (e.g., function name).
 */
-#ifdef CHECK_ELEMENT_SIZE
 #undef require_element_size_double
+#ifdef NO_CHECK_ELEMENT_SIZE
+#define require_element_size_double(list)
+#else
 #define require_element_size_double(list) \
     require_x("element size double", (list)->s == sizeof(double), "size == %d", (list)->s)
-#else
-#define require_element_size_double(list)
 #endif
 
 

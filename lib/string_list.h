@@ -697,12 +697,12 @@ bool sl_test_equal_file_line(const char *file, const char *function, int line, L
 Checks if list has the right element size. Fails if not.
 String s is debug output (e.g., function name).
 */
-#ifdef CHECK_ELEMENT_SIZE
 #undef require_element_size_string
+#ifdef NO_CHECK_ELEMENT_SIZE
+#define require_element_size_string(list)
+#else
 #define require_element_size_string(list) \
     require_x("element size string", (list)->s == sizeof(String), "size == %d", (list)->s)
-#else
-#define require_element_size_string(list)
 #endif
 
 void sl_test_all(void);

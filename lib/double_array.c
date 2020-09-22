@@ -304,7 +304,7 @@ Array da_of_ia(Array array) {
     return result;
 }
 
-#ifdef A_GET_SET
+#ifndef NO_GET_SET
 double da_get(Array array, int i) {
     require_not_null(array);
     require_element_size_double(array);
@@ -314,7 +314,7 @@ double da_get(Array array, int i) {
 }
 #endif
 
-#ifdef A_GET_SET
+#ifndef NO_GET_SET
 void da_set(Array array, int i, double v) {
     require_not_null(array);
     require_element_size_double(array);
@@ -324,7 +324,7 @@ void da_set(Array array, int i, double v) {
 }
 #endif
 
-#ifdef A_GET_SET
+#ifndef NO_GET_SET
 void da_inc(Array array, int i, double v) {
     require_not_null(array);
     require_element_size_double(array);

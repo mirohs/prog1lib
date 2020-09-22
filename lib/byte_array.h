@@ -91,10 +91,10 @@ Return array element at index.
 @param[in] index index of array element to return
 @return array element
 */
-#ifdef A_GET_SET
-Byte ba_get(Array array, int index);
-#else
+#ifdef NO_GET_SET
 #define ba_get(array, index) ((Byte*)((array)->a))[index]
+#else
+Byte ba_get(Array array, int index);
 #endif
 
 /**
@@ -103,10 +103,10 @@ Set array element at index to value.
 @param[in] index index of array element to set
 @param[in] value value to set
 */
-#ifdef A_GET_SET
-void ba_set(Array array, int index, Byte value);
-#else
+#ifdef NO_GET_SET
 #define ba_set(array, index, value) ((Byte*)((array)->a))[index] = value;
+#else
+void ba_set(Array array, int index, Byte value);
 #endif
 
 /**
@@ -520,11 +520,12 @@ bool ba_test_equal_file_line(const char *file, const char *function, int line, A
 /*
 Checks if array has the right element size. Fails if not.
 */
-#ifdef CHECK_ELEMENT_SIZE
+#undef require_element_size_byte
+#ifdef NO_CHECK_ELEMENT_SIZE
+#define require_element_size_byte(array)
+#else
 #define require_element_size_byte(array) \
     require_x("element size byte", (array)->s == sizeof(Byte), "size == %d", (array)->s)
-#else
-#define require_element_size_byte(array)
 #endif
 
 void ba_test_all(void);
