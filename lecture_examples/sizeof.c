@@ -42,9 +42,9 @@ int main(void) {
 
 
     printiln(sizeof(char));        
-    printiln(sizeof(short));        
+    printiln(sizeof(short int));        
     printiln(sizeof(int));        
-    printiln(sizeof(long));        
+    printiln(sizeof(long int));        
 
     printiln(sizeof(float));         
     printiln(sizeof(double));        
