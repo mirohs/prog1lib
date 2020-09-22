@@ -12,7 +12,7 @@ int main(void) {
     int i = 30;
     while (i >= 3) {
         assert("while condition", i >= 3);
-        assert("initialization", i <= 30);
+        assert("initialization and update", i <= 30);
         // printiln(i); // for inspecting the iteration variable
         printiln(i * i); // square the iterated values
         i = i - 3;

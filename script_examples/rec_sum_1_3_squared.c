@@ -11,11 +11,12 @@ make rec_sum_1_3_squared && ./rec_sum_1_3_squared
 // should only be called from sum_squares
 int sum_squares_rec(int i) {
     if (i <= 3) {
-        assert("if-condition", i <= 3);
+        assert("if condition", i <= 3);
         // printiln(i); // for inspecting the iteration variable
         int contribution_of_i = i * i;
         return contribution_of_i + sum_squares_rec(i + 1);
     } else {
+        assert("if condition", i > 3);
         return 0;
     }
 }

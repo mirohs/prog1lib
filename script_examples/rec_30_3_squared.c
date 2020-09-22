@@ -11,7 +11,7 @@ make rec_30_3_squared && ./rec_30_3_squared
 // should only be called from repeat (or from itself)
 void repeat_rec(int i) {
     if (i >= 3) {
-        assert("if-condition", i >= 3);
+        assert("if condition", i >= 3);
         // printiln(i); // for inspecting the iteration variable
         printiln(i * i);
         repeat_rec(i - 3); // function calls itself

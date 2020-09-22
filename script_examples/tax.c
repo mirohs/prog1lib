@@ -41,6 +41,7 @@ Euro sales_tax(Euro price);
 int round_to_int(double d);
 
 static void sales_tax_test() {
+    // test_equal_i(sales_tax(-10), 0);
     test_equal_i(sales_tax(0), 0);
     test_equal_i(sales_tax(537), 0);
     test_equal_i(sales_tax(1000),
@@ -60,10 +61,12 @@ int round_to_int(double d) {
 
 // Return the amount of tax for the given price.
 Euro sales_tax(Euro price) {
-    if (price < 0) {
+    require("not negative", price >= 0);
+    /*if (price < 0) {
         printsln("sales_tax, error: negative price");
         exit(1);
-    } else if (price < LOW_TAX_BOUNDARY) { // NO_TAX
+    } else*/ 
+    if (price < LOW_TAX_BOUNDARY) { // NO_TAX
         return 0;
     } else if (price < HIGH_TAX_BOUNDARY) { // LOW_TAX
         return round_to_int(LOW_TAX_RATE * price);

@@ -13,7 +13,7 @@ int main(void) {
     int i = 1;
     while (i <= 10) {
         assert("while condition", i <= 10);
-        assert("initialization", i >= 1);
+        assert("initialization and update", i >= 1);
         // printiln(i); // for inspecting the iteration variable
         sum = sum + i * i; // <--- adding the next squared value
         i = i + 1;

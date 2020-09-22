@@ -37,6 +37,8 @@ struct Point make_point_euclid(double x, double y) {
  
 // constructor for PointPolar
 struct Point make_point_polar(double t, double m) {
+    require("valid angle", 0 <= t && t <= 360);
+    require("non-negative magnitude", m >= 0);
     struct Point p;
     p.tag = TPointPolar;
     p.theta = t;
@@ -55,11 +57,20 @@ static void distance_to_origin_test() {
         distance_to_origin(make_point_polar(0.0, 0.0)), 
         0.0, EPSILON);
     test_within_d(
+        distance_to_origin(make_point_polar(0.0, 0.0)), 
+        0.0, EPSILON);
+    test_within_d(
          distance_to_origin(make_point_polar(0.0, 1.0)), 
         1.0, EPSILON);
     test_within_d(
         distance_to_origin(make_point_polar(2.3, 2.0)), 
         2.0, EPSILON);
+
+    // would fail precondition:
+    // struct Point p = make_point_polar(360.1, 0.0);
+    // struct Point p = make_point_polar(-0.1, 0.0);
+    // struct Point p = make_point_polar(45, -0.1);
+    // printiln(p.tag);
 
     // test cases for Euclidean variant
     test_within_d(

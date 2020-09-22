@@ -15,6 +15,7 @@ typedef struct {
 } Shape;
 
 Shape make_circle(int x, int y, int r) {
+    require("non-negative radius", r >= 0);
     Shape s;
     s.tag = CIRCLE;
     s.circle.x = x;
@@ -24,6 +25,8 @@ Shape make_circle(int x, int y, int r) {
 }
 
 Shape make_rectangle(int x, int y, int w, int h) {
+    require("non-negative width", w >= 0);
+    require("non-negative height", h >= 0);
     Shape s;
     s.tag = RECTANGLE;
     s.rectangle.x = x;

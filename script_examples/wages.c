@@ -27,6 +27,8 @@ int hours_to_wages(int hours);
 Cents hours_to_wages(Hours hours);
 
 static void hours_to_wages_test() {
+    // test_equal_i(hours_to_wages(-1), 0);
+    // test_equal_i(hours_to_wages(7 * 24 + 1), 0);
     test_equal_i(hours_to_wages(0), 0);
     test_equal_i(hours_to_wages(20), 20 * 1000);
     test_equal_i(hours_to_wages(39), 39 * 1000);
@@ -36,6 +38,8 @@ static void hours_to_wages_test() {
 }
 
 Cents hours_to_wages(Hours hours) {
+    require("not negative", hours >= 0);
+    require("not more than one week", hours <= 24 * 7);
     if (hours <= 40) {
         return hours * 1000;
     } else {

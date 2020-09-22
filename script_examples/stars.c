@@ -9,6 +9,7 @@ make stars && ./stars
 // typedef char* String;
 
 String stars(int n) {
+    require("not negative", n >= 0);
     char *s = xmalloc(n + 1);
 //  char *s = xcalloc(n + 1, 1);
     for (int i = 0; i < n; i++) {
@@ -20,6 +21,8 @@ String stars(int n) {
 
 void stars_test(void) {
     String s;
+    // would violate precondition:
+    // test_equal_s(s = stars(-1), "");
     test_equal_s(s = stars(0), "");
     s_free(s);
     test_equal_s(s = stars(1), "*");
