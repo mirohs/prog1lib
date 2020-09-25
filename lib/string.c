@@ -685,6 +685,171 @@ String s_replace(String s, String part, String replacement) {
     return result;
 }
 
+static void s_replace_all_test(void) {
+    printsln((String)__func__);
+    String s;
+
+    s = s_replace_all("abc", "k", "x");
+    test_equal_s(s, "abc");
+    s_free(s);
+
+    s = s_replace_all("abc", "a", "");
+    test_equal_s(s, "bc");
+    s_free(s);
+
+    s = s_replace_all("abc", "b", "");
+    test_equal_s(s, "ac");
+    s_free(s);
+
+    s = s_replace_all("abc", "c", "");
+    test_equal_s(s, "ab");
+    s_free(s);
+
+    s = s_replace_all("abc", "ab", "");
+    test_equal_s(s, "c");
+    s_free(s);
+
+    s = s_replace_all("abc", "bc", "");
+    test_equal_s(s, "a");
+    s_free(s);
+
+    s = s_replace_all("abc", "abc", "");
+    test_equal_s(s, "");
+    s_free(s);
+
+    s = s_replace_all("abc", "a", "x");
+    test_equal_s(s, "xbc");
+    s_free(s);
+
+    s = s_replace_all("abc", "b", "x");
+    test_equal_s(s, "axc");
+    s_free(s);
+
+    s = s_replace_all("abc", "c", "x");
+    test_equal_s(s, "abx");
+    s_free(s);
+
+    s = s_replace_all("abc", "ab", "x");
+    test_equal_s(s, "xc");
+    s_free(s);
+
+    s = s_replace_all("abc", "bc", "x");
+    test_equal_s(s, "ax");
+    s_free(s);
+
+    s = s_replace_all("abc", "abc", "x");
+    test_equal_s(s, "x");
+    s_free(s);
+
+    s = s_replace_all("abc", "a", "xy");
+    test_equal_s(s, "xybc");
+    s_free(s);
+
+    s = s_replace_all("abc", "b", "xy");
+    test_equal_s(s, "axyc");
+    s_free(s);
+
+    s = s_replace_all("abc", "c", "xy");
+    test_equal_s(s, "abxy");
+    s_free(s);
+
+    s = s_replace_all("abc", "ab", "xy");
+    test_equal_s(s, "xyc");
+    s_free(s);
+
+    s = s_replace_all("abc", "bc", "xy");
+    test_equal_s(s, "axy");
+    s_free(s);
+
+    s = s_replace_all("abc", "abc", "xy");
+    test_equal_s(s, "xy");
+    s_free(s);
+
+    s = s_replace_all("aaa", "a", "x");
+    test_equal_s(s, "xxx");
+    s_free(s);
+
+    s = s_replace_all("aaa", "a", "xy");
+    test_equal_s(s, "xyxyxy");
+    s_free(s);
+
+    s = s_replace_all("aba", "a", "x");
+    test_equal_s(s, "xbx");
+    s_free(s);
+
+    s = s_replace_all("bab", "a", "x");
+    test_equal_s(s, "bxb");
+    s_free(s);
+
+    s = s_replace_all("aaa", "a", "");
+    test_equal_s(s, "");
+    s_free(s);
+
+    s = s_replace_all("abab", "a", "x");
+    test_equal_s(s, "xbxb");
+    s_free(s);
+
+    s = s_replace_all("baba", "a", "x");
+    test_equal_s(s, "bxbx");
+    s_free(s);
+
+    s = s_replace_all("aaa", "a", "xyz");
+    test_equal_s(s, "xyzxyzxyz");
+    s_free(s);
+
+    s = s_replace_all("a a a", "a", "xyz");
+    test_equal_s(s, "xyz xyz xyz");
+    s_free(s);
+
+    s = s_replace_all("aaa", "aa", "xy");
+    test_equal_s(s, "xya");
+    s_free(s);
+
+    s = s_replace_all("aba", "ab", "xyz");
+    test_equal_s(s, "xyza");
+    s_free(s);
+
+    s = s_replace_all("abab", "ab", "xyz");
+    test_equal_s(s, "xyzxyz");
+    s_free(s);
+}
+
+String s_replace_all(String s, String part, String replacement) {
+    require_not_null(s);
+    require_not_null(part);
+    require_not_null(replacement);
+    int n = strlen(s);
+    int np = strlen(part);
+    int count = 0;
+    int from = 0;
+    while (true) {
+        int i = s_index(s + from, part);
+        if (i < 0) break;
+        count++;
+        from += i + np;
+    }
+    if (count <= 0) {
+        return s_copy(s);
+    }
+    // assert: count >= 1
+    int nr = strlen(replacement);
+    int n_result = n - count * (np - nr);
+    String result = xmalloc(n_result + 1);
+    String t = result;
+    while (true) {
+        int i = s_index(s, part);
+        if (i < 0) break;
+        memcpy(t, s, i);
+        s += i; // s at part
+        t += i; // i characters copied
+        memcpy(t, replacement, nr);
+        s += np; // s after part
+        t += nr; // nr characters copied
+    }
+    strcpy(t, s);
+    return result;
+}
+
 // split string --> see string list
 
 String s_of_int(int i) {
@@ -888,11 +1053,7 @@ int main(void) {
 }
 #endif
 
-#if 1
-int main(void) {
-    base_init();
-    base_set_memory_check(true);
-
+void s_test_all(void) {
     s_range_test();
     s_sub_test();
     s_blit_test();
@@ -900,6 +1061,14 @@ int main(void) {
     s_last_index_test();
     s_trim_test();
     s_replace_test();
+    s_replace_all_test();
+}
+
+#if 0
+int main(void) {
+    base_init();
+    base_set_memory_check(true);
+    s_test_all();
+    return 0;
 }
 #endif
-
