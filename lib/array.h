@@ -21,6 +21,8 @@ The array occupies a block of n * s bytes of memory.
 @param[in] n number of elements
 @param[in] s element size in bytes
 @return zero-initialized array
+@pre "non-negative length", n >= 0
+@pre "positive size", s > 0
 */
 Array a_create(int n, int s);
 
@@ -31,6 +33,8 @@ The array occupies a new dynamically allocated block of n * s bytes of memory.
 @param[in] n number of elements
 @param[in] s element size in bytes
 @return array of n copied elements, each of size s
+@pre "non-negative length", n >= 0
+@pre "positive size", s > 0
 */
 Array a_of_buffer(Any buffer, int n, int s);
 
@@ -46,6 +50,8 @@ void init(Any element, int index, Any state) {}
 @param[in] s element size in bytes
 @param[in] init initialization function, will be called for each index [0, n-1)
 @param[in] state state will be supplied to init
+@pre "non-negative length", n >= 0
+@pre "positive size", s > 0
 
 Example:
 @code{.c}
@@ -97,6 +103,11 @@ and destination_index, respectively.
 @param[in,out] destination destination array
 @param[in] destination_index start index in destination array
 @param[in] count number of elements (not bytes!) to copy
+@pre "equal element sizes", source->s == destination->s
+@pre "source_index in range", source_index >= 0 && source_index < source->n
+@pre "destination_index in range", destination_index >= 0 && destination_index < destination->n
+@pre "(source_index + count) in range", source_index + count <= source->n
+@pre "(destination_index + count) in range", destination_index + count <= destination->n
 */
 void a_blit(Array source, int source_index, Array destination, int destination_index, int count);
 
@@ -111,6 +122,7 @@ Return the memory address of the array element at index.
 @param[in] array input array
 @param[in] index index of array element to return
 @return address of array element
+@pre "index in range", index >= 0 && index < array->n
 */
 Any a_get(Array array, int index);
 
@@ -120,6 +132,7 @@ Copies a_element_size(array) bytes from value.
 @param[in,out] array input array
 @param[in] index index of array element to set
 @param[in] value address of the memory to copy
+@pre "index in range", index >= 0 && index < array->n
 */
 void a_set(Array array, int index, Any value);
     
@@ -171,6 +184,7 @@ The elements of x come first, followed by the elements of y.
 @param[in] x first input array
 @param[in] y second input array
 @return the concatenation of x and y
+@pre "equal element sizes", x->s == y->s
 */
 Array a_concat(Array x, Array y);
 
@@ -259,6 +273,7 @@ void f(Any element, int index, Any state, Any mapped_element) {}
 @param[in] mapped_element_size size of elements in the mapped array (in bytes)
 @param[in] state provided to each invocation of f
 @return the mapped array
+@pre "positive size", mapped_element_size > 0
 */
 Array a_map(Array array, AnyFn f, int mapped_element_size, Any state);
 
