@@ -1,6 +1,6 @@
 /*
 @author Michael Rohs
-@date 15.10.2015
+@date 15.10.2015, 25.09.2020
 @copyright Apache License, Version 2.0
 */
 
@@ -38,7 +38,46 @@ String s_repeat(int n, char c) {
     return a;
 }
 
-String s_range(char a, char b) {
+static void s_range_test(void) {
+    printsln((String)__func__);
+    String s;
+
+    s = s_range('a', 'd');
+    test_equal_s(s, "abc");
+    s_free(s);
+
+    s = s_range('c', 'a');
+    test_equal_s(s, "cb");
+    s_free(s);
+
+    s = s_range('c', 'a' - 1);
+    test_equal_s(s, "cba");
+    s_free(s);
+
+    s = s_range('x', 'x');
+    test_equal_s(s, "");
+    s_free(s);
+
+    s = s_range('x', 'y');
+    test_equal_s(s, "x");
+    s_free(s);
+
+    s = s_range('x', 'w');
+    test_equal_s(s, "x");
+    s_free(s);
+
+    // s = s_range(253, 256);
+    // test_equal_s(s, "\xfd\xfe\xff");
+    // s_free(s);
+
+    s = s_range(0x7e, 0x81);
+    test_equal_s(s, "\x7e\x7f\x80");
+    s_free(s);
+}
+
+String s_range(char _a, char _b) {
+    unsigned char a = (unsigned char) _a;
+    unsigned char b = (unsigned char) _b;
     if (a <= b) {
         int n = b - a;
         char *arr = xmalloc((n + 1) * sizeof(char));
@@ -56,6 +95,40 @@ String s_range(char a, char b) {
         arr[n] = '\0';
         return arr;
     }
+}
+
+static void s_sub_test(void) {
+    printsln((String)__func__);
+    String s;
+
+    s = s_sub("abc", 0, 3);
+    test_equal_s(s, "abc");
+    s_free(s);
+
+    s = s_sub("abc", 0, 2);
+    test_equal_s(s, "ab");
+    s_free(s);
+
+    s = s_sub("abc", 1, 3);
+    test_equal_s(s, "bc");
+    s_free(s);
+
+    s = s_sub("abc", 1, 2);
+    test_equal_s(s, "b");
+    s_free(s);
+
+    s = s_sub("abc", 1, 1);
+    test_equal_s(s, "");
+    s_free(s);
+
+    s = s_sub("abc", -1, 4);
+    test_equal_s(s, "abc");
+    s_free(s);
+
+    s = s_sub("abc", 3, 4);
+    test_equal_s(s, "");
+    s_free(s);
+
 }
 
 String s_sub(String s, int i, int j) {
@@ -76,6 +149,53 @@ String s_sub(String s, int i, int j) {
     return a;
 }
 
+/*
+    // logging the call stack:
+    push_func(__func__, __LINE__ - 1);
+    ...
+    pop_func();
+
+typedef struct Funcs Funcs;
+struct Funcs {
+    Funcs* previous;
+    const char* func;
+    int line;
+};
+
+static Funcs* funcs = NULL;
+
+void push_func(const char* func, int line) {
+    Funcs* f = xmalloc(sizeof(Funcs));
+    f->previous = funcs;
+    f->func = func;
+    f->line = line;
+    funcs = f;
+}
+
+void pop_func(void) {
+    if (funcs != NULL) {
+        Funcs* f = funcs;
+        funcs = funcs->previous;
+        free(f);
+    }
+}
+
+#define require_x0(description, condition, ...) \
+if (!(condition)) {\
+    fprintf(stderr, "%s, line %d: %s's precondition \"%s\" violated: ", __FILE__, __LINE__, __func__, description);\
+    fprintf(stderr, __VA_ARGS__);\
+    fprintf(stderr, "\n");\
+    if (funcs) {\
+        funcs = funcs->previous;\
+        while (funcs) {\
+            printf("\tcalled from %s (line %d)\n", funcs->func, funcs->line);\
+            funcs = funcs->previous;\
+        }\
+    }\
+    exit(EXIT_FAILURE);\
+}
+*/
+
 char s_get(String s, int i) {
     require_not_null(s);
     int n = strlen(s);
@@ -90,17 +210,133 @@ void s_set(String s, int i, char v) {
     s[i] = v;
 }
 
+static void s_blit_test(void) {
+    printsln((String)__func__);
+    String s, t;
+
+    s = s_create("abc");
+    t = s_create("xyz");
+    s_blit(s, 0, t, 0, -1);
+    test_equal_s(s, "abc");
+    test_equal_s(t, "xyz");
+    s_free(s);
+    s_free(t);
+
+    s = s_create("abc");
+    t = s_create("xyz");
+    s_blit(s, 0, t, 0, 0);
+    test_equal_s(s, "abc");
+    test_equal_s(t, "xyz");
+    s_free(s);
+    s_free(t);
+
+    s = s_create("abc");
+    t = s_create("xyz");
+    s_blit(s, 0, t, 0, 1);
+    test_equal_s(s, "abc");
+    test_equal_s(t, "ayz");
+    s_free(s);
+    s_free(t);
+
+    s = s_create("abc");
+    t = s_create("xyz");
+    s_blit(s, 0, t, 0, 2);
+    test_equal_s(s, "abc");
+    test_equal_s(t, "abz");
+    s_free(s);
+    s_free(t);
+
+    s = s_create("abc");
+    t = s_create("xyz");
+    s_blit(s, 0, t, 0, 3);
+    test_equal_s(s, "abc");
+    test_equal_s(t, "abc");
+    s_free(s);
+    s_free(t);
+
+    s = s_create("abc");
+    t = s_create("xyz");
+    s_blit(s, 0, t, 1, 0);
+    test_equal_s(s, "abc");
+    test_equal_s(t, "xyz");
+    s_free(s);
+    s_free(t);
+
+    s = s_create("abc");
+    t = s_create("xyz");
+    s_blit(s, 0, t, 1, 1);
+    test_equal_s(s, "abc");
+    test_equal_s(t, "xaz");
+    s_free(s);
+    s_free(t);
+
+    s = s_create("abc");
+    t = s_create("xyz");
+    s_blit(s, 0, t, 1, 2);
+    test_equal_s(s, "abc");
+    test_equal_s(t, "xab");
+    s_free(s);
+    s_free(t);
+
+    s = s_create("abc");
+    t = s_create("xyz");
+    s_blit(s, 1, t, 1, 2);
+    test_equal_s(s, "abc");
+    test_equal_s(t, "xbc");
+    s_free(s);
+    s_free(t);
+
+    s = s_create("abc");
+    t = s_create("xyz");
+    s_blit(s, 1, t, 1, 2);
+    test_equal_s(s, "abc");
+    test_equal_s(t, "xbc");
+    s_free(s);
+    s_free(t);
+}
+
 void s_blit(String source, int source_index, String destination, int destination_index, int count) {
     require_not_null(source);
     require_not_null(destination);
     if (count <= 0) return;
-    // do not check for string lengths, as that would require 
-    // finding '\0' and would not allow binary strings
     require("non-negative source index", source_index >= 0);
     require("non-negative destination index", destination_index >= 0);
     for (int i = source_index, j = destination_index; i < source_index + count; i++, j++) {
         s_set(destination, j, s_get(source, i));
     }
+}
+
+static void s_concat_test(void) {
+    printsln((String)__func__);
+    String s;
+
+    s = s_concat("", "");
+    test_equal_s(s, "");
+    s_free(s);
+
+    s = s_concat("a", "");
+    test_equal_s(s, "a");
+    s_free(s);
+
+    s = s_concat("", "b");
+    test_equal_s(s, "b");
+    s_free(s);
+
+    s = s_concat("a", "b");
+    test_equal_s(s, "ab");
+    s_free(s);
+
+    s = s_concat("ab", "");
+    test_equal_s(s, "ab");
+    s_free(s);
+
+    s = s_concat("", "cd");
+    test_equal_s(s, "cd");
+    s_free(s);
+
+    s = s_concat("ab", "cd");
+    test_equal_s(s, "abcd");
+    s_free(s);
 }
 
 String s_concat(String x, String y) {
@@ -152,24 +388,21 @@ CmpResult s_compare(String s, String t) {
 CmpResult s_compare_ignore_case(String s, String t) {
     require_not_null(s);
     require_not_null(t);
-    String s2 = s_lower_case(s);
-    String t2 = s_lower_case(t);
-    int c = strcmp(s2, t2);
-    s_free(s2);
-    s_free(t2);
+    String sl = s_lower_case(s);
+    String tl = s_lower_case(t);
+    int c = strcmp(sl, tl);
+    s_free(sl);
+    s_free(tl);
     return (c == 0) ? EQ : ((c < 0) ? LT : GT);
 }
 
 bool s_equals(String s, String t) {
-    if (s == NULL && t == NULL) return true;
-    if (s == NULL && t != NULL) return false;
-    if (s != NULL && t == NULL) return false;
-    return s_compare(s, t) == EQ;
+    require_not_null(s);
+    require_not_null(t);
+    return strcmp(s, t) == 0;
 }
 
 bool s_equals_ignore_case(String s, String t) {
-    require_not_null(s);
-    require_not_null(t);
     return s_compare_ignore_case(s, t) == EQ;
 }
 
@@ -227,6 +460,26 @@ String s_reverse(String s) {
     return t;
 }
 
+static void s_last_index_test(void) {
+    printsln((String)__func__);
+    test_equal_i(s_last_index("", ""), 0);
+    test_equal_i(s_last_index("a", ""), 1);
+    test_equal_i(s_last_index("ab", ""), 2);
+    test_equal_i(s_last_index("", "a"), -1);
+    test_equal_i(s_last_index("a", "a"), 0);
+    test_equal_i(s_last_index("aa", "a"), 1);
+    test_equal_i(s_last_index("aaa", "a"), 2);
+    test_equal_i(s_last_index("abc", "a"), 0);
+    test_equal_i(s_last_index("abc", "b"), 1);
+    test_equal_i(s_last_index("abc", "c"), 2);
+    test_equal_i(s_last_index("abc", "ab"), 0);
+    test_equal_i(s_last_index("abc", "bc"), 1);
+    test_equal_i(s_last_index("abcd", "ab"), 0);
+    test_equal_i(s_last_index("abcd", "bc"), 1);
+    test_equal_i(s_last_index("abcd", "cd"), 2);
+    test_equal_i(s_last_index("abcd", "de"), -1);
+}
+
 int s_last_index(String s, String part) {
     require_not_null(s);
     require_not_null(part);
@@ -242,10 +495,73 @@ int s_last_index(String s, String part) {
 
 bool s_is_empty(String s) {
     require_not_null(s);
-    return strlen(s) == 0;
+    return *s  == '\0';
 }
 
-// @todo: add tests
+static void s_trim_test(void) {
+    printsln((String)__func__);
+    String s;
+
+    s = s_trim("");
+    test_equal_s(s, "");
+    s_free(s);
+
+    s = s_trim(" ");
+    test_equal_s(s, "");
+    s_free(s);
+
+    s = s_trim("  ");
+    test_equal_s(s, "");
+    s_free(s);
+
+    s = s_trim("a");
+    test_equal_s(s, "a");
+    s_free(s);
+
+    s = s_trim(" a");
+    test_equal_s(s, "a");
+    s_free(s);
+
+    s = s_trim("  a");
+    test_equal_s(s, "a");
+    s_free(s);
+
+    s = s_trim("a ");
+    test_equal_s(s, "a");
+    s_free(s);
+
+    s = s_trim("a  ");
+    test_equal_s(s, "a");
+    s_free(s);
+
+    s = s_trim("  a  ");
+    test_equal_s(s, "a");
+    s_free(s);
+
+    s = s_trim("a");
+    test_equal_s(s, "a");
+    s_free(s);
+
+    s = s_trim(" ab");
+    test_equal_s(s, "ab");
+    s_free(s);
+
+    s = s_trim("  ab");
+    test_equal_s(s, "ab");
+    s_free(s);
+
+    s = s_trim("ab ");
+    test_equal_s(s, "ab");
+    s_free(s);
+
+    s = s_trim("ab  ");
+    test_equal_s(s, "ab");
+    s_free(s);
+
+    s = s_trim("  ab  ");
+    test_equal_s(s, "ab");
+    s_free(s);
+}
 
 String s_trim(String s) {
     require_not_null(s);
@@ -268,7 +584,106 @@ String s_trim(String s) {
     return t;
 }
 
-// @todo: replace, replace_all
+static void s_replace_test(void) {
+    printsln((String)__func__);
+    String s;
+
+    s = s_replace("abc", "k", "x");
+    test_equal_s(s, "abc");
+    s_free(s);
+
+    s = s_replace("abc", "a", "");
+    test_equal_s(s, "bc");
+    s_free(s);
+
+    s = s_replace("abc", "b", "");
+    test_equal_s(s, "ac");
+    s_free(s);
+
+    s = s_replace("abc", "c", "");
+    test_equal_s(s, "ab");
+    s_free(s);
+
+    s = s_replace("abc", "ab", "");
+    test_equal_s(s, "c");
+    s_free(s);
+
+    s = s_replace("abc", "bc", "");
+    test_equal_s(s, "a");
+    s_free(s);
+
+    s = s_replace("abc", "abc", "");
+    test_equal_s(s, "");
+    s_free(s);
+
+    s = s_replace("abc", "a", "x");
+    test_equal_s(s, "xbc");
+    s_free(s);
+
+    s = s_replace("abc", "b", "x");
+    test_equal_s(s, "axc");
+    s_free(s);
+
+    s = s_replace("abc", "c", "x");
+    test_equal_s(s, "abx");
+    s_free(s);
+
+    s = s_replace("abc", "ab", "x");
+    test_equal_s(s, "xc");
+    s_free(s);
+
+    s = s_replace("abc", "bc", "x");
+    test_equal_s(s, "ax");
+    s_free(s);
+
+    s = s_replace("abc", "abc", "x");
+    test_equal_s(s, "x");
+    s_free(s);
+
+    s = s_replace("abc", "a", "xy");
+    test_equal_s(s, "xybc");
+    s_free(s);
+
+    s = s_replace("abc", "b", "xy");
+    test_equal_s(s, "axyc");
+    s_free(s);
+
+    s = s_replace("abc", "c", "xy");
+    test_equal_s(s, "abxy");
+    s_free(s);
+
+    s = s_replace("abc", "ab", "xy");
+    test_equal_s(s, "xyc");
+    s_free(s);
+
+    s = s_replace("abc", "bc", "xy");
+    test_equal_s(s, "axy");
+    s_free(s);
+
+    s = s_replace("abc", "abc", "xy");
+    test_equal_s(s, "xy");
+    s_free(s);
+}
+
+String s_replace(String s, String part, String replacement) {
+    require_not_null(s);
+    require_not_null(part);
+    require_not_null(replacement);
+    int i = s_index(s, part);
+    if (i < 0) {
+        return s_copy(s);
+    }
+    int n = strlen(s);
+    int np = strlen(part);
+    int nr = strlen(replacement);
+    int n_result = n - np + nr;
+    String result = xmalloc(n_result + 1);
+    memcpy(result, s, i);
+    memcpy(result + i, replacement, nr);
+    memcpy(result + i + nr, s + i + np, n_result - i - nr);
+    result[n_result] = '\0';
+    return result;
+}
 
 // split string --> see string list
 
@@ -285,7 +700,6 @@ String s_of_double(double d) {
     char buf[32];
     sprintf(buf, "%.16g", d);
     int n = strlen(buf) + 1;
-    // printf("'%s' %d\n", buf, n);
     String s = xmalloc(n);
     memcpy(s, buf, n);
     return s;
@@ -473,3 +887,19 @@ int main(void) {
     
 }
 #endif
+
+#if 1
+int main(void) {
+    base_init();
+    base_set_memory_check(true);
+
+    s_range_test();
+    s_sub_test();
+    s_blit_test();
+    s_concat_test();
+    s_last_index_test();
+    s_trim_test();
+    s_replace_test();
+}
+#endif
+

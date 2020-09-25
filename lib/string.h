@@ -73,6 +73,7 @@ Return character at index i.
 @param[in] s input string
 @param[in] i index of character to return
 @return character at index i
+@pre "index in range", i >= 0 && i < length
 */
 char s_get(String s, int i);
 
@@ -81,6 +82,7 @@ Set s element at index i to value v.
 @param[in,out] s input string
 @param[in] i index of character to set
 @param[in] c character to set
+@pre "index in range", i >= 0 && i < length
 */
 void s_set(String s, int i, char c);
 
@@ -231,7 +233,14 @@ Memory of new string is dynamically allocated.
 */
 String s_trim(String s);
 
-// @todo: replace, replace_all
+/**
+Returns a new string based on \c s, in which the first occurrence of \c part in \c s is replaced by \c replacement. If \c part does not occur in \c s, then the result is equal to \c s.
+Always returns a new dynamically allocated string.
+@param[in] s the string in which the replacement is to be made
+@param[in] part the string to look for in \c s
+@param[in] replacement the string to replace \c part with
+*/
+String s_replace(String s, String part, String replacement);
 
 // split string --> see string list
 
