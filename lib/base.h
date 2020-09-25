@@ -535,7 +535,7 @@ Example:
 #ifdef NO_ENSURE
 #define ensure_code(x)
 #else
-#define ensure_code(x) x;
+#define ensure_code(x) x
 #endif
 
 
