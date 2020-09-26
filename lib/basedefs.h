@@ -2,7 +2,7 @@
 Type definitions for Programming I Library. 
 
 @author Michael Rohs
-@date 15.10.2015
+@date 15.10.2015, 26.09.2020
 @copyright Apache License, Version 2.0
 */
 
@@ -358,4 +358,130 @@ typedef struct PointerListNode {
     Any value; ///< value that the node holds
 } PointerListNode;
 
+
+
+////////////////////////////////////////////////////////////////////////////
+// Constructors
+
+/** 
+Creates a pair of integers (on the stack).
+@param[in] i first element
+@param[in] j second element
+@return the pair
+*/
+IntPair make_int_pair(int i, int j);
+    
+/** 
+Creates a pair of integers (on the stack).
+@param[in] i first element
+@param[in] j second element
+@param[in] k third element
+@return the triple
+*/
+IntTriple make_int_triple(int i, int j, int k);
+
+/** 
+Creates a pair of doubles (on the stack).
+@param[in] i first element
+@param[in] j second element
+@return the pair
+*/
+DoublePair make_double_pair(double i, double j);
+
+/** 
+Creates a pair of doubles (on the stack).
+@param[in] i first element
+@param[in] j second element
+@param[in] k third element
+@return the triple
+*/
+DoubleTriple make_double_triple(double i, double j, double k);
+
+/** 
+Creates a pair of Anys (on the stack).
+@param[in] a first element
+@param[in] b second element
+@return the pair
+*/
+AnyPair make_any_pair(Any a, Any b);
+
+/** 
+Creates a tuple of three Anys (on the stack).
+@param[in] a first element
+@param[in] b second element
+@param[in] c third element
+@return the triple
+*/
+AnyTriple make_any_triple(Any a, Any b, Any c);
+
+/** 
+Creates a pair of Strings (on the stack).
+@param[in] a first element
+@param[in] b second element
+@return the pair
+*/
+StringPair make_string_pair(String a, String b);
+
+/** 
+Creates a tuple of three Strings (on the stack).
+@param[in] a first element
+@param[in] b second element
+@param[in] c third element
+@return the triple
+*/
+StringTriple make_string_triple(String a, String b, String c);
+
+/**
+Creates a non-present integer option (on the stack).
+@return the option value
+*/
+IntOption make_int_none(void);
+
+/**
+Creates an integer option for some value (on the stack).
+@param[in] some some value
+@return the option value
+*/
+IntOption make_int_some(int some);
+
+/**
+Creates a non-present byte option (on the stack).
+@return the option value
+*/
+ByteOption make_byte_none(void);
+
+/**
+Creates a byte option for some value (on the stack).
+@param[in] some some value
+@return the option value
+*/
+ByteOption make_byte_some(Byte some);
+
+/**
+Creates a non-present double option (on the stack).
+@return the option value
+*/
+DoubleOption make_double_none(void);
+
+/**
+Creates a double option for some value (on the stack).
+@param[in] some some value
+@return the option value
+*/
+DoubleOption make_double_some(double some);
+
+/**
+Creates a non-present String option (on the stack).
+@return the option value
+*/
+StringOption make_string_none(void);
+
+/**
+Creates a String option for some value (on the stack).
+@param[in] some some value
+@return the option value
+*/
+StringOption make_string_some(String some);
+
 #endif
+

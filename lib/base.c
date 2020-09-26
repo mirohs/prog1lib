@@ -1,6 +1,6 @@
 /*
 @author Michael Rohs
-@date 15.10.2015
+@date 15.10.2015. 26.09.2020
 @copyright Apache License, Version 2.0
 */
 
@@ -8,6 +8,7 @@
 #include "string.h"
 #include "list.h"
 #undef free // use the 'real' free here
+#undef exit // use the 'real' exit here
 //#undef xmalloc
 //#undef xcalloc
 
@@ -19,7 +20,7 @@
 // http://www.gnu.org/software/libc/manual/html_node/Hooks-for-Malloc.html#Hooks-for-Malloc
 // this GNU C solution does not work on Mac OS X
 // Mac OS X solution does not work on other platforms
-// so simply use preprocessor, does not catch things like strdup (or use macro for that as well)
+// so simply use preprocessor, does not catch things like strdup (stderr, or use macro for that as well)
 
 typedef struct BaseAllocInfo {
     Any p;
@@ -61,20 +62,24 @@ void base_free(Any p) {
         }
     }
     if (!removed) {
-        printf("base_free: trying to free unknown pointer %p\n", p);
+        fprintf(stderr, "base_free: trying to free unknown pointer %p\n", p);
     }
 
     free(p);
+}
+
+static int exit_status = EXIT_SUCCESS;
+
+void base_exit(int status) {
+    // printsln("base_exit called");
+    exit_status = status;
+    exit(status);
 }
 
 static bool base_atexit_registered = false;
 void base_atexit(void);
 
 static bool do_memory_check = false;
-
-void base_set_memory_check(bool do_check) {
-    do_memory_check = do_check;
-}
 
 void base_init(void) {
     if (!base_atexit_registered) {
@@ -83,18 +88,31 @@ void base_init(void) {
     }
 }
 
+void report_memory_leaks(bool do_check) {
+    base_init();
+    do_memory_check = do_check;
+}
+
 Any base_malloc(const char *file, const char *function, int line, size_t size) {
-    Any p = malloc(size);
+    // allocate four bytes more than requested and fill with garbage, 
+    // such that non-terminated strings will produce an unexpected result
+    Any p = malloc(size + 4);
     if (p == NULL) {
-        printf("%s, line %d: malloc(%lu) returned NULL!\n", file, line, (unsigned long)size);
-        exit(EXIT_FAILURE);
+        fprintf(stderr, "%s, line %d: malloc(%lu) called in base_malloc returned NULL!\n", 
+                file, line, (unsigned long)size);
+        base_exit(EXIT_FAILURE);
     }
     // printf("%s, line %d: malloc(%lu) returned %lx\n", file, line, (unsigned long)size, (unsigned long)p);
 
+    // fill with garbage
+    memset(p, '?', size + 3);
+    ((char*)p)[size + 3] = '\0';
+
     BaseAllocInfo *ai = malloc(sizeof(BaseAllocInfo));
     if (ai == NULL) {
-        printf("%s, line %d: malloc(%lu) returned NULL!\n", file, line, (unsigned long)size);
-        exit(EXIT_FAILURE);
+        fprintf(stderr, "%s, line %d: malloc(sizeof(BaseAllocInfo)) called in base_malloc returned NULL!\n", 
+                file, line);
+        base_exit(EXIT_FAILURE);
     }
     ai->p = p;
     ai->size = size;
@@ -111,15 +129,17 @@ Any base_calloc(const char *file, const char *function, int line, size_t num, si
     // printf("%s, line %d: xcalloc(%lu, %lu)\n", file, line, (unsigned long)num, (unsigned long)size);
     Any p = calloc(num, size);
     if (p == NULL) {
-        printf("%s, line %d: xcalloc(%lu, %lu) returned NULL!\n", file, line, (unsigned long)num, (unsigned long)size);
-        exit(EXIT_FAILURE);
+        fprintf(stderr, "%s, line %d: calloc(%lu, %lu) called in base_calloc returned NULL!\n", 
+                file, line, (unsigned long)num, (unsigned long)size);
+        base_exit(EXIT_FAILURE);
     }
     // printf("%s, line %d: xcalloc(%lu, %lu) returned %lx\n", file, line, (unsigned long)num, (unsigned long)size, (unsigned long)p);
 
     BaseAllocInfo *ai = malloc(sizeof(BaseAllocInfo));
     if (ai == NULL) {
-        printf("%s, line %d: malloc(%lu) returned NULL!\n", file, line, (unsigned long)num * (unsigned long)size);
-        exit(EXIT_FAILURE);
+        fprintf(stderr, "%s, line %d: malloc(sizeof(BaseAllocInfo)) called in base_calloc returned NULL!\n", 
+                file, line);
+        base_exit(EXIT_FAILURE);
     }
     ai->p = p;
     ai->size = num * size;
@@ -135,125 +155,36 @@ Any base_calloc(const char *file, const char *function, int line, size_t num, si
 
 static void base_check_memory(void) {
     // printsln("Checking for memory leaks:");
-    int n = 0;
-    size_t s = 0;
+    int n = 0; // number of memory leaks
+    size_t s = 0; // total number of leaked bytes
 
-    // @todo: group leaks by file, order by increasing line number, report each line number only once.
     for (BaseAllocInfo *ai = base_alloc_info; ai != NULL; ai = ai->next) {
         if (n < 5) { // only show the first ones explicitly
-            printf("%5lu bytes allocated in %s (%s at line %d) not freed\n", (unsigned long)ai->size, ai->function, ai->file, ai->line);
+            fprintf(stderr, "%5lu bytes allocated in %s (%s, line %d) not freed\n", 
+                    (unsigned long)ai->size, ai->function, ai->file, ai->line);
         }
         n++;
         s += ai->size;
     }
 
     if (n > 0) {
-        printf("%d memory leak%s, %lu bytes total\n", n, n == 1 ? "" : "s", (unsigned long)s);
+        fprintf(stderr, "%d memory leak%s, %lu bytes total\n", n, n == 1 ? "" : "s", (unsigned long)s);
     } else {
-        // printf("No memory leaks.\n");
+        // fprintf(stderr, "No memory leaks.\n");
     }
 }
-
-
-
-////////////////////////////////////////////////////////////////////////////
-// Types (and type constructors)
-
-IntOption make_int_none(void) {
-    IntOption op = { true, 0 };
-    return op;
-}
-
-IntOption make_int_some(int some) {
-    IntOption op = { false, some };
-    return op;
-}
-
-ByteOption make_byte_none(void) {
-    ByteOption op = { true, 0 };
-    return op;
-}
-
-ByteOption make_byte_some(Byte some) {
-    ByteOption op = { false, some };
-    return op;
-}
-
-DoubleOption make_double_none(void) {
-    DoubleOption op = { true, 0.0 };
-    return op;
-}
-
-DoubleOption make_double_some(double some) {
-    DoubleOption op = { false, some };
-    return op;
-}
-
-StringOption make_string_none(void) {
-    StringOption op = { true, NULL };
-    return op;
-}
-
-StringOption make_string_some(String some) {
-    StringOption op = { false, some };
-    return op;
-}
-
-IntPair make_int_pair(int i, int j) {
-    IntPair result = { i, j };
-    return result;
-}
-
-IntTriple make_int_triple(int i, int j, int k) {
-    IntTriple result = { i, j, k };
-    return result;
-}
-
-DoublePair make_double_pair(double i, double j) {
-    DoublePair result = { i, j };
-    return result;
-}
-
-DoubleTriple make_double_triple(double i, double j, double k) {
-    DoubleTriple result = { i, j, k };
-    return result;
-}
-
-AnyPair make_any_pair(Any a, Any b) {
-    AnyPair result = { a, b };
-    return result;
-}
-
-AnyTriple make_any_triple(Any a, Any b, Any c) {
-    AnyTriple result = { a, b, c };
-    return result;
-}
-
-StringPair make_string_pair(String a, String b) {
-    StringPair result = { a, b };
-    return result;
-}
-
-StringTriple make_string_triple(String a, String b, String c) {
-    StringTriple result = { a, b, c };
-    return result;
-}
-
-ListHead make_list_head(int s, ListNode *first, ListNode *last) {
-    ListHead result = { s, first, last };
-    return result;
-}
-
 
 
 ////////////////////////////////////////////////////////////////////////////
 // Conversion
 
 int i_of_s(String s) {
+    require_not_null(s);
     return atoi(s);
 }
 
 double d_of_s(String s) {
+    require_not_null(s);
     return atof(s);
 }
 
@@ -320,6 +251,7 @@ void println() {
 
 void printia(int *a, int n) {
     require_not_null(a);
+    require("non-negative length", n >= 0);
     putchar('[');
     if (n > 0) {
         printf("%d", a[0]);
@@ -332,12 +264,14 @@ void printia(int *a, int n) {
 
 void printialn(int *a, int n) {
     require_not_null(a);
+    require("non-negative length", n >= 0);
     printia(a, n);
     println();
 }
 
 void printda(double *a, int n) {
     require_not_null(a);
+    require("non-negative length", n >= 0);
     putchar('[');
     if (n > 0) {
         printf("%g", a[0]);
@@ -350,12 +284,14 @@ void printda(double *a, int n) {
 
 void printdaln(double *a, int n) {
     require_not_null(a);
+    require("non-negative length", n >= 0);
     printda(a, n);
     println();
 }
 
 void printsa(String *a, int n) {
     require_not_null(a);
+    require("non-negative length", n >= 0);
     putchar('[');
     if (n > 0) {
         printf("\"%s\"", a[0]);
@@ -368,12 +304,14 @@ void printsa(String *a, int n) {
 
 void printsaln(String *a, int n) {
     require_not_null(a);
+    require("non-negative length", n >= 0);
     printsa(a, n);
     println();
 }
 
 void printca(char *a, int n) {
     require_not_null(a);
+    require("non-negative length", n >= 0);
     putchar('[');
     if (n > 0) {
         printf("'%c'", a[0]);
@@ -386,12 +324,14 @@ void printca(char *a, int n) {
 
 void printcaln(char *a, int n) {
     require_not_null(a);
+    require("non-negative length", n >= 0);
     printca(a, n);
     println();
 }
 
 void printba(Byte *a, int n) {
     require_not_null(a);
+    require("non-negative length", n >= 0);
     putchar('[');
     if (n > 0) {
         printf("%d", a[0]);
@@ -404,12 +344,14 @@ void printba(Byte *a, int n) {
 
 void printbaln(Byte *a, int n) {
     require_not_null(a);
+    require("non-negative length", n >= 0);
     printba(a, n);
     println();
 }
 
 void printboa(bool *a, int n) {
     require_not_null(a);
+    require("non-negative length", n >= 0);
     putchar('[');
     if (n > 0) {
         printf("%s", a[0] ? "true" : "false");
@@ -422,6 +364,7 @@ void printboa(bool *a, int n) {
 
 void printboaln(bool *a, int n) {
     require_not_null(a);
+    require("non-negative length", n >= 0);
     printboa(a, n);
     println();
 }
@@ -482,22 +425,21 @@ String s_read_file(String name) {
     FILE *f = fopen(name, "r"); // removes \r from read content, only leaves \n
     if (f == NULL) {
         fprintf(stderr, "%s: Cannot open %s\n", (String)__func__, name); 
-        exit(EXIT_FAILURE);
+        base_exit(EXIT_FAILURE);
     }
     fseek (f, 0, SEEK_END);
     long size = ftell(f);
-    printiln(size);
     rewind(f);
     
     char *s = base_malloc(__FILE__, __func__, __LINE__, size + 1);
     if (s == NULL) {
         fprintf(stderr, "%s: Cannot allocate memory.\n", (String)__func__); 
-        exit(EXIT_FAILURE);
+        base_exit(EXIT_FAILURE);
     }
     long sizeRead = fread(s, 1, size, f);
     if (sizeRead != size) {
-        fprintf(stderr, "%s: Could not read file %s to end.\n", (String)__func__, name); 
-        exit(EXIT_FAILURE);
+        fprintf(stderr, "%s: Cannot read file %s to end.\n", (String)__func__, name); 
+        base_exit(EXIT_FAILURE);
     }
     s[sizeRead] = '\0';
     
@@ -512,26 +454,35 @@ void s_write_file(String name, String data) {
     FILE *f = fopen(name, "w");
     if (f == NULL) {
         fprintf(stderr, "%s: Cannot open %s\n", (String)__func__, name); 
-        exit(EXIT_FAILURE);
+        base_exit(EXIT_FAILURE);
     }
-    
-    fwrite (data , 1, strlen(data), f);
+
+    size_t n_data = strlen(data);
+    size_t n_written = fwrite(data , 1, n_data, f);
+    if (n_written != n_data) {
+        fprintf(stderr, "%s: Cannot write data to file %s.\n", (String)__func__, name); 
+        base_exit(EXIT_FAILURE);
+    }
     
     fclose(f);
 }
 
-void write_file_data(String name, Byte *data, int n) {
+void write_file_data(String name, Byte *data, int n_data) {
     require_not_null(name);
     require_not_null(data);
-    require("non-negative length", n >= 0);
+    require("non-negative length", n_data >= 0);
 
     FILE *f = fopen(name, "w");
     if (f == NULL) {
         fprintf(stderr, "%s: Cannot open %s\n", (String)__func__, name); 
-        exit(EXIT_FAILURE);
+        base_exit(EXIT_FAILURE);
     }
     
-    fwrite (data , 1, n, f);
+    size_t n_written = fwrite(data , 1, n_data, f);
+    if (n_written != n_data) {
+        fprintf(stderr, "%s: Cannot write data to file %s.\n", (String)__func__, name); 
+        base_exit(EXIT_FAILURE);
+    }
     
     fclose(f);
 }
@@ -549,11 +500,14 @@ int i_rnd(int i) {
         srand(time(NULL) << 10);
         srand_called = true;
     }
+    int result = 0;
     if (RAND_MAX == 32767) {
-        return ((rand() << 16) | rand()) % i;
+        result = ((rand() << 16) | rand()) % i;
     } else {
-        return rand() % i;
+        result = rand() % i;
     }
+    ensure("random number in range", 0 <= result && result < i);
+    return result;
 }
 
 double d_rnd(double i) {
@@ -563,7 +517,9 @@ double d_rnd(double i) {
         srand_called = true;
     }
     double r = (double) rand() / (double) RAND_MAX;
-    return i * r;   
+    double result = i * r;
+    ensure("random number in range", 0 <= result && result < i);
+    return result;
 }
 
 bool b_rnd(void) {
@@ -580,31 +536,35 @@ int base_check_success_count = 0;
 
 // http://www.gnu.org/software/libc/manual/html_node/Cleanups-on-Exit.html#Cleanups-on-Exit
 void base_atexit(void) {
-    if (base_check_count > 0) { // @todo: improve error message on failure exit
-        int fail_count = base_check_count - base_check_success_count;
-        if (fail_count <= 0) {
-            if (base_check_count == 1) {
-                printf("The test passed!\n");
-            } else if (base_check_count == 2) {
-                printf("Both tests passed!\n");
-            } else if (base_check_count >= 3) {
-                printf("All %d tests passed!\n", base_check_count);
-            }
-        } else {
-            if (base_check_count == 1) {
-                printf("The test failed.\n");
+    // if not a successful exit, supress further output
+    if (exit_status == EXIT_SUCCESS) {
+        // summary information about tests (if any)
+        if (base_check_count > 0) {
+            int fail_count = base_check_count - base_check_success_count;
+            if (fail_count <= 0) {
+                if (base_check_count == 1) {
+                    fprintf(stderr, "The test passed!\n");
+                } else if (base_check_count == 2) {
+                    fprintf(stderr, "Both tests passed!\n");
+                } else if (base_check_count >= 3) {
+                    fprintf(stderr, "All %d tests passed!\n", base_check_count);
+                }
             } else {
-                if (base_check_success_count == 0) {
-                    printf("0 of %d tests passed.\n", base_check_count);
+                if (base_check_count == 1) {
+                    fprintf(stderr, "The test failed.\n");
                 } else {
-                    printf("%d of %d tests failed.\n", fail_count, base_check_count);
+                    if (base_check_success_count == 0) {
+                        fprintf(stderr, "0 of %d tests passed.\n", base_check_count);
+                    } else {
+                        fprintf(stderr, "%d of %d tests failed.\n", fail_count, base_check_count);
+                    }
                 }
             }
         }
-    }
-    
-    if (do_memory_check) {
-        base_check_memory();
+        // information about memory leaks (if any)
+        if (do_memory_check) {
+            base_check_memory();
+        }
     }
 }
 
@@ -621,7 +581,7 @@ void base_atexit_test(void) {
     base_check_count = 1;
     base_check_success_count = 1;
     base_atexit();
-    
+
     base_check_count = 2;
     base_check_success_count = 0;
     base_atexit();
@@ -657,7 +617,7 @@ bool base_test_equal_b(const char *file, int line, bool a, bool e) {
     base_init();
     base_check_count++;
     if (a == e) {
-        printf("%s, line %d: check passed\n", file, line);
+        printf("%s, line %d: Check passed.\n", file, line);
         base_check_success_count++;
         return true;
     } else {
@@ -674,7 +634,7 @@ bool base_test_equal_i(const char *file, int line, int a, int e) {
     base_init();
     base_check_count++;
     if (a == e) {
-        printf("%s, line %d: check passed\n", file, line);
+        printf("%s, line %d: Check passed.\n", file, line);
         base_check_success_count++;
         return true;
     } else {
@@ -687,7 +647,7 @@ bool base_test_within_d(const char *file, int line, double a, double e, double e
     base_init();
     base_check_count++;
     if (fabs(a - e) <= epsilon) {
-        printf("%s, line %d: check passed\n", file, line);
+        printf("%s, line %d: Check passed.\n", file, line);
         base_check_success_count++;
         return true;
     } else {
@@ -700,7 +660,7 @@ bool base_test_within_i(const char *file, int line, int a, int e, int epsilon) {
     base_init();
     base_check_count++;
     if (abs(a - e) <= epsilon) {
-        printf("%s, line %d: check passed\n", file, line);
+        printf("%s, line %d: Check passed.\n", file, line);
         base_check_success_count++;
         return true;
     } else {
@@ -713,7 +673,7 @@ bool base_test_equal_c(const char *file, int line, char a, char e) {
     base_init();
     base_check_count++;
     if (a == e) {
-        printf("%s, line %d: check passed\n", file, line);
+        printf("%s, line %d: Check passed.\n", file, line);
         base_check_success_count++;
         return true;
     } else {
@@ -726,7 +686,7 @@ bool base_test_equal_s(const char *file, int line, String a, String e) {
     base_init();
     base_check_count++;
     if (strcmp(a, e) == 0) {
-        printf("%s, line %d: check passed\n", file, line);
+        printf("%s, line %d: Check passed.\n", file, line);
         base_check_success_count++;
         return true;
     } else {
@@ -775,7 +735,7 @@ bool base_test_equal_ca(const char *file, int line, Array a, char *e, int ne) {
             return false;
         }
     }
-    printf("%s, line %d: check passed\n", file, line);
+    printf("%s, line %d: Check passed.\n", file, line);
     base_check_success_count++;
     return true;
 }
@@ -820,7 +780,7 @@ bool base_test_equal_boa(const char *file, int line, Array a, bool *e, int ne) {
             return false;
         }
     }
-    printf("%s, line %d: check passed\n", file, line);
+    printf("%s, line %d: Check passed.\n", file, line);
     base_check_success_count++;
     return true;
 }
@@ -832,7 +792,7 @@ bool base_test_equal_struct(const char *file, int line,
     base_init();
     base_check_count++;
     if (pred(actual, expected)) {
-        printf("%s, line %d: check passed\n", file, line);
+        printf("%s, line %d: Check passed.\n", file, line);
         base_check_success_count++;
         return true;
     } else {

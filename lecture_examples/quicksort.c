@@ -119,7 +119,7 @@ void quicksort2(int v[], int left, int right) {
 }
 
 int main(void) {
-    base_set_memory_check(true);
+    report_memory_leaks(true);
     quicksort_test();
     quicksort2_test();
     return 0;

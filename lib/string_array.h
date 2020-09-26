@@ -1,6 +1,6 @@
 /** @file
 An array of strings. 
-It stores a fixed number of strings. The prefix \c sa_ stands for <i>string array</i>. Some operations are inherited from array.h. For example, \ref a_length works with string arrays and any other kind of array.
+It stores a fixed number of strings. The prefix @c sa_ stands for <i>string array</i>. Some operations are inherited from array.h. For example, \ref a_length works with string arrays and any other kind of array.
 
 @author Michael Rohs
 @date 15.10.2015
@@ -312,7 +312,7 @@ StringOption f(String element, int index, String x) {}
 @endcode
 
 @param[in] array String array
-@param[in] f mapping function, returns the mapped element or \c none if the element should not be included in the result
+@param[in] f mapping function, returns the mapped element or @c none if the element should not be included in the result
 @param[in] x given to each invocation of predicate
 @return filtered and mapped array
 
@@ -342,7 +342,7 @@ StringOption f(String element, int index, String x, Any state) {}
 @endcode
 
 @param[in] array String array
-@param[in] f mapping function, returns the mapped element or \c none if the element should not be included in the result
+@param[in] f mapping function, returns the mapped element or @c none if the element should not be included in the result
 @param[in] x given to each invocation of predicate
 @param[in] state given to each invocation of predicate (may be NULL)
 @return filtered and mapped array

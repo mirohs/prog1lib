@@ -1223,7 +1223,7 @@ bool da_test_within_file_line(const char *file, const char *function, int line, 
             return false;
         }
     }
-    printf("%s, line %d: check passed\n", file, line);
+    printf("%s, line %d: Check passed.\n", file, line);
     base_count_success();
     return true;
 }

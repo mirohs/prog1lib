@@ -811,7 +811,7 @@ bool pl_test_equal_file_line(const char *file, const char *function, int line, L
         printf("%s, line %d: Actual and expected lengths differ\n", file, line);
         return false;
     }
-    printf("%s, line %d: check passed\n", file, line);
+    printf("%s, line %d: Check passed.\n", file, line);
     base_count_success();
     return true;
 }

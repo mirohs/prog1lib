@@ -384,14 +384,14 @@ int sl_index_fn(List list, StringIntStringToBool predicate, String x);
 
 /**
 Return first element for which the predicate function returns true.
-Return \c NULL if predicate does not return true for any element.
+Return @c NULL if predicate does not return true for any element.
 @code{.c}
 bool predicate(String element, int index, String x) {}
 @endcode
 @param[in] list String list
 @param[in] predicate predicate function
 @param[in] x given to each invocation of predicate
-@return element or \c NULL
+@return element or @c NULL
 */
 String sl_find(List list, StringIntStringToBool predicate, String x);
 

@@ -1073,7 +1073,7 @@ void s_test_all(void) {
 #if 0
 int main(void) {
     base_init();
-    base_set_memory_check(true);
+    report_memory_leaks(true);
     s_test_all();
     return 0;
 }

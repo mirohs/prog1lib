@@ -34,7 +34,7 @@ void stars_test(void) {
 }
 
 int main(void) {
-    base_set_memory_check(true);
+    report_memory_leaks(true);
     stars_test();
     return 0;
 }

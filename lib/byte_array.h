@@ -1,6 +1,6 @@
 /** @file
 An array of bytes. 
-It stores a fixed number of bytes. The prefix \c ba_ stands for <i>byte array</i>. Some operations are inherited from array.h. For example, \ref a_length works with byte arrays and any other kind of array.
+It stores a fixed number of bytes. The prefix @c ba_ stands for <i>byte array</i>. Some operations are inherited from array.h. For example, \ref a_length works with byte arrays and any other kind of array.
 
 @author Michael Rohs
 @date 15.10.2015
@@ -408,7 +408,7 @@ ByteOption f(Byte element, int index, Byte x) {}
 @endcode
 
 @param[in] array Byte array
-@param[in] f mapping function, returns the mapped element or \c none if the element should not be included in the result
+@param[in] f mapping function, returns the mapped element or @c none if the element should not be included in the result
 @param[in] x given to each invocation of predicate
 @return filtered and mapped array
 
@@ -435,7 +435,7 @@ ByteOption f(Byte element, int index, Byte x, Any state) {}
 @endcode
 
 @param[in] array Byte array
-@param[in] f mapping function, returns the mapped element or \c none if the element should not be included in the result
+@param[in] f mapping function, returns the mapped element or @c none if the element should not be included in the result
 @param[in] x given to each invocation of predicate
 @param[in] state given to each invocation of predicate (may be NULL)
 @return filtered and mapped array

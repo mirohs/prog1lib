@@ -1,6 +1,6 @@
 /** @file
 An array of doubles. 
-It stores a fixed number of doubles. The prefix \c da_ stands for <i>double array</i>. Some operations are inherited from array.h. For example, \ref a_length works with double arrays and any other kind of array.
+It stores a fixed number of doubles. The prefix @c da_ stands for <i>double array</i>. Some operations are inherited from array.h. For example, \ref a_length works with double arrays and any other kind of array.
 
 @author Michael Rohs
 @date 15.10.2015

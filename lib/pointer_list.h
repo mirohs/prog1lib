@@ -1,6 +1,6 @@
 /** @file
 A list of pointers. 
-Stores an arbitrary number of pointers. The prefix \c pl_ stands for <i>pointer list</i>. Some operations are inherited from list.c. For example, \ref l_length works with pointer lists and any other kind of list.
+Stores an arbitrary number of pointers. The prefix @c pl_ stands for <i>pointer list</i>. Some operations are inherited from list.c. For example, \ref l_length works with pointer lists and any other kind of list.
 
 <h4>Example 1: Creating a pointer list and printing its elements.</h4>
 @code{.c}
@@ -166,14 +166,14 @@ int pl_index_fn(List list, AnyFn predicate, Any x);
 
 /**
 Return the first element for which the predicate function returns true.
-Return \c NULL if predicate does not return true for any element.
+Return @c NULL if predicate does not return true for any element.
 @code{.c}
 bool predicate(Any element, int index, Any x) {}
 @endcode
 @param[in] list pointer list
 @param[in] predicate predicate function
 @param[in] x given to each invocation of predicate
-@return element or \c NULL
+@return element or @c NULL
 */
 Any pl_find(List list, AnyFn predicate, Any x);
 

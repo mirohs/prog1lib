@@ -1,6 +1,6 @@
 /** @file
 A generic array. 
-It stores a fixed number of elements. Each element has a size of s bytes. The number of elements and element size have to be specified at creation time. The elements are treated as opaque byte sequences. The prefix \c a_ stands for <i>array</i>.
+It stores a fixed number of elements. Each element has a size of s bytes. The number of elements and element size have to be specified at creation time. The elements are treated as opaque byte sequences. The prefix @c a_ stands for <i>array</i>.
 
 There are more specific arrays for integers, doubles, strings, and pointers. 
 They are more convenient for these types. Some functions are shared between array implementations. For example, \ref a_length works with any kind of array.
