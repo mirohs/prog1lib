@@ -359,7 +359,7 @@ int s_length(String s) {
 String s_lower_case(String s) {
     require_not_null(s);
     int n = strlen(s);
-    String t = xmalloc(n + 1);
+    String t = xmalloc((n + 1) * sizeof(char));
     for (int i = 0; i < n; i++) {
         t[i] = tolower(s[i]);
     }
@@ -370,7 +370,7 @@ String s_lower_case(String s) {
 String s_upper_case(String s) {
     require_not_null(s);
     int n = strlen(s);
-    String t = xmalloc(n + 1);
+    String t = xmalloc((n + 1) * sizeof(char));
     for (int i = 0; i < n; i++) {
         t[i] = toupper(s[i]);
     }
@@ -452,7 +452,7 @@ int s_index_from(String s, String part, int from) {
 String s_reverse(String s) {
     require_not_null(s);
     int n = strlen(s);
-    String t = xmalloc(n + 1);
+    String t = xmalloc((n + 1) * sizeof(char));
     for (int i = 0; i < n; i++) {
         t[i] = s[n - i - 1];
     }
@@ -538,10 +538,6 @@ static void s_trim_test(void) {
     test_equal_s(s, "a");
     s_free(s);
 
-    s = s_trim("a");
-    test_equal_s(s, "a");
-    s_free(s);
-
     s = s_trim(" ab");
     test_equal_s(s, "ab");
     s_free(s);
@@ -554,28 +550,38 @@ static void s_trim_test(void) {
     test_equal_s(s, "ab");
     s_free(s);
 
-    s = s_trim("ab  ");
+    s = s_trim("ab \t ");
     test_equal_s(s, "ab");
     s_free(s);
 
-    s = s_trim("  ab  ");
+    s = s_trim("ab\t");
+    test_equal_s(s, "ab");
+    s_free(s);
+
+    s = s_trim("ab\n");
+    test_equal_s(s, "ab");
+    s_free(s);
+
+    s = s_trim(" \n\r ab \t ");
     test_equal_s(s, "ab");
     s_free(s);
 }
+
+#define IS_WHITESPACE(c) ((c) == ' ' || (c) == '\t' || (c) == '\n' || (c) == '\r')
 
 String s_trim(String s) {
     require_not_null(s);
     int n = strlen(s);
     int l = 0;
-    while (l < n && s[l] == ' ') l++;
+    while (l < n && IS_WHITESPACE(s[l])) l++;
     int r = n - 1;
-    while (r >= 0 && s[r] == ' ') r--;
+    while (r >= 0 && IS_WHITESPACE(s[r])) r--;
     if (r < l || l >= n || r < 0) {
         return s_create("");
     }
-    // assert: r >= l && r < n && l >= 0
+    // assert: r >= l and 0 <= r < n and 0 <= l < n
     n = r - l + 2;
-    String t = xmalloc(n);
+    String t = xmalloc(n * sizeof(char));
     int j = 0;
     for (int i = l; i <= r; i++, j++) {
         t[j] = s[i];
@@ -677,7 +683,7 @@ String s_replace(String s, String part, String replacement) {
     int np = strlen(part);
     int nr = strlen(replacement);
     int n_result = n - np + nr;
-    String result = xmalloc(n_result + 1);
+    String result = xmalloc((n_result + 1) * sizeof(char));
     memcpy(result, s, i);
     memcpy(result + i, replacement, nr);
     memcpy(result + i + nr, s + i + np, n_result - i - nr);
@@ -834,7 +840,7 @@ String s_replace_all(String s, String part, String replacement) {
     // assert: count >= 1
     int nr = strlen(replacement);
     int n_result = n - count * (np - nr);
-    String result = xmalloc(n_result + 1);
+    String result = xmalloc((n_result + 1) * sizeof(char));
     String t = result;
     while (true) {
         int i = s_index(s, part);
@@ -856,7 +862,7 @@ String s_of_int(int i) {
     char buf[16];
     sprintf(buf, "%d", i);
     int n = strlen(buf) + 1;
-    String s = xmalloc(n);
+    String s = xmalloc(n * sizeof(char));
     memcpy(s, buf, n);
     return s;
 }
@@ -865,7 +871,7 @@ String s_of_double(double d) {
     char buf[32];
     sprintf(buf, "%.16g", d);
     int n = strlen(buf) + 1;
-    String s = xmalloc(n);
+    String s = xmalloc(n * sizeof(char));
     memcpy(s, buf, n);
     return s;
 }
