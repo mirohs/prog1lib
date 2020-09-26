@@ -16,7 +16,7 @@ They are more convenient for these types. Some functions are shared between arra
 #include "base.h"
 
 /**
-Create an array of n elements of size s, all initialized to 0. 
+Creates an array of n elements of size s, all initialized to 0.
 The array occupies a block of n * s bytes of memory.
 @param[in] n number of elements
 @param[in] s element size in bytes
@@ -27,7 +27,7 @@ The array occupies a block of n * s bytes of memory.
 Array a_create(int n, int s);
 
 /**
-Create an array of n elements, each of size s, by copying n * s bytes from buffer.
+Creates an array of n elements, each of size s, by copying n * s bytes from buffer.
 The array occupies a new dynamically allocated block of n * s bytes of memory.
 @param[in] buffer the buffer to copy the elements from
 @param[in] n number of elements
@@ -39,7 +39,7 @@ The array occupies a new dynamically allocated block of n * s bytes of memory.
 Array a_of_buffer(Any buffer, int n, int s);
 
 /**
-Create an array of n elements of size s, each initialized with function init. 
+Creates an array of n elements of size s, each initialized with function init.
 The array occupies a block of n * s bytes of memory.
 
 @code{.c}
@@ -71,7 +71,7 @@ Array ac = a_fn(4, sizeof(IntPair), x_and_xsquare, NULL);
 Array a_fn(int n, int s, AnyFn init, Any state);
 
 /**
-Create a copy of the given array.
+Creates a copy of the given array.
 The bytes of the array elements are copied.
 @param[in] array to be copied
 @return the copy of the array
@@ -79,7 +79,7 @@ The bytes of the array elements are copied.
 Array a_copy(Array array);
 
 /**
-Create a new subarray consisting of array[i, j).
+Creates a new subarray consisting of array[i, j).
 Index i is inclusive, index j is exclusive.
 @param[in] array to be sub-arrayed
 @param[in] i start index (inclusive)
@@ -89,15 +89,14 @@ Index i is inclusive, index j is exclusive.
 Array a_sub(Array array, int i, int j);
 
 /**
-Create a new array by copying the elements of the list.
+Creates a new array by copying the elements of the list.
 @param[in] list the elements of the list will be copied
 @return the new array
 */
 Array a_of_l(List list);
 
 /**
-Copy count elements from source to destination starting from source_index 
-and destination_index, respectively.
+Copies count elements from source to destination starting from source_index and destination_index, respectively.
 @param[in] source source array
 @param[in] source_index start index in source array
 @param[in,out] destination destination array
@@ -112,13 +111,13 @@ and destination_index, respectively.
 void a_blit(Array source, int source_index, Array destination, int destination_index, int count);
 
 /**
-Free the memory of the array.
+Frees the memory of the array.
 @param[in,out] array to be freed, unusable thereafter
 */
 void a_free(Array array);
 
 /**
-Return the memory address of the array element at index.
+Returns the memory address of the array element at index.
 @param[in] array input array
 @param[in] index index of array element to return
 @return address of array element
@@ -127,7 +126,7 @@ Return the memory address of the array element at index.
 Any a_get(Array array, int index);
 
 /**
-Set array element at index to value.
+Sets array element at index to value.
 Copies a_element_size(array) bytes from value.
 @param[in,out] array input array
 @param[in] index index of array element to set
@@ -137,21 +136,21 @@ Copies a_element_size(array) bytes from value.
 void a_set(Array array, int index, Any value);
     
 /**
-Return the number of elements of the array (not the number of bytes!).
+Returns the number of elements of the array (not the number of bytes!).
 @param[in] array input array
 @return number of elements of array
 */
 int a_length(Array array);
 
 /**
-Return the size in bytes of an element of array.
+Returns the size in bytes of an element of array.
 @param[in] array input array
 @return size of array elements
 */
 int a_element_size(Array array);
 
 /**
-Print the array using the function to print each element.
+Prints the array using the function to print each element.
 @code{.c}
 void print_element(Any element) {}
 @endcode
@@ -161,7 +160,7 @@ void print_element(Any element) {}
 void a_print(Array array, AnyFn print_element);
 
 /**
-Print the array using the function to print each element, then print a line break.
+Prints the array using the function to print each element, then print a line break.
 @code{.c}
 void print_element(Any element) {}
 @endcode
@@ -171,7 +170,7 @@ void print_element(Any element) {}
 void a_println(Array array, AnyFn print_element);
 
 /**
-Return true iff the given arrays are equal. Performs a bytewise comparison on the data.
+Returns true iff the given arrays are equal. Performs a bytewise comparison on the data.
 @param[in] a first input array
 @param[in] b second input array
 @return true if arrays are equal, false otherwise
@@ -179,7 +178,7 @@ Return true iff the given arrays are equal. Performs a bytewise comparison on th
 bool a_equals(Array a, Array b);
 
 /**
-Return a new array that is the concatenation of x and y. Does not modify x or y.
+Returns a new array that is the concatenation of x and y. Does not modify x or y.
 The elements of x come first, followed by the elements of y.
 @param[in] x first input array
 @param[in] y second input array
@@ -189,8 +188,8 @@ The elements of x come first, followed by the elements of y.
 Array a_concat(Array x, Array y);
 
 /**
-Return index of first element for which the predicate function returns true.
-Return -1 if predicate does not return true for any element.
+Returns index of first element for which the predicate function returns true.
+Returns -1 if predicate does not return true for any element.
 @code{.c}
 bool predicate(Any element, int index, Any state) {}
 @endcode
@@ -202,8 +201,8 @@ bool predicate(Any element, int index, Any state) {}
 int a_index_fn(Array array, AnyFn predicate, Any state);
 
 /**
-Return index of last element for which the predicate function returns true.
-Return -1 if predicate does not return true for any element.
+Returns index of last element for which the predicate function returns true.
+Returns -1 if predicate does not return true for any element.
 @code{.c}
 bool predicate(Any element, int index, Any state) {}
 @endcode
@@ -215,8 +214,8 @@ bool predicate(Any element, int index, Any state) {}
 int a_last_index_fn(Array array, AnyFn predicate, Any state);
 
 /*
-Return the address of the first element for which the predicate function returns true.
-Return NULL if predicate does not return true for any element.
+Returns the address of the first element for which the predicate function returns true.
+Returns NULL if predicate does not return true for any element.
 @code{.c}
 bool predicate(Any element, int index, Any state) {}
 @endcode
@@ -229,19 +228,19 @@ bool predicate(Any element, int index, Any state) {}
 //@todo: Any l_find(List array, AnyIntAnyToBool predicate, Any state);
 
 /**
-Reverse the array. Modifies the array.
+Reverses the array. Modifies the array.
 @param[in,out] array input array
 */
 void a_reverse(Array array);
 
 /**
-Randomly rearrange the elements of array. Modifies the array.
+Randomly rearranges the elements of array. Modifies the array.
 @param[in,out] array input array
 */
 void a_shuffle(Array array);
 
 /**
-Sort the elements using the given comparator function. Modifies the array.
+Sorts the elements using the given comparator function. Modifies the array.
 
 @param[in,out] array input array
 @param[in] c comparator function to compare two elements
@@ -254,15 +253,16 @@ static CmpResult my_int_comparator(ConstAny a, ConstAny b) {
     return (x < y) ? LT : ((x > y) ? GT : EQ);
 }
 ...
-Array a = ia_of_string("1, 2, 3, 4, 5");
+Array a = ia_of_string("4, 1, 3, 2, 5");
 a_sort(a, my_int_comparator);
+ia_println(a);
 a_free(a);
 @endcode
 */
 void a_sort(Array array, Comparator c);
 
 /**
-Apply function f to each element of array. The original array is not modified.
+Applies function f to each element of array. The original array is not modified.
 Function f is called once for each element from first to last.
 @code{.c}
 void f(Any element, int index, Any state, Any mapped_element) {}
@@ -279,7 +279,7 @@ Array a_map(Array array, AnyFn f, int mapped_element_size, Any state);
 
 #if 0
 /**
-Apply function f to each element of arrays. The original arrays are not modified.
+Applies function f to each element of arrays. The original arrays are not modified.
 Function f is called once for each index from first to last.
 @code{.c}
 void f(Any element1, Any element2, int index, Any state, Any mapped_element) {}
@@ -295,7 +295,7 @@ void f(Any element1, Any element2, int index, Any state, Any mapped_element) {}
 Array a_map2(Array a1, Array a2, AnyFn f, int mapped_element_size, Any state);
 
 /**
-Apply function f to each element of arrays. The original arrays are not modified.
+Applies function f to each element of arrays. The original arrays are not modified.
 Function f is called once for each index from first to last.
 @code{.c}
 void f(Any element1, Any element2, Any element3, int index, Any state, Any mapped_element) {}
@@ -313,7 +313,7 @@ Array a_map3(Array a1, Array a2, Array a3, AnyFn f, int mapped_element_size, Any
 #endif
 
 /**
-Apply function f to each element of array. The original array is modified (if f modifies the element).
+Applies function f to each element of array. The original array is modified (if f modifies the element).
 Function f is called once for each element from first to last.
 @code{.c}
 void f(Any element, int index, Any state) {}
@@ -333,7 +333,7 @@ void a_each(Array array, AnyFn f, Any state);
 
 #if 0
 /**
-Apply function f to each element of array. The original array is modified (if f modifies the elements).
+Applies function f to each element of array. The original array is modified (if f modifies the elements).
 Function f is called once for each index from first to last.
 @code{.c}
 void f(Any element1, Any element2, int index, Any state) {}
@@ -352,7 +352,7 @@ f(a1[n-1], a2[n-1], n-1, state)
 void a_each2(Array a1, Array a2, AnyFn f, Any state);
 
 /**
-Apply function f to each element of array. The original array is modified (if f modifies the elements).
+Applies function f to each element of array. The original array is modified (if f modifies the elements).
 Function f is called once for each index from first to last.
 @code{.c}
 void f(Any element1, Any element2, Any element3, int index, Any state) {}
@@ -374,7 +374,7 @@ void a_each3(Array a1, Array a2, Array a3, AnyFn f, Any state);
 #endif
 
 /**
-Fold the array from left to right.
+Folds the array from left to right.
 @code{.c}
 void f(Any state, Any element, int index) {}
 @endcode
@@ -393,7 +393,7 @@ void a_foldl(Array array, AnyFn f, Any state);
 
 #if 0
 /**
-Fold the arrays from left to right.
+Folds the arrays from left to right.
 @code{.c}
 void f(Any state, Any element1, Any element2, int index) {}
 @endcode
@@ -412,7 +412,7 @@ f(state, a1[n-1], a2[n-1], n-1) // modify state
 void a_foldl2(Array a1, Array a2, AnyFn f, Any state);
 
 /**
-Fold the arrays from left to right.
+Folds the arrays from left to right.
 @code{.c}
 void f(Any state, Any element1, Any element2, Any element3, int index) {}
 @endcode
@@ -433,7 +433,7 @@ void a_foldl3(Array a1, Array a2, Array a3, AnyFn f, Any state);
 #endif
 
 /**
-Fold the array from right to left.
+Folds the array from right to left.
 @code{.c}
 void f(Any element, Any state, int index) {}
 @endcode
@@ -451,7 +451,7 @@ f(array[0], state, 0) // modify state
 void a_foldr(Array array, AnyFn f, Any state);
 
 /**
-Create a new array with only those elements that satisfy the predicate.
+Creates a new array with only those elements that satisfy the predicate.
 The original array is not modified.
 @code{.c}
 bool predicate(Any element, int index, Any state) {}
@@ -491,7 +491,7 @@ bool predicate(Any element, int index, Any state) {}
 bool a_forall(Array array, AnyFn predicate, Any state);
 
 /**
-Test for inline arrays.
+Tests for inline arrays.
 @param[in] ac actual result array
 @param[in] ex expected result array
 @returns true iff actual equals expected array
@@ -500,7 +500,7 @@ Test for inline arrays.
     a_test_equal_file_line(__FILE__, __func__, __LINE__, ac, ex)
 
 /**
-Test for inline arrays. Use macro \ref a_test_equal.
+Tests for inline arrays. Use macro \ref a_test_equal.
 @param[in] file source file name
 @param[in] function function name
 @param[in] line line number
