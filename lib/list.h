@@ -168,6 +168,13 @@ void print_element(Any element) {}
 @param[in] print_element function to print a single element, will be called for each element
 */
 void l_print(List list, AnyFn print_element);
+/**
+Checks if corresponding elements of @c a and @c b are equal. Performs a bytewise comparison on the data.
+@param[in] a a list
+@param[in] b another list
+@return true iff the lengths of both lists are equal, their element sizes are equal, and for all positions i the i-th element of @c a is equal to i-th element of @c b
+*/
+bool l_equals(List a, List b);
 
 /**
 Print the list using the function to print each element,

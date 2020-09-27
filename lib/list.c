@@ -592,6 +592,23 @@ void l_println(List list, AnyFn print_element) {
     printf("\n");
 }
 
+bool l_equals(List a, List b) {
+    require_not_null(a);
+    require_not_null(b);
+    if (a->s != b->s) return false;
+    int s = a->s;
+    ListNode* na = a->first;
+    ListNode* nb = b->first;
+    while (na != NULL && nb != NULL) {
+        if (memcmp(VALUE(na), VALUE(nb), s) != 0) {
+            return false;
+        }
+        na = na->next;
+        nb = nb->next;
+    }
+    return na == NULL && nb == NULL;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 List l_concat(List x, List y);
