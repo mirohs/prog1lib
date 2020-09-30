@@ -16,23 +16,26 @@ They are more convenient for these types. Some functions are shared between list
 #include "base.h"
 
 /**
-Create an empty list of elements of size s. 
+Creates an empty list of elements of size s. 
 @param[in] s element size in bytes
 @return empty list
+@pre "positive size", s > 0
 */
 List l_create(int s);
 
 /**
-Create a list of n elements, each of size s, by copying n * s bytes from buffer.
+Creates a list of n elements, each of size s, by copying n * s bytes from buffer.
 @param[in] buffer    the buffer to copy the elements from
 @param[in] n            number of elements
 @param[in] s            element size in bytes
 @return list with n copied elements, each of size s
+@pre "non-negative length", n >= 0
+@pre "positive size", s > 0
 */
 List l_of_buffer(Any buffer, int n, int s);
 
 /**
-Create a list of n elements of size s, each initialized with function init. 
+Creates a list of n elements of size s, each initialized with function init. 
 
 @code{.c}
 void init(Any element, int index, Any state) {}
@@ -42,6 +45,9 @@ void init(Any element, int index, Any state) {}
 @param[in] s        element size in bytes
 @param[in] init    initialization function, will be called for each index [0, n-1)
 @param[in] state    state will be supplied to init
+@pre "non-negative length", n >= 0
+@pre "positive size", s > 0
+@pre "not null", init
 
 Example:
 @code{.c}
@@ -60,7 +66,7 @@ Example:
 List l_fn(int n, int s, AnyFn init, Any state);
 
 /**
-Create a copy of the given list.
+Creates a copy of the given list.
 The bytes of the list elements are copied.
 @param[in] list    to be copied
 @return the copy of the list
@@ -68,7 +74,7 @@ The bytes of the list elements are copied.
 List l_copy(List list);
 
 /**
-Create a sublist consisting of list[i, j).
+Creates a sublist consisting of list[i, j).
 Index i is inclusive, index j is exclusive.
 @param[in] list    to be sub-listed
 @param[in] i start index (inclusive)
@@ -78,7 +84,7 @@ Index i is inclusive, index j is exclusive.
 List l_sub(List list, int i, int j);
 
 /**
-Create a new list by copying the elements of the array.
+Creates a new list by copying the elements of the array.
 @param[in] array the elements of the array will be copied
 @return the new list
 */
@@ -91,46 +97,49 @@ Free the memory of the list.
 void l_free(List list);
 
 /**
-Return the memory address of the list element at index i.
+Returns the memory address of the list element at index i.
 @param[in] list input list
 @param[in] index index of list element to return
 @return address of list element
+@pre "index in range"
 */
 Any l_get(List list, int index);
 
 /**
-Set list element at index to value.
+Sets list element at index to value.
 Copies l_element_size(list) bytes from value.
 @param[in,out] list input list
 @param[in] index index of list element to set
 @param[in] value address of the memory to copy
+@pre "index in range"
 */
 void l_set(List list, int index, Any value);
 
 /**
-Return a fresh iterator for this list. Usable with any kind of list.
+Returns a fresh iterator for this list. Usable with any kind of list.
 @param[in] list input list
 @return list iterator
 */
 ListIterator l_iterator(List list);
 
 /**
-Return true iff there are one or more values left. Usable with any kind of list.
+Returns true iff there are one or more values left. Usable with any kind of list.
 @param[in] iter an iterator
 @return true iff there are one or more values left
 */
 bool l_has_next(ListIterator iter);
 
 /**
-Return the next element.
+Returns the next element.
 There are more specific variants: il_next, dl_next, etc.
 @param[in,out] iter an iterator, iterator will be advanced to next element
 @return address of next element
+@pre "iterator has more values", *iter
 */
 Any l_next(ListIterator *iter);
 
 /**
-Append value to end of list.
+Appends value to end of list.
 Copies l_element_size(list) bytes from value.
 @param[in,out] list input list
 @param[in] value address of value to append (size is determined by element size)
@@ -138,7 +147,7 @@ Copies l_element_size(list) bytes from value.
 void l_append(List list, Any value);
     
 /**
-Prepend value to front of list.
+Prepends value to front of list.
 Copies l_element_size(list) bytes from value.
 @param[in,out] list input list
 @param[in] value address of value to prepend (size is determined by element size)
@@ -146,28 +155,30 @@ Copies l_element_size(list) bytes from value.
 void l_prepend(List list, Any value);
     
 /**
-Return the number of elements of the list (not the number of bytes!).
+Returns the number of elements of the list (not the number of bytes!).
 @param[in] list input list
 @return number of elements in list
 */
 int l_length(List list);
 
 /**
-Return the size in bytes of an element of list.
+Returns the size in bytes of an element of list.
 @param[in] list input list
 @return size of list elements
 */
 int l_element_size(List list);
 
 /**
-Print the list using the function to print each element.
+Prints the list using the function to print each element.
 @code{.c}
 void print_element(Any element) {}
 @endcode
 @param[in] list input list
 @param[in] print_element function to print a single element, will be called for each element
+@pre "not null", print_element
 */
 void l_print(List list, AnyFn print_element);
+
 /**
 Checks if corresponding elements of @c a and @c b are equal. Performs a bytewise comparison on the data.
 @param[in] a a list
@@ -177,28 +188,30 @@ Checks if corresponding elements of @c a and @c b are equal. Performs a bytewise
 bool l_equals(List a, List b);
 
 /**
-Print the list using the function to print each element,
+Prints the list using the function to print each element,
 then print a line break.
 @code{.c}
 void print_element(Any element) {}
 @endcode
 @param[in] list input list
 @param[in] print_element function to print a single element, will be called for each element
+@pre "not null", print_element
 */
 void l_println(List list, AnyFn print_element);
 
 /**
-Return a new list that is the concatenation of x and y. Does not modify x or y.
+Returns a new list that is the concatenation of x and y. Does not modify x or y.
 The elements of x come first, followed by the elements of y.
 @param[in] x first input list
 @param[in] y second input list
 @return the concatenation of x and y
+@pre "equal element sizes", x->s == y->s
 */
 List l_concat(List x, List y);
 
 /**
-Return index of first element for which the predicate function returns true.
-Return -1 if predicate does not return true for any element.
+Returns index of first element for which the predicate function returns true.
+Returns -1 if predicate does not return true for any element.
 @code{.c}
 bool predicate(Any element, int index, Any state) {}
 @endcode
@@ -206,12 +219,13 @@ bool predicate(Any element, int index, Any state) {}
 @param[in] predicate predicate function
 @param[in] state given to each invocation of predicate (may be NULL)
 @return index or -1
+@pre "not null", predicate
 */
 int l_index_fn(List list, AnyFn predicate, Any state);
 
 /**
-Return the address of the first element for which the predicate function returns true.
-Return NULL if predicate does not return true for any element.
+Returns the address of the first element for which the predicate function returns true.
+Returns NULL if predicate does not return true for any element.
 @code{.c}
 bool predicate(Any element, int index, Any state) {}
 @endcode
@@ -220,6 +234,7 @@ bool predicate(Any element, int index, Any state) {}
 @param[in] predicate predicate function
 @param[in] state given to each invocation of predicate (may be NULL)
 @return element address or NULL
+@pre "not null", predicate
 */
 Any l_find(List list, AnyFn predicate, Any state);
 
@@ -231,14 +246,14 @@ Creates a reversed list. Does not modify the original list.
 List l_reverse(List list);
 
 /**
-Randomly rearrange the elements of list. Does not modify the original list.
+Randomly rearranges the elements of list. Does not modify the original list.
 @param[in] list input list
 @return copy of list with element order randomized
 */
 List l_shuffle(List list);
 
 /**
-Sort the elements using the given comparator function. 
+Sorts the elements using the given comparator function. 
 Creates a new list. Does not modify the original list.
 
 @param[in] list input list
@@ -261,7 +276,7 @@ il_free(a);
 List l_sort(List list, Comparator c);
 
 /**
-Insert value at index in list. 
+Inserts value at index in list. 
 Does nothing if index is not a valid index, i.e. if not interval [0,n].
 @param[in,out] list input list
 @param[in] index the position to insert at (index 0 means inserting at the front)
@@ -270,7 +285,7 @@ Does nothing if index is not a valid index, i.e. if not interval [0,n].
 void l_insert(List list, int index, Any value);
 
 /**
-Remove element at index in list.
+Removes element at index in list.
 Does nothing if index is not a valid index, i.e. if not interval [0,n).
 @param[in,out] list input list
 @param[in] index index of element to remove
@@ -278,7 +293,7 @@ Does nothing if index is not a valid index, i.e. if not interval [0,n).
 void l_remove(List list, int index);
 
 /**
-Apply function f to each element of list. The original list is not modified.
+Applies function f to each element of list. The original list is not modified.
 Function f is called once for each element from first to last.
 @code{.c}
 void f(Any element, int index, Any state, Any mapped_element) {}
@@ -289,12 +304,14 @@ void f(Any element, int index, Any state, Any mapped_element) {}
 @param[in] state provided to each invocation of f
 @param[in] list input list
 @return the mapped list
+@pre "not null", f
+@pre "positive size", mapped_element_size > 0
 */
 List l_map(List list, AnyFn f, int mapped_element_size, Any state);
 
 #if 0
 /**
-Apply function f to each element of lists. The original lists are not modified.
+Applies function f to each element of lists. The original lists are not modified.
 Function f is called once for each index from first to last.
 @code{.c}
 void f(Any element1, Any element2, int index, Any state, Any mapped_element) {}
@@ -306,12 +323,14 @@ void f(Any element1, Any element2, int index, Any state, Any mapped_element) {}
 @param[in] l1 input list 1
 @param[in] l2 input list 2
 @return the mapped list
+@pre "not null", f
+@pre "positive size", mapped_element_size > 0
 */
 List l_map2(AnyAnyIntAnyAnyToVoid f, int mapped_element_size, 
             Any state, List l1, List l2);
 
 /**
-Apply function f to each element of lists. The original lists are not modified.
+Applies function f to each element of lists. The original lists are not modified.
 Function f is called once for each index from first to last.
 @code{.c}
 void f(Any element1, Any element2, Any element3, int index, Any state, Any mapped_element) {}
@@ -324,13 +343,15 @@ void f(Any element1, Any element2, Any element3, int index, Any state, Any mappe
 @param[in] l2 input list 2
 @param[in] l3 input list 3
 @return the mapped list
+@pre "not null", f
+@pre "positive size", mapped_element_size > 0
 */
 List l_map3(AnyAnyAnyIntAnyAnyToVoid f, int mapped_element_size, Any state, 
             List l1, List l2, List l3);
 #endif
 
 /**
-Apply function f to each element of list. The original list is modified (if f modifies the element).
+Applies function f to each element of list. The original list is modified (if f modifies the element).
 Function f is called once for each element from first to last.
 @code{.c}
 void f(Any element, int index, Any state) {}
@@ -350,7 +371,7 @@ void l_each(List list, AnyFn f, Any state);
 
 #if 0
 /**
-Apply function f to each element of list. The original list is modified (if f modifies the elements).
+Applies function f to each element of list. The original list is modified (if f modifies the elements).
 Function f is called once for each index from first to last.
 @code{.c}
 void f(Any element1, Any element2, int index, Any state) {}
@@ -370,7 +391,7 @@ f(l1[n-1], l2[n-1], n-1, state)
 void l_each2(AnyAnyIntAnyToVoid f, Any state, List l1, List l2);
 
 /**
-Apply function f to each element of list. The original list is modified (if f modifies the elements).
+Applies function f to each element of list. The original list is modified (if f modifies the elements).
 Function f is called once for each index from first to last.
 @code{.c}
 void f(Any element1, Any element2, Any element3, int index, Any state) {}
@@ -392,7 +413,7 @@ void l_each3(AnyAnyAnyIntAnyToVoid f, Any state, List l1, List l2, List l3);
 #endif
 
 /**
-Fold the list from left to right.
+Folds the list from left to right.
 @code{.c}
 void f(Any state, Any element, int index) {}
 @endcode
@@ -400,6 +421,7 @@ void f(Any state, Any element, int index) {}
 @param[in] f a function that is called for each element of input list
 @param[in,out] state provided to each invocation of f
 @param[in] list input list
+@pre "not null", f
 
 <b>Step by step:</b><br/>
 f(state, list[0], 0) // modify state<br/>
@@ -411,7 +433,7 @@ void l_foldl(List list, AnyFn f, Any state);
 
 #if 0
 /**
-Fold the lists from left to right.
+Folds the lists from left to right.
 @code{.c}
 void f(Any state, Any element1, Any element2, int index) {}
 @endcode
@@ -430,7 +452,7 @@ f(state, l1[n-1], l2[n-1], n-1) // modify state
 void l_foldl2(AnyAnyAnyIntToVoid f, Any state, List l1, List l2);
 
 /**
-Fold the lists from left to right.
+Folds the lists from left to right.
 @code{.c}
 void f(Any state, Any element1, Any element2, Any element3, int index) {}
 @endcode
@@ -451,7 +473,7 @@ void l_foldl3(AnyAnyAnyAnyIntToVoid f, Any state, List l1, List l2, List l3);
 #endif
 
 /**
-Fold the list from right to left.
+Folds the list from right to left.
 @code{.c}
 void f(Any element, Any state, int index) {}
 @endcode
@@ -459,6 +481,7 @@ void f(Any element, Any state, int index) {}
 @param[in] f a function that is called for each element of input list
 @param[in,out] state provided to each invocation of f
 @param[in] list input list
+@pre "not null", f
 
 <b>Step by step:</b><br/>
 f(list[n-1], state, n-1) // modify state<br/>
@@ -469,7 +492,7 @@ f(list[0], state, 0) // modify state
 void l_foldr(List list, AnyFn f, Any state);
 
 /**
-Create a new list with only those elements that satisfy the predicate.
+Creates a new list with only those elements that satisfy the predicate.
 The original list is not modified.
 @code{.c}
 bool predicate(Any element, int index, Any state) {}
@@ -479,6 +502,7 @@ bool predicate(Any element, int index, Any state) {}
 @param[in] state given to each invocation of predicate (may be NULL)
 @param[in] list input list
 @return filtered list
+@pre "not null", predicate
 */
 List l_filter(List list, AnyFn predicate, Any state);
 
@@ -494,6 +518,7 @@ bool predicate(Any element, int index, Any state) {}
 @param[in] state given to each invocation of predicate (may be NULL)
 @param[in] list input list
 @return true iff at least one element satisfies predicate
+@pre "not null", predicate
 */
 bool l_exists(List list, AnyFn predicate, Any state);
 
@@ -507,6 +532,7 @@ bool predicate(Any element, int index, Any state) {}
 @param[in] state given to each invocation of predicate (may be NULL)
 @param[in] list input list
 @return true iff at all the elements satisfy predicate
+@pre "not null", predicate
 */
 bool l_forall(List list, AnyFn predicate, Any state);
 

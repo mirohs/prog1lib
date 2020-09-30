@@ -12,7 +12,7 @@
 
 
 /*
- * Access the content of a ListNode
+ * Access to the content of a ListNode
  */
 #define VALUE(node) ((Any)(((ListNode*)(node)) + 1))
 
@@ -507,6 +507,7 @@ static void l_iterator_test(void) {
 }
 
 ListIterator l_iterator(List list) {
+    require_not_null(list);
     return list->first;
 }
 
