@@ -413,11 +413,16 @@ Example:
 
 
 /**
-Checks that the given condition is true for all steps of an iteration. Primarily for use in assertions, preconditions, and postconditions.
+Checks whether the given condition is true for all steps of an iteration. Primarily for use in assertions, preconditions, and postconditions.
+@param[in] init initialization expression
+@param[in] has_more_steps boolean expression for continuing the iteration
+@param[in] do_step advance the iteration state
+@param[in] condition boolean expression
+@return true if the condition is true for all steps of the iteration, false otherwise
 
-Example: Checking that an int-array of n elements is sorted:
+Example: Checking whether an array is sorted:
 @code{.c}
-    bool is_sorted = forall(int i = 0, i < n-1, i++, a[i] <= a[i+1]);
+    bool is_sorted = forall(int i = 0, i < arr_length - 1, i++, arr[i] <= arr[i+1]);
 @endcode
  */
 #define forall(init, has_more_steps, do_step, condition) ({\
@@ -427,16 +432,40 @@ Example: Checking that an int-array of n elements is sorted:
 })
 
 /**
-Checks that the given condition is true for all steps of an iteration. Primarily for use in assertions, preconditions, and postconditions.
+Checks whether the given condition is true for at least one step of an iteration. Primarily for use in assertions, preconditions, and postconditions.
+@param[in] init initialization expression
+@param[in] has_more_steps boolean expression for continuing the iteration
+@param[in] do_step advance the iteration state
+@param[in] condition boolean expression
+@return true if the condition is true for at least one step of the iteration, false otherwise
 
-Example: Checking whether an int-array of n elements contains negative elements:
+Example: Checking whether an array contains negative elements:
 @code{.c}
-    bool has_negative_elements = exists(int i = 0, i < n, i++, a[i] < 0);
+    bool has_negative_elements = exists(int i = 0, i < arr_length, i++, arr[i] < 0);
 @endcode
  */
 #define exists(init, has_more_steps, do_step, condition) ({\
    bool result = false;\
    for (init; has_more_steps; do_step) { if (condition) { result = true; break; } }\
+   result;\
+})
+
+/**
+Counts the number of iteration steps for which the given condition is true. Primarily for use in assertions, preconditions, and postconditions.
+@param[in] init initialization expression
+@param[in] has_more_steps boolean expression for continuing the iteration
+@param[in] do_step advance the iteration state
+@param[in] condition boolean expression
+@return the number of iteration steps for which the condition is true
+
+Example: Count the number of non-zero array elements:
+@code{.c}
+    int n_non_zero = countif(int i = 0, i < arr_length, i++, arr[i] != 0);
+@endcode
+ */
+#define countif(init, has_more_steps, do_step, condition) ({\
+   int result = 0;\
+   for (init; has_more_steps; do_step) { if (condition) { result++; } }\
    result;\
 })
 
