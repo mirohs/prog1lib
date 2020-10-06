@@ -1,6 +1,6 @@
 /*
 @author Michael Rohs
-@date 15.10.2015
+@date 15.10.2015, 6.10.2020
 @copyright Apache License, Version 2.0
 */
 
@@ -266,7 +266,6 @@ static void da_fn_test(void) {
 Array da_fn(int n, IntDoubleToDouble init, double x) {
     require("non-negative length", n >= 0);
     require_not_null(init);
-    require_not_null(init);
     double *a = xmalloc(n * sizeof(double));
     for (int i = 0; i < n; i++) {
         a[i] = init(i, x);
@@ -366,12 +365,13 @@ static void da_contains_test(void) {
     a_free(array);
 }
 
-bool da_contains(Array array, double value, double delta) {
+bool da_contains(Array array, double value, double epsilon) {
     require_not_null(array);
     require_element_size_double(array);
+    require("positive", epsilon > 0);
     double *a = array->a;
     for (int i = 0; i < array->n; i++) {
-        if (fabs(a[i] - value) < delta) {
+        if (fabs(a[i] - value) < epsilon) {
             return true;
         }
     }
@@ -499,12 +499,13 @@ static void da_index_test(void) {
     
 }
 
-int da_index(Array array, double value, double delta) {
+int da_index(Array array, double value, double epsilon) {
     require_not_null(array);
     require_element_size_double(array);
+    require("positive", epsilon > 0);
     double *a = array->a;
     for (int i = 0; i < array->n; i++) {
-        if (fabs(a[i] - value) < delta) {
+        if (fabs(a[i] - value) < epsilon) {
             return i;
         }
     }
@@ -523,13 +524,14 @@ static void da_index_from_test(void) {
     
 }
 
-int da_index_from(Array array, double value, int from, double delta) {
+int da_index_from(Array array, double value, int from, double epsilon) {
     require_not_null(array);
     require_element_size_double(array);
+    require("positive", epsilon > 0);
     double *a = array->a;
     if (from < 0) from = 0;
     for (int i = from; i < array->n; i++) {
-        if (fabs(a[i] - value) < delta) {
+        if (fabs(a[i] - value) < epsilon) {
             return i;
         }
     }
@@ -566,12 +568,13 @@ static void da_last_index_test(void) {
     a_free(a);
 }
 
-int da_last_index(Array array, double value, double delta) {
+int da_last_index(Array array, double value, double epsilon) {
     require_not_null(array);
     require_element_size_double(array);
+    require("positive", epsilon > 0);
     double *a = array->a;
     for (int i = array->n - 1; i >= 0; i--) {
-        if (fabs(a[i] - value) < delta) {
+        if (fabs(a[i] - value) < epsilon) {
             return i;
         }
     }
@@ -589,13 +592,14 @@ static void da_last_index_from_test(void) {
     a_free(a);    
 }
 
-int da_last_index_from(Array array, double value, int from, double delta) {
+int da_last_index_from(Array array, double value, int from, double epsilon) {
     require_not_null(array);
     require_element_size_double(array);
-    double *a = array->a;
+    require("positive", epsilon > 0);
     if (from >= array->n) from = array->n - 1;
+    double *a = array->a;
     for (int i = from; i >= 0; i--) {
-        if (fabs(a[i] - value) < delta) {
+        if (fabs(a[i] - value) < epsilon) {
             return i;
         }
     }
@@ -1186,6 +1190,7 @@ bool da_forall_state(Array array, DoubleIntDoubleAnyToBool predicate, double x, 
 bool da_test_within_file_line(const char *file, const char *function, int line, Array a, double *e, int ne, double epsilon) {
     base_init();
     base_count_check();
+    require("positive", epsilon > 0);
     if (a->n != ne) {
         printf("%s, line %d: Actual length %d "
             "differs from expected length %d\n", file, line, a->n, ne);
@@ -1256,12 +1261,12 @@ static void da_index_option_test(void) {
     a_free(array);
 }
     
-DoubleOption da_index_option(Array array, double value, double delta) {
+DoubleOption da_index_option(Array array, double value, double epsilon) {
     require_not_null(array);
     require_element_size_double(array);
     double *a = array->a;
     for (int i = 0; i < array->n; i++) {
-        if (fabs(a[i] - value) < delta) {
+        if (fabs(a[i] - value) < epsilon) {
             return make_double_some(i);
         }
     }

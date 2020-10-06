@@ -206,7 +206,7 @@ Output 11:
 See test functions in .c file for more examples.
 
 @author Michael Rohs
-@date 15.10.2015
+@date 15.10.2015, 6.10.2020
 @copyright Apache License, Version 2.0
 */
 
@@ -218,23 +218,25 @@ See test functions in .c file for more examples.
 
  
 /** 
-Create an empty list of Strings. 
+Creates an empty list of Strings. 
 @return empty list
 */
 List sl_create(void);
 
 #if 0
 /** 
-Create a list of n Strings, all initialized to value. 
+Creates a list of n Strings, all initialized to value. 
 @param[in] n result length (number of values)
 @param[in] value value to repeat
 @return the initialized list
+@pre "not negative", n >= 0
+@pre "not null", value
 */
 List sl_repeat(int n, String value);
 #endif
 
 /**
-Create a list from the given string.
+Creates a list from the given string.
 Use ',' as the separator. The separator may be followed by whitespace.
 All the elements in the list are new dynamically allocated Strings.
 Example: 
@@ -243,11 +245,12 @@ creates String list <code>["hello", "world", "hello"]</code>
 
 @param[in] s string representation of String list
 @return the initialized list
+@pre "not null", s
 */
 List sl_of_string(String s);
 
 /**
-Create a list from the given string.
+Creates a list from the given string.
 Use separator as the separator.
 All the elements in the list are new dynamically allocated Strings.
 Example: <code>sl_split("hello+world+moin moin", '+')</code>
@@ -256,14 +259,16 @@ creates String list <code>["hello", "world", "moin moin"]</code>
 @param[in] s string representation of String list
 @param[in] separator this character separates parts of the string
 @return the initialized list
+@pre "valid separator", separator != '\0'
 */
 List sl_split(String s, char separator);
 
 /**
-Join the elements of the String list to one large String, using the given character. The result is dynamically allocated.
+Joins the elements of the String list to one large String, using the given character. The result is dynamically allocated.
 @param[in] list string list
 @param[in] joiner this character joins the list elements
 @return the joined string
+@pre "valid joiner", joiner != '\0'
 */
 String s_join(List list, char joiner);
 
@@ -275,103 +280,114 @@ Frees the list itself and each element. Assumes that each element is dynamically
 void sl_free(List list);
 
 /**
-Return list element at index.
+Returns list element at index.
 @param[in] list String list
 @param[in] index index of list element to return
 @return list element
+@pre "valid index", index >= 0 && index < length
 */
 String sl_get(List list, int index);
 
 /**
-Set list element at index to value.
+Sets list element at index to value.
 @param[in,out] list String list
 @param[in] index index of list element to set
 @param[in] value value to set
+@pre "valid index", index >= 0 && index < length
+@pre "not null", value
 */
 void sl_set(List list, int index, String value);
 
 /**
-Return the next value.
+Returns the next value.
 @param[in,out] iter an iterator, iterator will be advanced to next element
 @return next element
 @see l_iterator, l_has_next
+@pre "iterator has more values", *iter
 */
 String sl_next(ListIterator *iter);
 
 /**
-Append value to end of list.
+Appends value to end of list.
 @param[in,out] list String list
 @param[in] value value to append
+@pre "not null", value
 */
 void sl_append(List list, String value);
 
 /**
-Prepend value to front of list.
+Prepends value to front of list.
 @param[in,out] list String list
 @param[in] value value to prepend
+@pre "not null", value
 */
 void sl_prepend(List list, String value);
 
 /**
-Print the list.
+Prints the list.
 @param[in] list String list
 */
 void sl_print(List list);
 
 /**
-Print the list, then print a line break.
+Prints the list, then print a line break.
 @param[in] list String list
 */
 void sl_println(List list);
 
 /**
-Return true iff list contains value.
+Returns true iff list contains value.
 @param[in] list String list
 @param[in] value value to look for
 @return true if list contains value, false otherwise
+@pre "not null", value
 */
 bool sl_contains(List list, String value);
 
 /**
-Set each element of list to value.
+Sets each element of list to value.
 @param[in,out] list String list
 @param[in] value value to set
+@pre "not null", value
 */
 void sl_fill(List list, String value);
 
 /**
-Set a range of elements of list to value.
+Sets a range of elements of list to value.
 Index from is inclusive, index to is exclusive.
 @param[in,out] list String list
 @param[in] value value to set
 @param[in] from start index (inclusive)
 @param[in] to end index (exclusive)
+@pre "not null", value
 */
 void sl_fill_from_to(List list, String value, int from, int to);
 
 /**
-Return index of first occurrence of value in list. 
-Return -1 if value is not in list.
+Returns index of first occurrence of value in list. 
+Returns -1 if value is not in list.
 @param[in] list pointer list
 @param[in] value value to look for
 @return index or -1
+@pre "not null", value
 */
 int sl_index(List list, String value);
 
 /**
-Return index of first occurrence of value in list at indices [from, n). 
-Return -1 if value is not in list[from, n).
+Returns index of first occurrence of value in list at indices [from, n). 
+Returns -1 if value is not in list[from, n).
 Index from is inclusive.
 @param[in] list String list
 @param[in] value value to look for
 @param[in] from start index (inclusive)
 @return index or -1
+@pre "not null", value
 */
 int sl_index_from(List list, String value, int from);
 
 /**
-Return index of first element for which the predicate function returns true.
-Return -1 if predicate does not return true for any element.
+Returns index of first element for which the predicate function returns true.
+Returns -1 if predicate does not return true for any element.
 @code{.c}
 bool predicate(String element, int index, String x) {}
 @endcode
@@ -379,12 +395,13 @@ bool predicate(String element, int index, String x) {}
 @param[in] predicate predicate function
 @param[in] x given to each invocation of predicate
 @return index or -1
+@pre "not null", predicate
 */
 int sl_index_fn(List list, StringIntStringToBool predicate, String x);
 
 /**
-Return first element for which the predicate function returns true.
-Return @c NULL if predicate does not return true for any element.
+Returns first element for which the predicate function returns true.
+Returns @c NULL if predicate does not return true for any element.
 @code{.c}
 bool predicate(String element, int index, String x) {}
 @endcode
@@ -392,11 +409,12 @@ bool predicate(String element, int index, String x) {}
 @param[in] predicate predicate function
 @param[in] x given to each invocation of predicate
 @return element or @c NULL
+@pre "not null", predicate
 */
 String sl_find(List list, StringIntStringToBool predicate, String x);
 
 /**
-Sort the elements in increasing order.
+Sorts the elements in increasing order.
 Creates a new list. Does not modify the original list.
 @param[in] list String list
 @return new sorted list (increasing order).
@@ -404,7 +422,7 @@ Creates a new list. Does not modify the original list.
 List sl_sort(List list);
 
 /**
-Sort the elements in decreasing order.
+Sorts the elements in decreasing order.
 Creates a new list. Does not modify the original list.
 @param[in] list String list
 @return new sorted list (decreasing order).
@@ -412,16 +430,17 @@ Creates a new list. Does not modify the original list.
 List sl_sort_dec(List list);
 
 /**
-Insert value at index in list. 
+Inserts value at index in list. 
 Does nothing if index is not valid, i.e., if not in interval [0,n].
 @param[in,out] list String list
 @param[in] index the position to insert at (index 0 means inserting at the front)
 @param[in] value value to insert
+@pre "not null", value
 */
 void sl_insert(List list, int index, String value);
 
 /**
-Remove element at index in list.
+Removes element at index in list.
 Does nothing if index is not valid, i.e., if not in interval [0,n).
 @param[in,out] list String list
 @param[in] index index of element to remove
@@ -429,7 +448,7 @@ Does nothing if index is not valid, i.e., if not in interval [0,n).
 void sl_remove(List list, int index);
 
 /**
-Apply function f to each element of list. The original list is modified (if f modifies the element).
+Applies function f to each element of list. The original list is modified (if f modifies the element).
 Function f is called once for each element and returns the transformed element.
 @code{.c}
 String f(String element, int index, String x) {}
@@ -438,6 +457,7 @@ String f(String element, int index, String x) {}
 @param[in,out] list String list
 @param[in] f a function that is called for each element of input list
 @param[in] x provided to each invocation of f
+@pre "not null", f
 
 <b>Step by step:</b><br/>
 list[0] := f(list[0], 0, x)<br/>
@@ -450,7 +470,7 @@ list[n-1] := f(list[n-1], n-1, x)
 void sl_each(List list, StringIntStringToString f, String x);
 
 /**
-Apply function f to each element of list. The original list is modified (if f modifies the element).
+Applies function f to each element of list. The original list is modified (if f modifies the element).
 Function f is called once for each element and returns the transformed element.
 @code{.c}
 String f(String element, int index, String x, Any state) {}
@@ -460,6 +480,7 @@ String f(String element, int index, String x, Any state) {}
 @param[in] f a function that is called for each element of input list
 @param[in] x provided to each invocation of f
 @param[in] state provided to each invocation of f
+@pre "not null", f
 
 <b>Step by step:</b><br/>
 list[0] := f(list[0], 0, x, state)<br/>
@@ -472,7 +493,7 @@ list[n-1] := f(list[n-1], n-1, x, state)
 void sl_each_state(List list, StringIntStringAnyToString f, String x, Any state);
 
 /**
-Apply function f to each element of list. 
+Applies function f to each element of list. 
 The original list is not modified. A new list is created for the result.
 Function f is called once for once for each element and returns the transformed element.
 @code{.c}
@@ -483,13 +504,14 @@ String f(String element, int index, String x) {}
 @param[in] f transformation function, called for each element of input list
 @param[in] x provided to each invocation of f
 @return the mapped list
+@pre "not null", f
 
 @see l_map
 */
 List sl_map(List list, StringIntStringToString f, String x);
 
 /**
-Apply function f to each element of list. 
+Applies function f to each element of list. 
 The original list is not modified. A new list is created for the result.
 Function f is called once for once for each element and returns the transformed element.
 @code{.c}
@@ -501,13 +523,14 @@ String f(String element, int index, String x, Any state) {}
 @param[in] x provided to each invocation of f
 @param[in] state provided to each invocation of f
 @return the mapped list
+@pre "not null", f
 
 @see l_map
 */
 List sl_map_state(List list, StringIntStringAnyToString f, String x, Any state);
 
 /**
-Fold list from left to right, i.e., compute f(... f(f(init, l0), l1) ... ln).
+Folds list from left to right, i.e., compute f(... f(f(init, l0), l1) ... ln).
 @code{.c}
 String f(String state, String element, int index) {}
 @endcode
@@ -516,6 +539,7 @@ String f(String state, String element, int index) {}
 @param[in] f a function that is called for each element of input list
 @param[in] state provided to each invocation of f
 @return the accumulated state
+@pre "not null", f
 
 <b>Step by step:</b><br/>
 state := f(state, list[0], 0)<br/>
@@ -528,7 +552,7 @@ state := f(state, list[n-1], n-1)
 String sl_foldl(List list, StringStringIntToString f, String state);
 
 /**
-Fold list from right to left. I.e., compute f(l0, f(l1,... f(ln, init)...)).
+Folds list from right to left. I.e., compute f(l0, f(l1,... f(ln, init)...)).
 @code{.c}
 String f(String element, String state, int index) {}
 @endcode
@@ -537,6 +561,7 @@ String f(String element, String state, int index) {}
 @param[in] f a function that is called for each element of input list
 @param[in] state provided to each invocation of f
 @return the accumulated state
+@pre "not null", f
 
 <b>Step by step:</b><br/>
 state := f(list[n-1], state, n-1)<br/>
@@ -549,7 +574,7 @@ state := f(list[0], state, 0)
 String sl_foldr(List list, StringStringIntToString f, String state);
 
 /**
-Create a new list with only those elements of list that satisfy the predicate.
+Creates a new list with only those elements of list that satisfy the predicate.
 The original list is not modified.
 @code{.c}
 bool predicate(String element, int index, String x) {}
@@ -559,11 +584,12 @@ bool predicate(String element, int index, String x) {}
 @param[in] predicate predicate function, returns true iff element should be included
 @param[in] x given to each invocation of predicate
 @return filtered list
+@pre "not null", predicate
 */
 List sl_filter(List list, StringIntStringToBool predicate, String x);
 
 /**
-Create a new list with only those elements of list that satisfy the predicate.
+Creates a new list with only those elements of list that satisfy the predicate.
 The original list is not modified.
 @code{.c}
 bool predicate(String element, int index, String x, Any state) {}
@@ -574,11 +600,12 @@ bool predicate(String element, int index, String x, Any state) {}
 @param[in] x given to each invocation of predicate
 @param[in] state provided to each invocation of predicate
 @return filtered list
+@pre "not null", predicate
 */
 List sl_filter_state(List list, StringIntStringAnyToBool predicate, String x, Any state);
 
 /**
-Filter and map list using f. The original list is not modified.
+Filters and maps list using f. The original list is not modified.
 @code{.c}
 StringOption f(String element, int index, String x) {}
 @endcode
@@ -587,6 +614,7 @@ StringOption f(String element, int index, String x) {}
 @param[in] f mapping function, returns the mapped element or <code>none</code> if the element should not be included in the result
 @param[in] x given to each invocation of predicate
 @return filtered and mapped list
+@pre "not null", f
 
 Example:
 @code{.c}
@@ -606,7 +634,7 @@ List b = sl_choose(a, ends_width_0_append, "x");
 List sl_choose(List list, StringIntStringToStringOption f, String x);
 
 /**
-Filter and map list using f. The original list is not modified.
+Filters and maps list using f. The original list is not modified.
 @code{.c}
 StringOption f(String element, int index, String x, Any state) {}
 @endcode
@@ -616,6 +644,7 @@ StringOption f(String element, int index, String x, Any state) {}
 @param[in] x given to each invocation of predicate
 @param[in] state provided to each invocation of f
 @return filtered and mapped list
+@pre "not null", f
 */
 List sl_choose_state(List list, StringIntStringAnyToStringOption f, String x, Any state);
 
@@ -629,6 +658,7 @@ bool predicate(String element, int index, String x) {}
 @param[in] predicate predicate function
 @param[in] x given to each invocation of predicate
 @return true iff at least one element satisfies predicate
+@pre "not null", predicate
 */
 bool sl_exists(List list, StringIntStringToBool predicate, String x);
 
@@ -643,6 +673,7 @@ bool predicate(String element, int index, String x) {}
 @param[in] x given to each invocation of predicate
 @param[in] state provided to each invocation of predicate
 @return true iff at least one element satisfies predicate
+@pre "not null", predicate
 */
 bool sl_exists_state(List list, StringIntStringAnyToBool predicate, String x, Any state);
 
@@ -656,6 +687,7 @@ bool predicate(String element, int index, String x) {}
 @param[in] predicate predicate function
 @param[in] x given to each invocation of predicate
 @return true iff at all the elements satisfy predicate
+@pre "not null", predicate
 */
 bool sl_forall(List list, StringIntStringToBool predicate, String x);
 
@@ -670,11 +702,12 @@ bool predicate(String element, int index, String x, Any state) {}
 @param[in] x given to each invocation of predicate
 @param[in] state provided to each invocation of predicate
 @return true iff at all the elements satisfy predicate
+@pre "not null", predicate
 */
 bool sl_forall_state(List list, StringIntStringAnyToBool predicate, String x, Any state);
 
 /**
-Test for String lists.
+Test involving String lists.
 @param[in] ac actual result list
 @param[in] ex expected result list
 @returns true iff actual equals expected list
@@ -683,7 +716,7 @@ Test for String lists.
     sl_test_equal_file_line(__FILE__, __func__, __LINE__, ac, ex)
 
 /**
-Test for String lists.
+Test involving String lists.
 @param[in] file source file name
 @param[in] function function name
 @param[in] line line number

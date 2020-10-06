@@ -463,8 +463,7 @@ Any l_get(List list, int index) {
             return node + 1;
         }
     }
-    fprintf(stderr, "%s, line %d: %s's precondition \"index in range\" violated: index == %d\n", __FILE__, __LINE__, __func__, index);
-    exit(EXIT_FAILURE);
+    require_x("index in range", false, "index == %d", index);
     return NULL;
 }
 
@@ -477,8 +476,7 @@ void l_set(List list, int index, Any value) {
             return;
         }
     }
-    fprintf(stderr, "%s, line %d: %s's precondition \"index in range\" violated: index == %d\n", __FILE__, __LINE__, __func__, index);
-    exit(EXIT_FAILURE);
+    require_x("index in range", false, "index == %d", index);
 }
 
 static void l_iterator_test(void) {
@@ -1054,8 +1052,7 @@ static void l_insert_test(void) {
 
 void l_insert(List list, int index, Any value) {
     require_not_null(list);
-    if (index < 0) return;
-    if (index == 0) {
+    if (index <= 0) {
         l_prepend(list, value);
         return;
     }
@@ -1102,7 +1099,6 @@ static void l_remove_test(void) {
     i = 3; l_append(ac, &i);
     i = 5; l_append(ac, &i);
 
-    i = 1; l_append(ex, &i);
     i = 3; l_append(ex, &i);
     i = 5; l_append(ex, &i);
     
@@ -1148,9 +1144,9 @@ static void l_remove_test(void) {
 
 void l_remove(List list, int index) {
     require_not_null(list);
-    if (index < 0 || list->first == NULL) return;
-    // assert: index >= 0 && list->first != NULL
-    if (index == 0) {
+    if (list->first == NULL) return;
+    // assert: list->first != NULL
+    if (index <= 0) {
         ListNode *del = list->first;
         list->first = del->next;
         free(del);

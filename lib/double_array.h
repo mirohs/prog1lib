@@ -3,7 +3,7 @@ An array of doubles.
 It stores a fixed number of doubles. The prefix @c da_ stands for <i>double array</i>. Some operations are inherited from array.h. For example, \ref a_length works with double arrays and any other kind of array.
 
 @author Michael Rohs
-@date 15.10.2015
+@date 15.10.2015, 6.10.2020
 @copyright Apache License, Version 2.0
 */
 
@@ -14,15 +14,16 @@ It stores a fixed number of doubles. The prefix @c da_ stands for <i>double arra
 #include "int_array.h"
 
 /**
-Create an array of n doubles, all initialized to value. 
+Creates an array of n doubles, all initialized to value. 
 @param[in] n number of elements
 @param[in] value initialization value
 @return the new array
+@pre "non-negative length", n >= 0
 */
 Array da_create(int n, double value);
 
 /**
-Create an array and set the elements to the interval [a,b) or (b,a], respectively. 
+Creates an array and sets the elements to the interval [a,b) or (b,a], respectively. 
 Index a is inclusive and index b is exclusive. 
 - If a < b, then the result is an increasing range.
 - If a > b, then the result is a decreasing range.
@@ -31,11 +32,12 @@ Index a is inclusive and index b is exclusive.
 @param[in] b last value of range (exclusive)
 @param[in] step step size
 @return the initialized array
+@pre "step not too small", fabs(step) > 0.000001
 */
 Array da_range(double a, double b, double step);
 
 /**
-Create an array from the given string.
+Creates an array from the given string.
 Use ',' or ' ' as the separator.
 Example: ia_of_string("1, 3, -4") creates integer array [1, 3, -4].
 @param[in] s string representation of double array
@@ -44,7 +46,7 @@ Example: ia_of_string("1, 3, -4") creates integer array [1, 3, -4].
 Array da_of_string(String s);
 
 /** 
-Create an array of n ints, each initialized with function init. 
+Creates an array of n ints, each initialized with function init. 
 @code{.c}
 double init(int index, double x) {}
 @endcode
@@ -52,6 +54,8 @@ double init(int index, double x) {}
 @param[in] n number of elements
 @param[in] init initialization function, will be called for each index [0, n-1)
 @param[in] x will be supplied to init
+@pre "non-negative length", n >= 0
+@pre "not null", init
 
 Example:
 @code{.c}
@@ -69,7 +73,7 @@ Array a = ia_fn(3, two_i_plus_x, 10.0);
 Array da_fn(int n, IntDoubleToDouble init, double x);
 
 /**
-Convert the array of ints to an array of doubles.
+Converts the array of ints to an array of doubles.
 The input array is not modified.
 @param[in] array array of integers
 @return the converted array of doubles
@@ -77,10 +81,11 @@ The input array is not modified.
 Array da_of_ia(Array array);
 
 /**
-Return array element at index.
+Returns array element at index.
 @param[in] array double array
 @param[in] index index of array element to return
 @return array element
+@pre "index in range", i >= 0 && i < length
 */
 #ifdef NO_GET_SET
 #define da_get(array, index) ((double*)array.a)[index]
@@ -89,10 +94,11 @@ double da_get(Array array, int index);
 #endif
 
 /**
-Set array element at index to value.
+Sets array element at index to value.
 @param[in,out] array double array
 @param[in] index index of array element to set
 @param[in] value value to set
+@pre "index in range", i >= 0 && i < length
 */
 #ifdef NO_GET_SET
 #define da_set(array, index, value) ((double*)array->a)[index] = value;
@@ -101,10 +107,11 @@ void da_set(Array array, int index, double value);
 #endif
 
 /**
-Increment array element at index by value. Avoids common pattern: set(a, i, get(a, i) + v)
+Increments array element at index by value. Avoids common pattern: set(a, i, get(a, i) + v)
 @param[in,out] array double array
 @param[in] index index of array element to increment
 @param[in] value value to increment
+@pre "index in range", i >= 0 && i < length
 */
 #ifdef NO_GET_SET
 #define da_inc(array, index, value) ia_set(array, index, ia_get(array, index) + (value));
@@ -113,35 +120,36 @@ void da_inc(Array array, int index, double value);
 #endif
 
 /**
-Print the array.
+Prints the array.
 @param[in] array double array
 */
 void da_print(Array array);
 
 /**
-Print the array, then print a line break.
+Prints the array, then prints a line break.
 @param[in] array double array
 */
 void da_println(Array array);
 
 /**
-Return true iff array contains value.
+Returns true iff array contains value.
 @param[in] array double array
 @param[in] value value to look for
 @param[in] epsilon (small positive value) allowed tolerance around value
 @return true if array contains value, false otherwise
+@pre "positive", epsilon > 0
 */
 bool da_contains(Array array, double value, double epsilon);
 
 /**
-Set each element of array to value.
+Sets each element of array to value.
 @param[in,out] array double array
 @param[in] value value to set
 */
 void da_fill(Array array, double value);
 
 /**
-Set a range of elements of array to value.
+Sets a range of elements of array to value.
 Index from is inclusive, index to is exclusive.
 @param[in,out] array double array
 @param[in] value value to set
@@ -151,30 +159,32 @@ Index from is inclusive, index to is exclusive.
 void da_fill_from_to(Array array, double value, int from, int to);
 
 /**
-Return index of first occurrence of value in array. 
-Return -1 if value is not in array.
+Returns index of first occurrence of value in array. 
+Returns -1 if value is not in array.
 @param[in] array double array
 @param[in] value value to look for
 @param[in] epsilon (small positive value) allowed tolerance around value
 @return index or -1
+@pre "positive", epsilon > 0
 */
 int da_index(Array array, double value, double epsilon);
 
 /**
-Return index of first occurrence of value in array at indices [from, n). 
-Return -1 if value is not in array[from, n).
+Returns index of first occurrence of value in array at indices [from, n). 
+Returns -1 if value is not in array[from, n).
 Index from is inclusive.
 @param[in] array double array
 @param[in] value value to look for
 @param[in] from start index (inclusive)
 @param[in] epsilon (small positive value) allowed tolerance around value
 @return index or -1
+@pre "positive", epsilon > 0
 */
 int da_index_from(Array array, double value, int from, double epsilon);
 
 /**
-Return index of first element for which the predicate function returns true.
-Return -1 if predicate does not return true for any element.
+Returns index of first element for which the predicate function returns true.
+Returns -1 if predicate does not return true for any element.
 @code{.c}
 bool predicate(double element, int index, double x) {}
 @endcode
@@ -186,31 +196,33 @@ bool predicate(double element, int index, double x) {}
 int da_index_fn(Array array, DoubleIntDoubleToBool predicate, double x);
 
 /**
-Return index of last occurrence of value in array. 
-Return -1 if value is not in array.
+Returns index of last occurrence of value in array. 
+Returns -1 if value is not in array.
 @param[in] array double array
 @param[in] value value to look for
 @param[in] epsilon (small positive value) allowed tolerance around value
 @return index or -1
+@pre "positive", epsilon > 0
 */
 int da_last_index(Array array, double value, double epsilon);
 
 DoubleOption da_index_option(Array array, double value, double epsilon);
 
 /**
-Return index of last occurrence of value in array at or before index from.
-Return -1 if value is not in array.
+Returns index of last occurrence of value in array at or before index from.
+Returns -1 if value is not in array.
 @param[in] array double array
 @param[in] value value to look for
 @param[in] from starting index (inclusive)
 @param[in] epsilon (small positive value) allowed tolerance around value
 @return index or -1
+@pre "positive", epsilon > 0
 */
 int da_last_index_from(Array array, double value, int from, double epsilon);
 
 /**
-Return index of last element for which the predicate function returns true.
-Return -1 if predicate does not return true for any element.
+Returns index of last element for which the predicate function returns true.
+Returns -1 if predicate does not return true for any element.
 @code{.c}
 bool predicate(double element, int index, double x) {}
 @endcode
@@ -222,20 +234,20 @@ bool predicate(double element, int index, double x) {}
 int da_last_index_fn(Array array, DoubleIntDoubleToBool predicate, double x);
 
 /**
-Sort the elements in increasing order. The input array is modified.
+Sorts the elements in increasing order. The input array is modified.
 @param[in,out] array double array
 */
 void da_sort(Array array);
 
 /**
-Sort the elements in decreasing order.The input array is modified.
+Sorts the elements in decreasing order. The input array is modified.
 @param[in,out] array double array
 */
 void da_sort_dec(Array array);
 
 #if 0
 /**
-Insert value at index in array. 
+Inserts value at index in array. 
 Shift up everything above (and including) index. Old element at index (n-1) falls off.
 Does nothing if index is not valid, i.e., if not in interval [0,n).
 @param[in,out] array double array
@@ -245,7 +257,7 @@ Does nothing if index is not valid, i.e., if not in interval [0,n).
 void da_insert(Array array, int index, double value);
 
 /**
-Remove element at index in array.
+Removes element at index in array.
 Shift down everything above (and including) i. Set v at index n-1.
 Does nothing if index is not valid, i.e., if not in interval [0,n).
 @param[in,out] array double array
@@ -256,7 +268,7 @@ void da_remove(Array array, int index, double value);
 #endif
 
 /**
-Apply function f to each element of array. The original array is modified (if f modifies the element).
+Applies function f to each element of array. The original array is modified (if f modifies the element).
 Function f is called once for each element and returns the transformed element.
 @code{.c}
 double f(double element, int index, double x) {}
@@ -275,7 +287,7 @@ array[n-1] := f(array[n-1], n-1, x)
 void da_each(Array array, DoubleIntDoubleToDouble f, double x);
 
 /**
-Apply function f to each element of array. The original array is modified (if f modifies the element).
+Applies function f to each element of array. The original array is modified (if f modifies the element).
 Function f is called once for each element and returns the transformed element.
 @code{.c}
 double f(double element, int index, double x, Any state) {}
@@ -295,7 +307,7 @@ array[n-1] := f(array[n-1], n-1, x, state)
 void da_each_state(Array array, DoubleIntDoubleAnyToDouble f, double x, Any state);
 
 /**
-Apply function f to each element of array. 
+Applies function f to each element of array. 
 The original array is not modified. A new array is created for the result.
 Function f is called once for each element and returns the transformed element.
 @code{.c}
@@ -310,7 +322,7 @@ double f(double element, int index, double x) {}
 Array da_map(Array array, DoubleIntDoubleToDouble f, double x);
 
 /**
-Apply function f to each element of array. 
+Applies function f to each element of array. 
 The original array is not modified. A new array is created for the result.
 Function f is called once for each element and returns the transformed element.
 @code{.c}
@@ -326,7 +338,7 @@ double f(int element, int index, double x, Any state) {}
 Array da_map_state(Array array, DoubleIntDoubleAnyToDouble f, double x, Any state);
 
 /**
-Fold array from left to right, i.e., compute f(... f(f(init, a0), a1) ... an).
+Folds array from left to right, i.e., computes f(... f(f(init, a0), a1) ... an).
 @code{.c}
 double f(double state, double element, int index) {}
 @endcode
@@ -346,7 +358,7 @@ state := f(state, array[n-1], n-1)
 double da_foldl(Array array, DoubleDoubleIntToDouble f, double state);
 
 /**
-Fold array from right to left. I.e., compute f(l0, f(l1,... f(ln, init)...)).
+Folds array from right to left. I.e., computes f(l0, f(l1,... f(ln, init)...)).
 @code{.c}
 int f(int element, int state, int index) {}
 @endcode
@@ -386,7 +398,7 @@ double double_mult(double x, double y, int index);
 double double_div(double x, double y, int index);
 
 /**
-Create a new array with only those elements of array that satisfy the predicate.
+Creates a new array with only those elements of array that satisfy the predicate.
 The original array is not modified.
 @code{.c}
 bool predicate(double element, int index, double x) {}
@@ -400,7 +412,7 @@ bool predicate(double element, int index, double x) {}
 Array da_filter(Array array, DoubleIntDoubleToBool predicate, double x);
 
 /**
-Create a new array with only those elements of array that satisfy the predicate.
+Creates a new array with only those elements of array that satisfy the predicate.
 The original array is not modified.
 @code{.c}
 bool predicate(double element, int index, double x, Any state) {}
@@ -471,7 +483,7 @@ bool predicate(double element, int index, double x, Any state) {}
 bool da_forall_state(Array array, DoubleIntDoubleAnyToBool predicate, double x, Any state);
 
 /*
-Test for double arrays.
+Tests involving double arrays.
 @param[in] ac actual result array
 @param[in] ex expected result array
 @returns true iff actual equals expected array
@@ -483,7 +495,7 @@ Test for double arrays.
     da_test_within_file_line(__FILE__, __func__, __LINE__, ac, ex, exn, EPSILON)
 
 /**
-Test for double arrays.
+Tests involving double arrays.
 @param[in] file source file name
 @param[in] function function name
 @param[in] line line number
@@ -492,6 +504,7 @@ Test for double arrays.
 @param[in] exn length of expected result C-array (number of doubles)
 @param[in] epsilon (small positive value) allowed tolerance
 @returns true iff actual equals expected array
+@pre "positive", epsilon > 0
 */
 bool da_test_within_file_line(const char *file, const char *function, int line, Array ac, double *ex, int exn, double epsilon);
 

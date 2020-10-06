@@ -3,7 +3,7 @@ An array of pointers.
 It stores a fixed number of pointers. The prefix @c pa_ stands for <i>pointer array</i>. Some operations are inherited from array.h. For example, \ref a_length works with pointer arrays and any other kind of array.
 
 @author Michael Rohs
-@date 15.10.2015
+@date 15.10.2015, 6.10.2020
 @copyright Apache License, Version 2.0
 */
 
@@ -13,10 +13,11 @@ It stores a fixed number of pointers. The prefix @c pa_ stands for <i>pointer ar
 #include "base.h"
 
 /**
-Create an array of n elements, all initialized to value. The value is not copied.
+Creates an array of n elements, all initialized to value. The value is not copied.
 @param[in] n number of elements
 @param[in] value initialization value
 @return the new array
+@pre "non-negative length", n >= 0
 */
 Array pa_create(int n, Any value);
 
@@ -27,10 +28,11 @@ Frees the array itself and each element. If you do not intend to free each eleme
 void pa_free(Array array);
 
 /**
-Return array element at index.
+Returns array element at index.
 @param[in] array pointer array
 @param[in] index index of array element to return
 @return array element
+@pre "index in range", index >= 0 && index < length
 */
 #ifdef NO_GET_SET
 #define pa_get(array, index) ((Any*)((array)->a))[index]
@@ -39,10 +41,11 @@ Any pa_get(Array array, int index);
 #endif
 
 /**
-Set array element at index to value.
+Sets array element at index to value.
 @param[in,out] array pointer array
 @param[in] index index of array element to set
 @param[in] value value to set
+@pre "index in range", index >= 0 && index < length
 */
 #ifdef NO_GET_SET
 #define pa_set(array, index, value) ((Any*)((array)->a))[index] = value;
@@ -52,20 +55,20 @@ void pa_set(Array array, int index, Any value);
 
 #if 0
 /**
-Print the array.
+Prints the array.
 @param[in] array pointer array
 */
 void pa_print(Array array);
 
 /**
-Print the array, then print a line break.
+Prints the array, then print a line break.
 @param[in] array pointer array
 */
 void pa_println(Array array);
 #endif
 
 /**
-Return true iff array contains value. Compares pointers.
+Returns true iff array contains value. Compares pointers.
 @param[in] array pointer array
 @param[in] value value to look for
 @return true if array contains value, false otherwise
@@ -73,8 +76,8 @@ Return true iff array contains value. Compares pointers.
 bool pa_contains(Array array, Any value);
 
 /**
-Return index of first occurrence of value in array. Compares pointers.
-Return -1 if value is not in array.
+Returns index of first occurrence of value in array. Compares pointers.
+Returns -1 if value is not in array.
 @param[in] array pointer array
 @param[in] value value to look for
 @return index or -1
@@ -82,8 +85,8 @@ Return -1 if value is not in array.
 int pa_index(Array array, Any value);
 
 /**
-Return index of first occurrence of value in array at indices [from, n). Compares pointers.
-Return -1 if value is not in array[from, n).
+Returns index of first occurrence of value in array at indices [from, n). Compares pointers.
+Returns -1 if value is not in array[from, n).
 Index from is inclusive.
 @param[in] array pointer array
 @param[in] value value to look for
@@ -93,8 +96,8 @@ Index from is inclusive.
 int pa_index_from(Array array, Any value, int from);
 
 /**
-Return index of first element for which the predicate function returns true.
-Return -1 if predicate does not return true for any element.
+Returns index of first element for which the predicate function returns true.
+Returns -1 if predicate does not return true for any element.
 @code{.c}
 bool predicate(Any element, int index, Any x) {}
 @endcode
@@ -102,12 +105,13 @@ bool predicate(Any element, int index, Any x) {}
 @param[in] predicate predicate function
 @param[in] x given to each invocation of predicate
 @return index or -1
+@pre "not null", predicate
 */
 int pa_index_fn(Array array, AnyFn predicate, Any x);
 
 /**
-Return index of last occurrence of value in array. Compares pointers.
-Return -1 if value is not in array.
+Returns index of last occurrence of value in array. Compares pointers.
+Returns -1 if value is not in array.
 @param[in] array pointer array
 @param[in] value value to look for
 @return index or -1
@@ -115,8 +119,8 @@ Return -1 if value is not in array.
 int pa_last_index(Array array, Any value);
 
 /**
-Return index of last occurrence of value in array at or before index from. Compares pointers.
-Return -1 if value is not in array.
+Returns index of last occurrence of value in array at or before index from. Compares pointers.
+Returns -1 if value is not in array.
 @param[in] array pointer array
 @param[in] value value to look for
 @param[in] from starting index (inclusive)
@@ -125,8 +129,8 @@ Return -1 if value is not in array.
 int pa_last_index_from(Array array, Any value, int from);
 
 /**
-Return index of last element for which the predicate function returns true.
-Return -1 if predicate does not return true for any element.
+Returns index of last element for which the predicate function returns true.
+Returns -1 if predicate does not return true for any element.
 @code{.c}
 bool predicate(int element, int index, Any x) {}
 @endcode
@@ -134,11 +138,12 @@ bool predicate(int element, int index, Any x) {}
 @param[in] predicate predicate function
 @param[in] x given to each invocation of predicate
 @return index or -1
+@pre "not null", predicate
 */
 int pa_last_index_fn(Array array, AnyFn predicate, Any x);
 
 /**
-Apply function f to each element of array. The original array is modified (if f modifies the element).
+Applies function f to each element of array. The original array is modified (if f modifies the element).
 Function f is called once for each element and returns the transformed element.
 @code{.c}
 Any f(Any element, int index, Any x) {}
@@ -147,6 +152,7 @@ Any f(Any element, int index, Any x) {}
 @param[in,out] array pointer array
 @param[in] f a function that is called for each element of input array
 @param[in] x provided to each invocation of f
+@pre "not null", f
 
 <b>Step by step:</b><br/>
 array[0] := f(array[0], 0, x)<br/>
@@ -157,7 +163,7 @@ array[n-1] := f(array[n-1], n-1, x)
 void pa_each(Array array, AnyFn f, Any x); 
 
 /**
-Apply function f to each element of array. 
+Applies function f to each element of array. 
 The original array is not modified. A new array is created for the result.
 Function f is called once for each element and returns the transformed element.
 @code{.c}
@@ -168,11 +174,12 @@ int f(int element, int index, int x) {}
 @param[in] f transformation function, called for each element of input array
 @param[in] x provided to each invocation of f
 @return the mapped array
+@pre "not null", f
 */
 Array pa_map(Array array, AnyFn f, Any x);
 
 /**
-Fold array from left to right, i.e., compute f(... f(f(init, a0), a1) ... an).
+Folds array from left to right, i.e., compute f(... f(f(init, a0), a1) ... an).
 @code{.c}
 Any f(Any state, Any element, int index) {}
 @endcode
@@ -181,6 +188,7 @@ Any f(Any state, Any element, int index) {}
 @param[in] f a function that is called for each element of input array
 @param[in] state provided to each invocation of f
 @return the accumulated state
+@pre "not null", f
 
 <b>Step by step:</b><br/>
 state := f(state, array[0], 0)<br/>
@@ -191,7 +199,7 @@ state := f(state, array[n-1], n-1)
 Any pa_foldl(Array array, AnyFn f, Any state);
 
 /**
-Fold array from right to left. I.e., compute f(l0, f(l1,... f(ln, init)...)).
+Folds array from right to left. I.e., compute f(l0, f(l1,... f(ln, init)...)).
 @code{.c}
 Any f(Any element, Any state, int index) {}
 @endcode
@@ -200,6 +208,7 @@ Any f(Any element, Any state, int index) {}
 @param[in] f a function that is called for each element of input array
 @param[in] state provided to each invocation of f
 @return the accumulated state
+@pre "not null", f
 
 <b>Step by step:</b><br/>
 state := f(array[n-1], state, n-1)<br/>
@@ -222,7 +231,7 @@ bool pa_element_empty(Any value, int index);
 // see Any functions
 
 /**
-Create a new array with only those elements of array that satisfy the predicate.
+Creates a new array with only those elements of array that satisfy the predicate.
 The original array is not modified.
 @code{.c}
 bool predicate(Any element, int index, Any x) {}
@@ -232,11 +241,12 @@ bool predicate(Any element, int index, Any x) {}
 @param[in] predicate predicate function, returns true iff element should be included
 @param[in] x given to each invocation of predicate
 @return filtered array
+@pre "not null", predicate
 */
 Array pa_filter(Array array, AnyFn predicate, Any x);
 
 /**
-Create a new array with only those elements of array that satisfy the predicate.
+Creates a new array with only those elements of array that satisfy the predicate.
 The original array is not modified.
 @code{.c}
 bool predicate(Any element, int index, Any x, Any state) {}
@@ -247,11 +257,12 @@ bool predicate(Any element, int index, Any x, Any state) {}
 @param[in] x given to each invocation of predicate
 @param[in] state given to each invocation of predicate (may be NULL)
 @return filtered array
+@pre "not null", predicate
 */
 Array pa_filter_state(Array array, AnyFn predicate, Any x, Any state);
 
 /**
-Filter and map array using f. The original array is not modified.
+Filters and maps array using f. The original array is not modified.
 @code{.c}
 Any f(Any element, int index, Any x) {}
 @endcode
@@ -260,6 +271,7 @@ Any f(Any element, int index, Any x) {}
 @param[in] f mapping function, returns the mapped element or @c none if the element should not be included in the result
 @param[in] x given to each invocation of predicate
 @return filtered and mapped array
+@pre "not null", f
 
 Example:
 @code{.c}
@@ -281,7 +293,7 @@ Array pa_choose(Array array, AnyFn f, Any x);
 // @todo: add tests
 
 /**
-Filter and map array using f. The original array is not modified.
+Filters and maps array using f. The original array is not modified.
 @code{.c}
 Any f(Any element, int index, Any x, Any state) {}
 @endcode
@@ -291,6 +303,7 @@ Any f(Any element, int index, Any x, Any state) {}
 @param[in] x given to each invocation of predicate
 @param[in] state given to each invocation of predicate (may be NULL)
 @return filtered and mapped array
+@pre "not null", f
 */
 Array pa_choose_state(Array array, AnyFn f, Any x, Any state);
 
@@ -304,6 +317,7 @@ bool predicate(Any element, int index, Any x) {}
 @param[in] predicate predicate function
 @param[in] x given to each invocation of predicate
 @return true iff at least one element satisfies predicate
+@pre "not null", predicate
 */
 bool pa_exists(Array array, AnyFn predicate, Any x);
 
@@ -318,6 +332,7 @@ bool predicate(Any element, int index, Any x, Any state) {}
 @param[in] x given to each invocation of predicate
 @param[in] state given to each invocation of predicate (may be NULL)
 @return true iff at least one element satisfies predicate
+@pre "not null", predicate
 */
 bool pa_exists_state(Array array, AnyFn predicate, Any x, Any state);
 
@@ -331,6 +346,7 @@ bool predicate(Any element, int index, Any x) {}
 @param[in] predicate predicate function
 @param[in] x given to each invocation of predicate
 @return true iff at all the elements satisfy predicate
+@pre "not null", predicate
 */    
 bool pa_forall(Array array, AnyFn predicate, Any x);
 
@@ -345,11 +361,12 @@ bool predicate(Any element, int index, Any x, Any state) {}
 @param[in] x given to each invocation of predicate
 @param[in] state given to each invocation of predicate (may be NULL)
 @return true iff at all the elements satisfy predicate
+@pre "not null", predicate
 */
 bool pa_forall_state(Array array, AnyFn predicate, Any x, Any state);
 
 /*
-Test for pointer arrays.
+Tests involving pointer arrays.
 @param[in] ac actual result array
 @param[in] ex expected result array
 @returns true iff actual equals expected array
@@ -358,7 +375,7 @@ Test for pointer arrays.
     pa_test_equal_file_line(__FILE__, __func__, __LINE__, ac, (ex)->a, (ex)->n)
 
 /**
-Test for int arrays.
+Tests involving int arrays.
 @param[in] file source file name
 @param[in] function function name
 @param[in] line line number

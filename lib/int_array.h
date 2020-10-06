@@ -34,15 +34,16 @@ http://www.soundsoftware.ac.uk/c-pitfall-unsigned
 
 
 /**
-Create an array of n integers, all initialized to value. 
+Creates an array of n integers, all initialized to value. 
 @param[in] n number of elements
 @param[in] value initialization value
 @return the new array
+@pre "non-negative length", n >= 0
 */
 Array ia_create(int n, int value);
 
 /**
-Create an array and set the elements to the interval [a,b) or (b,a], respectively. 
+Creates an array and sets the elements to the interval [a,b) or (b,a], respectively. 
 Index a is inclusive and index b is exclusive. 
 - If a < b, then the result is an increasing range.
 - If a > b, then the result is a decreasing range.
@@ -54,7 +55,7 @@ Index a is inclusive and index b is exclusive.
 Array ia_range(int a, int b);
 
 /**
-Create an array from the given string.
+Creates an array from the given string.
 Use ',' or ' ' as the separator.
 Example: ia_of_string("1, 3, -4") creates integer array [1, 3, -4].
 @param[in] s string representation of int array
@@ -63,7 +64,7 @@ Example: ia_of_string("1, 3, -4") creates integer array [1, 3, -4].
 Array ia_of_string(String s);
 
 /** 
-Create an array of n ints, each initialized with function init. 
+Creates an array of n ints, each initialized with function init. 
 @code{.c}
 int init(int index, int x) {}
 @endcode
@@ -71,6 +72,8 @@ int init(int index, int x) {}
 @param[in] n    number of elements
 @param[in] init    initialization function, will be called for each index [0, n-1)
 @param[in] x    will be supplied to init
+@pre "non-negative length", n >= 0
+@pre "not null", init
 
 Example:
 @code{.c}
@@ -88,7 +91,7 @@ Array a = ia_fn(3, two_i_plus_x, 10);
 Array ia_fn(int n, IntIntToInt init, int x);
 
 /**
-Convert the array of doubles to an array of ints.
+Converts the array of doubles to an array of ints.
 Each double of the input array is rounded to the nearest integer.
 The input array is not modified.
 @param[in] array array of doubles
@@ -97,10 +100,11 @@ The input array is not modified.
 Array ia_of_da(Array array);
 
 /**
-Return array element at index.
+Returns array element at index.
 @param[in] array int array
 @param[in] index index of array element to return
 @return array element
+@pre "index in range", index >= 0 && index < length
 */
 #ifdef NO_GET_SET
 #define ia_get(array, i) ((int*)((array)->a))[i]
@@ -109,10 +113,11 @@ int ia_get(Array array, int index);
 #endif
 
 /**
-Set array element at index to value.
+Sets array element at index to value.
 @param[in,out] array int array
 @param[in] index index of array element to set
 @param[in] value value to set
+@pre "index in range", index >= 0 && index < length
 */
 #ifdef NO_GET_SET
 #define ia_set(array, index, value) ((int*)((array)->a))[index] = value;
@@ -121,11 +126,12 @@ void ia_set(Array array, int index, int value);
 #endif
 
 /**
-Increment array element at index by value. Avoids common pattern: set(a, i, get(a, i) + v)
+Increments array element at index by value. Avoids common pattern: set(a, i, get(a, i) + v)
 @param[in,out] array int array
 @param[in] index index of array element to increment
 @param[in] value value to increment
 @return the incremented value
+@pre "index in range", index >= 0 && index < length
 */
 #ifdef NO_GET_SET
 #define ia_inc(array, index, value) ia_set(array, index, ia_get(array, index) + (value));
@@ -134,19 +140,19 @@ int ia_inc(Array array, int index, int value);
 #endif
 
 /**
-Print the array.
+Prints the array.
 @param[in] array int array
 */
 void ia_print(Array array);
 
 /**
-Print the array, then print a line break.
+Prints the array, then prints a line break.
 @param[in] array int array
 */
 void ia_println(Array array);
 
 /**
-Return true iff array contains value.
+Returns true iff array contains value.
 @param[in] array int array
 @param[in] value value to look for
 @return true if array contains value, false otherwise
@@ -154,14 +160,14 @@ Return true iff array contains value.
 bool ia_contains(Array array, int value);
 
 /**
-Set each element of array to value.
+Sets each element of array to value.
 @param[in,out] array int array
 @param[in] value value to set
 */
 void ia_fill(Array array, int value);
 
 /**
-Set a range of elements of array to value.
+Sets a range of elements of array to value.
 Index from is inclusive, index to is exclusive.
 @param[in,out] array int array
 @param[in] value value to set
@@ -171,8 +177,8 @@ Index from is inclusive, index to is exclusive.
 void ia_fill_from_to(Array array, int value, int from, int to);
 
 /**
-Return index of first occurrence of value in array. 
-Return -1 if value is not in array.
+Returns index of first occurrence of value in array. 
+Returns -1 if value is not in array.
 @param[in] array int array
 @param[in] value value to look for
 @return index or -1
@@ -180,8 +186,8 @@ Return -1 if value is not in array.
 int ia_index(Array array, int value);
 
 /**
-Return index of first occurrence of value in array at indices [from, n). 
-Return -1 if value is not in array[from, n).
+Returns index of first occurrence of value in array at indices [from, n). 
+Returns -1 if value is not in array[from, n).
 Index from is inclusive.
 @param[in] array int array
 @param[in] value value to look for
@@ -191,8 +197,8 @@ Index from is inclusive.
 int ia_index_from(Array array, int value, int from);
 
 /**
-Return index of first element for which the predicate function returns true.
-Return -1 if predicate does not return true for any element.
+Returns index of first element for which the predicate function returns true.
+Returns -1 if predicate does not return true for any element.
 @code{.c}
 bool predicate(int element, int index, int x) {}
 @endcode
@@ -200,12 +206,13 @@ bool predicate(int element, int index, int x) {}
 @param[in] predicate predicate function
 @param[in] x given to each invocation of predicate
 @return index or -1
+@pre "not null", predicate
 */
 int ia_index_fn(Array array, IntIntIntToBool predicate, int x);
 
 /**
-Return index of last occurrence of value in array. 
-Return -1 if value is not in array.
+Returns index of last occurrence of value in array. 
+Returns -1 if value is not in array.
 @param[in] array int array
 @param[in] value value to look for
 @return index or -1
@@ -213,8 +220,8 @@ Return -1 if value is not in array.
 int ia_last_index(Array array, int value);
 
 /**
-Return index of last occurrence of value in array at or before index from.
-Return -1 if value is not in array.
+Returns index of last occurrence of value in array at or before index from.
+Returns -1 if value is not in array.
 @param[in] array int array
 @param[in] value value to look for
 @param[in] from starting index (inclusive)
@@ -223,8 +230,8 @@ Return -1 if value is not in array.
 int ia_last_index_from(Array array, int value, int from);
 
 /**
-Return index of last element for which the predicate function returns true.
-Return -1 if predicate does not return true for any element.
+Returns index of last element for which the predicate function returns true.
+Returns -1 if predicate does not return true for any element.
 @code{.c}
 bool predicate(int element, int index, int x) {}
 @endcode
@@ -232,24 +239,25 @@ bool predicate(int element, int index, int x) {}
 @param[in] predicate predicate function
 @param[in] x given to each invocation of predicate
 @return index or -1
+@pre "not null", predicate
 */
 int ia_last_index_fn(Array array, IntIntIntToBool predicate, int x);
 
 /**
-Sort the elements in increasing order. The input array is modified.
+Sorts the elements in increasing order. The input array is modified.
 @param[in,out] array int array
 */
 void ia_sort(Array array);
 
 /**
-Sort the elements in decreasing order.The input array is modified.
+Sorts the elements in decreasing order.The input array is modified.
 @param[in,out] array int array
 */
 void ia_sort_dec(Array array);
 
 #if 0
 /**
-Insert value at index in array. 
+Inserts value at index in array. 
 Shift up everything above (and including) index. Old element at index (n-1) falls off.
 Does nothing if index is not valid, i.e., if not in interval [0,n).
 @param[in,out] array int array
@@ -259,7 +267,7 @@ Does nothing if index is not valid, i.e., if not in interval [0,n).
 void ia_insert(Array array, int index, int value);
 
 /**
-Remove element at index in array.
+Removes element at index in array.
 Shift down everything above (and including) i. Set v at index n-1.
 Does nothing if index is not valid, i.e., if not in interval [0,n).
 @param[in,out] array int array
@@ -270,7 +278,7 @@ void ia_remove(Array array, int index, int value);
 #endif
 
 /**
-Apply function f to each element of array. The original array is modified (if f modifies the element).
+Applies function f to each element of array. The original array is modified (if f modifies the element).
 Function f is called once for each element and returns the transformed element.
 @code{.c}
 int f(int element, int index, int x) {}
@@ -279,6 +287,7 @@ int f(int element, int index, int x) {}
 @param[in,out] array int array
 @param[in] f a function that is called for each element of input array
 @param[in] x provided to each invocation of f
+@pre "not null", f
 
 <b>Step by step:</b><br/>
 array[0] := f(array[0], 0, x)<br/>
@@ -289,7 +298,7 @@ array[n-1] := f(array[n-1], n-1, x)
 void ia_each(Array array, IntIntIntToInt f, int x); 
 
 /**
-Apply function f to each element of array. The original array is modified (if f modifies the element).
+Applies function f to each element of array. The original array is modified (if f modifies the element).
 Function f is called once for each element and returns the transformed element.
 @code{.c}
 int f(int element, int index, int x, Any state) {}
@@ -299,6 +308,7 @@ int f(int element, int index, int x, Any state) {}
 @param[in] f a function that is called for each element of input array
 @param[in] x provided to each invocation of f
 @param[in] state provided to each invocation of f
+@pre "not null", f
 
 <b>Step by step:</b><br/>
 array[0] := f(array[0], 0, x, state)<br/>
@@ -309,7 +319,7 @@ array[n-1] := f(array[n-1], n-1, x, state)
 void ia_each_state(Array array, IntIntIntAnyToInt f, int x, Any state);
 
 /**
-Apply function f to each element of array. 
+Applies function f to each element of array. 
 The original array is not modified. A new array is created for the result.
 Function f is called once for each element and returns the transformed element.
 @code{.c}
@@ -320,11 +330,12 @@ int f(int element, int index, int x) {}
 @param[in] f transformation function, called for each element of input array
 @param[in] x provided to each invocation of f
 @return the mapped array
+@pre "not null", f
 */
 Array ia_map(Array array, IntIntIntToInt f, int x);
 
 /**
-Apply function f to each element of array. 
+Applies function f to each element of array. 
 The original array is not modified. A new array is created for the result.
 Function f is called once for each element and returns the transformed element.
 @code{.c}
@@ -336,11 +347,12 @@ int f(int element, int index, int x, Any state) {}
 @param[in] x provided to each invocation of f
 @param[in] state provided to each invocation of f
 @return the mapped array
+@pre "not null", f
 */
 Array ia_map_state(Array array, IntIntIntAnyToInt f, int x, Any state);
 
 /**
-Fold array from left to right, i.e., compute f(... f(f(init, a0), a1) ... an).
+Folds array from left to right, i.e., compute f(... f(f(init, a0), a1) ... an).
 @code{.c}
 int f(int state, int element, int index) {}
 @endcode
@@ -349,6 +361,7 @@ int f(int state, int element, int index) {}
 @param[in] f a function that is called for each element of input array
 @param[in] state provided to each invocation of f
 @return the accumulated state
+@pre "not null", f
 
 <b>Step by step:</b><br/>
 state := f(state, array[0], 0)<br/>
@@ -359,7 +372,7 @@ state := f(state, array[n-1], n-1)
 int ia_foldl(Array array, IntIntIntToInt f, int state);
 
 /**
-Fold array from right to left. I.e., compute f(a0, f(a1,... f(an, init)...)).
+Folds array from right to left. I.e., compute f(a0, f(a1,... f(an, init)...)).
 @code{.c}
 int f(int element, int state, int index) {}
 @endcode
@@ -368,6 +381,7 @@ int f(int element, int state, int index) {}
 @param[in] f a function that is called for each element of input array
 @param[in] state provided to each invocation of f
 @return the accumulated state
+@pre "not null", f
 
 <b>Step by step:</b><br/>
 state := f(array[n-1], state, n-1)<br/>
@@ -399,7 +413,7 @@ int int_mult(int x, int y, int index);
 int int_div(int x, int y, int index);
 
 /**
-Create a new array with only those elements of array that satisfy the predicate.
+Creates a new array with only those elements of array that satisfy the predicate.
 The original array is not modified.
 @code{.c}
 bool predicate(int element, int index, int x) {}
@@ -409,11 +423,12 @@ bool predicate(int element, int index, int x) {}
 @param[in] predicate predicate function, returns true iff element should be included
 @param[in] x given to each invocation of predicate
 @return filtered array
+@pre "not null", predicate
 */
 Array ia_filter(Array array, IntIntIntToBool predicate, int x);
 
 /**
-Create a new array with only those elements of array that satisfy the predicate.
+Creates a new array with only those elements of array that satisfy the predicate.
 The original array is not modified.
 @code{.c}
 bool predicate(int element, int index, int x, Any state) {}
@@ -424,11 +439,12 @@ bool predicate(int element, int index, int x, Any state) {}
 @param[in] x given to each invocation of predicate
 @param[in] state given to each invocation of predicate (may be NULL)
 @return filtered array
+@pre "not null", predicate
 */
 Array ia_filter_state(Array array, IntIntIntAnyToBool predicate, int x, Any state);
 
 /**
-Filter and map array using f. The original array is not modified.
+Filters and maps array using f. The original array is not modified.
 @code{.c}
 IntOption f(int element, int index, int x) {}
 @endcode
@@ -437,6 +453,7 @@ IntOption f(int element, int index, int x) {}
 @param[in] f mapping function, returns the mapped element or @c none if the element should not be included in the result
 @param[in] x given to each invocation of predicate
 @return filtered and mapped array
+@pre "not null", f
 
 Example:
 @code{.c}
@@ -455,7 +472,7 @@ Array b = ia_choose(a, evens_times_x, 3);
 Array ia_choose(Array array, IntIntIntToIntOption f, int x);
 
 /**
-Filter and map array using f. The original array is not modified.
+Filters and maps array using f. The original array is not modified.
 @code{.c}
 IntOption f(int element, int index, int x, Any state) {}
 @endcode
@@ -465,6 +482,7 @@ IntOption f(int element, int index, int x, Any state) {}
 @param[in] x given to each invocation of predicate
 @param[in] state given to each invocation of predicate (may be NULL)
 @return filtered and mapped array
+@pre "not null", f
 */
 Array ia_choose_state(Array array, IntIntIntAnyToIntOption f, int x, Any state);
 
@@ -478,6 +496,7 @@ bool predicate(int element, int index, int x) {}
 @param[in] predicate predicate function
 @param[in] x given to each invocation of predicate
 @return true iff at least one element satisfies predicate
+@pre "not null", predicate
 */
 bool ia_exists(Array array, IntIntIntToBool predicate, int x);
 
@@ -492,6 +511,7 @@ bool predicate(int element, int index, int x, Any state) {}
 @param[in] x given to each invocation of predicate
 @param[in] state given to each invocation of predicate (may be NULL)
 @return true iff at least one element satisfies predicate
+@pre "not null", predicate
 */
 bool ia_exists_state(Array array, IntIntIntAnyToBool predicate, int x, Any state);
 
@@ -505,6 +525,7 @@ bool predicate(int element, int index, int x) {}
 @param[in] predicate predicate function
 @param[in] x given to each invocation of predicate
 @return true iff at all the elements satisfy predicate
+@pre "not null", predicate
 */    
 bool ia_forall(Array array, IntIntIntToBool predicate, int x);
 
@@ -519,11 +540,12 @@ bool predicate(int element, int index, int x, Any state) {}
 @param[in] x given to each invocation of predicate
 @param[in] state given to each invocation of predicate (may be NULL)
 @return true iff at all the elements satisfy predicate
+@pre "not null", predicate
 */
 bool ia_forall_state(Array array, IntIntIntAnyToBool predicate, int x, Any state);
 
 /*
-Test for int arrays.
+Tests for int arrays.
 @param[in] ac actual result array
 @param[in] ex expected result array
 @returns true iff actual equals expected array
@@ -532,7 +554,7 @@ Test for int arrays.
     ia_test_equal_file_line(__FILE__, __func__, __LINE__, ac, (ex)->a, (ex)->n)
 
 /**
-Test for int arrays.
+Tests for int arrays.
 @param[in] file source file name
 @param[in] function function name
 @param[in] line line number

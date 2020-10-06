@@ -260,8 +260,8 @@ static void ia_fn_test(void) {
 }
 
 Array ia_fn(int n, IntIntToInt init, int x) {
-    require_not_null(init);
     require("non-negative length", n >= 0);
+    require_not_null(init);
     int *a = xmalloc(n * sizeof(int));
     for (int i = 0; i < n; i++) {
         a[i] = init(i, x);

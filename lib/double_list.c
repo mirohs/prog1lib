@@ -46,10 +46,7 @@ static void dl_repeat_test(void) {
 }
 
 List dl_repeat(int n, double value) {
-    if (n < 0) {
-        printf("%s: length cannot be negative (is %d)\n", __func__, n);
-        exit(EXIT_FAILURE);
-    }
+    require("non-negative length", n >= 0);
     ListHead *lh = xcalloc(1, sizeof(ListHead));
     lh->s = sizeof(value); // content size
     for (int i = 0; i < n; i++) {
@@ -280,8 +277,7 @@ double dl_get(List list, int index) {
             return node->value;
         }
     }
-    fprintf(stderr, "%s, line %d: %s's precondition \"index in range\" violated: index == %d\n", __FILE__, __LINE__, __func__, index);
-    exit(EXIT_FAILURE);
+    require_x("index in range", false, "index == %d", index);
     return 0;
 }
 
@@ -295,8 +291,7 @@ void dl_set(List list, int index, double value) {
             return;
         }
     }
-    fprintf(stderr, "%s, line %d: %s's precondition \"index in range\" violated: index == %d\n", __FILE__, __LINE__, __func__, index);
-    exit(EXIT_FAILURE);
+    require_x("index in range", false, "index == %d", index);
 }
 
 void dl_inc(List list, int index, double value) {
@@ -309,8 +304,7 @@ void dl_inc(List list, int index, double value) {
             return;
         }
     }
-    fprintf(stderr, "%s, line %d: %s's precondition \"index in range\" violated: index == %d\n", __FILE__, __LINE__, __func__, index);
-    exit(EXIT_FAILURE);
+    require_x("index in range", false, "index == %d", index);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -586,6 +580,7 @@ static void dl_index_test(void) {
 int dl_index(List list, double value, double epsilon) {
     require_not_null(list);
     require_element_size_double(list);
+    require("positive", epsilon > 0);
     int i = 0;
     for (DoubleListNode *node = list->first; node != NULL; node = node->next, i++) {
         if (fabs(node->value - value) < epsilon) {
@@ -610,6 +605,7 @@ static void dl_index_from_test(void) {
 int dl_index_from(List list, double value, int from, double epsilon) {
     require_not_null(list);
     require_element_size_double(list);
+    require("positive", epsilon > 0);
     if (from < 0) from = 0;
     int i = 0;
     for (DoubleListNode *node = list->first; node != NULL; node = node->next, i++) {
@@ -772,7 +768,7 @@ static void dl_insert_test(void) {
     
     ac = dl_of_string("1");
     dl_insert(ac, -1, 9);
-    ex = dl_of_string("1");
+    ex = dl_of_string("9, 1");
     dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
@@ -825,7 +821,7 @@ static void dl_remove_test(void) {
     
     ac = dl_of_string("1");
     dl_remove(ac, -1);
-    ex = dl_of_string("1");
+    ex = dl_of_string("");
     dl_test_within(ac, ex);
     l_free(ac);
     l_free(ex);
@@ -1276,6 +1272,7 @@ bool dl_forall_state(List list, DoubleIntDoubleAnyToBool predicate, double x, An
 
 bool dl_test_within_file_line(const char *file, const char *function, int line, List a, List e, double epsilon) {
     base_count_check();
+    require("positive", epsilon > 0);
 
     if (a == NULL) {
         printf("%s, line %d: Actual list is NULL\n", file, line);

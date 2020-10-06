@@ -42,10 +42,7 @@ static void pl_repeat_test(void) {
 }
 
 List pl_repeat(int n, Any value) {
-    if (n < 0) {
-        printf("%s: length cannot be negative (is %d)\n", __func__, n);
-        exit(EXIT_FAILURE);
-    }
+    require("non-negative length", n >= 0);
     List list = pl_create();
     for (int i = 0; i < n; i++) {
         pl_append(list, value);
@@ -85,8 +82,7 @@ Any pl_get(List list, int index) {
             return node->value;
         }
     }
-    fprintf(stderr, "%s, line %d: %s's precondition \"index in range\" violated: index == %d\n", __FILE__, __LINE__, __func__, index);
-    exit(EXIT_FAILURE);
+    require_x("index in range", false, "index == %d", index);
     return 0;
 }
 
@@ -100,8 +96,7 @@ void pl_set(List list, int index, Any value) {
             return;
         }
     }
-    fprintf(stderr, "%s, line %d: %s's precondition \"index in range\" violated: index == %d\n", __FILE__, __LINE__, __func__, index);
-    exit(EXIT_FAILURE);
+    require_x("index in range", false, "index == %d", index);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -403,8 +398,8 @@ static void pl_insert_test(void) {
     pl_free(ex);
     
     ac = sl_of_string("1");
-    pl_insert(ac, -1, "9");
-    ex = sl_of_string("1");
+    pl_insert(ac, -1, s_create("9"));
+    ex = sl_of_string("9, 1");
     sl_test_equal(ac, ex);
     pl_free(ac);
     pl_free(ex);
@@ -463,8 +458,10 @@ static void pl_remove_test(void) {
     pl_free(ex);
     
     ac = sl_of_string("1");
+    s = pl_get(ac, 0);
+    s_free(s);
     pl_remove(ac, -1);
-    ex = sl_of_string("1");
+    ex = sl_of_string("");
     sl_test_equal(ac, ex);
     pl_free(ac);
     pl_free(ex);
@@ -486,9 +483,6 @@ static void pl_remove_test(void) {
     l_free(ex);
     
     ac = sl_of_string("");
-    s = pl_get(ac, 0);
-    s_free(s);
-    pl_remove(ac, 0);
     ex = pl_create();
     sl_test_equal(ac, ex);
     l_free(ac);

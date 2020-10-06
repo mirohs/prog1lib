@@ -1,6 +1,6 @@
 /*
 @author Michael Rohs
-@date 15.10.2015
+@date 15.10.2015, 6.10.2020
 @copyright Apache License, Version 2.0
 */
 
@@ -129,6 +129,7 @@ Array sa_split(String s, char separator);
 // @todo: add test
 
 Array sa_split(String s, char separator) {
+    require_not_null(s);
     // count number of separators in s
     int n = 0; // number of separators
     char *t = s;
@@ -143,6 +144,7 @@ Array sa_split(String s, char separator) {
     int i = 0;
     char *start = s;
     while (*t != '\0') {
+        // find next separator
         while (*t != separator && *t != '\0') t++;
         if (*t == '\0') break;
         // assert: *t is separator
@@ -433,6 +435,7 @@ static void sa_index_fn_test(void) {
 int sa_index_fn(Array array, StringIntStringToBool predicate, String x) {
     require_not_null(array);
     require_element_size_string(array);
+    require_not_null(predicate);
     String *a = array->a;
     for (int i = 0; i < array->n; i++) {
         if (predicate(a[i], i, x)) {
@@ -481,8 +484,8 @@ static void sa_last_index_from_test(void) {
 int sa_last_index_from(Array array, String value, int from) {
     require_not_null(array);
     require_element_size_string(array);
-    String *a = array->a;
     if (from >= array->n) from = array->n - 1;
+    String *a = array->a;
     for (int i = from; i >= 0; i--) {
         if (s_equals(a[i], value)) {
             return i;

@@ -15,31 +15,34 @@ Stores an arbitrary number of doubles. The prefix <code>dl_</code> stands for <i
 
 
 /** 
-Create an empty list of doubles. 
+Creates an empty list of doubles. 
 @return empty list
 */
 List dl_create(void);
 
 /**
-Create a list of n doubles by copying from buffer.
+Creates a list of n doubles by copying from buffer.
 @param[in] buffer    the buffer to copy the elements from
 @param[in] n        number of elements
 @return list with n copied elements
+@pre "not null", buffer
+@pre "not negative", n >= 0
 */
 List dl_of_buffer(Any buffer, int n);
 
 #if 0
 /** 
-Create a list of n doubles, all initialized to value. 
+Creates a list of n doubles, all initialized to value. 
 @param[in] n result length (number of values)
 @param[in] value value to repeat
 @return the initialized list
+@pre "not negative", n >= 0
 */
 List dl_repeat(int n, double value);
 #endif
 
 /**
-Create a list and set the elements to the interval [a,b) or (b,a], respectively. 
+Creates a list and sets the elements to the interval [a,b) or (b,a], respectively. 
 Index a is inclusive and index b is exclusive. 
 - If a < b, then the result is an increasing range.
 - If a > b, then the result is a decreasing range.
@@ -48,20 +51,22 @@ Index a is inclusive and index b is exclusive.
 @param[in] b last value of range (exclusive)
 @param[in] step step size
 @return the initialized list
+@pre "step not too small"
 */
 List dl_range(double a, double b, double step);
 
 /**
-Create a list from the given string.
+Creates a list from the given string.
 Use ',' or ' ' as the separator.
 Example: <code>dl_of_string("1, 2.5, -3.2, 49.1")</code> creates double list <code>[1.0 2.5 -3.2 49.1]</code>
 @param[in] s string representation of double list
 @return the initialized list
+@pre "not null", s
 */
 List dl_of_string(String s);
 
 /** 
-Create a list of n doubles, each initialized with function init. 
+Creates a list of n doubles, each initialized with function init. 
 @code{.c}
 double init(int index, double x) {}
 @endcode
@@ -69,6 +74,8 @@ double init(int index, double x) {}
 @param[in] n    number of elements
 @param[in] init    initialization function, will be called for each index [0, n-1)
 @param[in] x    will be supplied to init
+@pre "not negative", n >= 0
+@pre "not null", init
 
 Example:
 @code{.c}
@@ -86,72 +93,77 @@ List l = dl_fn(3, two_i_plus_x, 10.1);
 List dl_fn(int n, IntDoubleToDouble init, double x);
 
 /**
-Convert the list of ints to a list of doubles.
+Converts the list of ints to a list of doubles.
 The input list is not modified.
 @param[in] list list of integers
 @return the converted list of doubles
+@pre "not null", list
 */
 List dl_of_il(List list);
 
 /**
-Return list element at index.
+Returns list element at index.
 @param[in] list double list
 @param[in] index index of list element to return
 @return list element
+@pre "index in range", index >= 0 && index < length
 */
 double dl_get(List list, int index);
 
 /**
-Set list element at index to value.
+Sets list element at index to value.
 @param[in,out] list double list
 @param[in] index index of list element to set
 @param[in] value value to set
+@pre "index in range", index >= 0 && index < length
 */
 void dl_set(List list, int index, double value);
 
 /**
-Increment list element at index by value. Avoids common pattern: set(ls, i, get(ls, i) + v)
+Increments list element at index by value. Avoids common pattern: set(ls, i, get(ls, i) + v)
 @param[in,out] list double list
 @param[in] index index of list element to increment
 @param[in] value value to increment
+@pre "index in range", index >= 0 && index < length
 */
 void dl_inc(List list, int index, double value);
 
 /**
-Return the next value.
+Returns the next value.
 @param[in,out] iter an iterator, iterator will be advanced to next element
 @return next element
+@pre "iterator has more values", *iter
 */
 double dl_next(ListIterator *iter);
 
 /**
-Append value to end of list.
+Appends value to end of list.
 @param[in,out] list double list
 @param[in] value value to append
 */
 void dl_append(List list, double value);
 
 /**
-Prepend value to front of list.
+Prepends value to front of list.
 @param[in,out] list double list
 @param[in] value value to prepend
 */
 void dl_prepend(List list, double value);
 
 /**
-Print the list.
+Prints the list.
 @param[in] list double list
 */
 void dl_print(List list);
 
 /**
-Print the list, then print a line break.
+Prints the list, then print a line break.
 @param[in] list double list
 */
 void dl_println(List list);
 
 /**
-Return true iff list contains value.
+Returns true iff list contains value.
 The list is considered to contain value iff it has an element 
 whose absolute difference from value is less than epsilon.
 
@@ -159,18 +171,19 @@ whose absolute difference from value is less than epsilon.
 @param[in] value value to look for
 @param[in] epsilon tolerance around value
 @return true if list contains value, false otherwise
+@pre "positive", epsilon > 0
 */
 bool dl_contains(List list, double value, double epsilon);
 
 /**
-Set each element of list to value.
+Sets each element of list to value.
 @param[in,out] list double list
 @param[in] value value to set
 */
 void dl_fill(List list, double value);
 
 /**
-Set a range of elements of list to value.
+Sets a range of elements of list to value.
 Index from is inclusive, index to is exclusive.
 @param[in,out] list double list
 @param[in] value value to set
@@ -180,20 +193,21 @@ Index from is inclusive, index to is exclusive.
 void dl_fill_from_to(List list, double value, int from, int to);
 
 /**
-Return index of first occurrence of value in list. 
-Return -1 if value is not in list.
+Returns index of first occurrence of value in list. 
+Returns -1 if value is not in list.
 The list is considered to contain value iff it has an element 
 whose absolute difference from value is less than epsilon.
 @param[in] list double list
 @param[in] value value to look for
 @param[in] epsilon tolerance around value
 @return index or -1
+@pre "positive", epsilon > 0
 */
 int dl_index(List list, double value, double epsilon);
 
 /**
-Return index of first occurrence of value in list at indices [from, n). 
-Return -1 if value is not in list[from, n).
+Returns index of first occurrence of value in list at indices [from, n). 
+Returns -1 if value is not in list[from, n).
 Index from is inclusive.
 The list is considered to contain value iff it has an element 
 whose absolute difference from value is less than epsilon.
@@ -202,12 +216,13 @@ whose absolute difference from value is less than epsilon.
 @param[in] from start index (inclusive)
 @param[in] epsilon tolerance around value
 @return index or -1
+@pre "positive", epsilon > 0
 */
 int dl_index_from(List list, double value, int from, double epsilon);
 
 /**
-Return index of first element for which the predicate function returns true.
-Return -1 if predicate does not return true for any element.
+Returns index of first element for which the predicate function returns true.
+Returns -1 if predicate does not return true for any element.
 @code{.c}
 bool predicate(double element, int index, double x) {}
 @endcode
@@ -215,11 +230,12 @@ bool predicate(double element, int index, double x) {}
 @param[in] predicate predicate function
 @param[in] x given to each invocation of predicate
 @return index or -1
+@pre "not null", predicate
 */
 int dl_index_fn(List list, DoubleIntDoubleToBool predicate, double x);
 
 /**
-Sort the elements in increasing order.
+Sorts the elements in increasing order.
 Creates a new list. Does not modify the original list.
 @param[in] list double list
 @return new sorted list (increasing order).
@@ -227,7 +243,7 @@ Creates a new list. Does not modify the original list.
 List dl_sort(List list);
 
 /**
-Sort the elements in decreasing order.
+Sorts the elements in decreasing order.
 Creates a new list. Does not modify the original list.
 @param[in] list double list
 @return new sorted list (decreasing order).
@@ -235,7 +251,7 @@ Creates a new list. Does not modify the original list.
 List dl_sort_dec(List list);
 
 /**
-Insert value at index in list. 
+Inserts value at index in list. 
 Does nothing if index is not valid, i.e., if not in interval [0,n].
 @param[in,out] list double list
 @param[in] index the position to insert at (index 0 means inserting at the front)
@@ -244,7 +260,7 @@ Does nothing if index is not valid, i.e., if not in interval [0,n].
 void dl_insert(List list, int index, double value);
 
 /**
-Remove element at index in list.
+Removes element at index in list.
 Does nothing if index is not valid, i.e., if not in interval [0,n).
 @param[in,out] list double list
 @param[in] index index of element to remove
@@ -252,7 +268,7 @@ Does nothing if index is not valid, i.e., if not in interval [0,n).
 void dl_remove(List list, int index);
 
 /**
-Apply function f to each element of list. The original list is modified (if f modifies the element).
+Applies function f to each element of list. The original list is modified (if f modifies the element).
 Function f is called once for each element and returns the transformed element.
 @code{.c}
 double f(double element, int index, double x) {}
@@ -261,6 +277,7 @@ double f(double element, int index, double x) {}
 @param[in,out] list double list
 @param[in] f a function that is called for each element of input list
 @param[in] x provided to each invocation of f
+@pre "not null", f
 
 <b>Step by step:</b><br/>
 list[0] := f(list[0], 0, x)<br/>
@@ -271,7 +288,7 @@ list[n-1] := f(list[n-1], n-1, x)
 void dl_each(List list, DoubleIntDoubleToDouble f, double x);
 
 /**
-Apply function f to each element of list. The original list is modified (if f modifies the element).
+Applies function f to each element of list. The original list is modified (if f modifies the element).
 Function f is called once for each element and returns the transformed element.
 @code{.c}
 double f(double element, int index, double x, Any state) {}
@@ -281,6 +298,7 @@ double f(double element, int index, double x, Any state) {}
 @param[in] f a function that is called for each element of input list
 @param[in] x provided to each invocation of f
 @param[in] state provided to each invocation of f
+@pre "not null", f
 
 <b>Step by step:</b><br/>
 list[0] := f(list[0], 0, x, state)<br/>
@@ -291,7 +309,7 @@ list[n-1] := f(list[n-1], n-1, x, state)
 void dl_each_state(List list, DoubleIntDoubleAnyToDouble f, double x, Any state);
 
 /**
-Apply function f to each element of list. 
+Applies function f to each element of list. 
 The original list is not modified. A new list is created for the result.
 Function f is called once for once for each element and returns the transformed element.
 @code{.c}
@@ -302,11 +320,12 @@ double f(double element, int index, double x) {}
 @param[in] f transformation function, called for each element of input list
 @param[in] x provided to each invocation of f
 @return the mapped list
+@pre "not null", f
 */
 List dl_map(List list, DoubleIntDoubleToDouble f, double x);
 
 /**
-Apply function f to each element of list. 
+Applies function f to each element of list. 
 The original list is not modified. A new list is created for the result.
 Function f is called once for once for each element and returns the transformed element.
 @code{.c}
@@ -318,11 +337,12 @@ double f(double element, int index, double x) {}
 @param[in] x provided to each invocation of f
 @param[in] state provided to each invocation of f
 @return the mapped list
+@pre "not null", f
 */
 List dl_map_state(List list, DoubleIntDoubleAnyToDouble f, double x, Any state);
 
 /**
-Fold list from left to right, i.e., compute f(... f(f(init, l0), l1) ... ln).
+Folds list from left to right, i.e., compute f(... f(f(init, l0), l1) ... ln).
 @code{.c}
 double f(double state, double element, int index) {}
 @endcode
@@ -331,6 +351,7 @@ double f(double state, double element, int index) {}
 @param[in] f a function that is called for each element of input list
 @param[in] state provided to each invocation of f
 @return the accumulated state
+@pre "not null", f
 
 <b>Step by step:</b><br/>
 state := f(state, list[0], 0)<br/>
@@ -341,7 +362,7 @@ state := f(state, list[n-1], n-1)
 double dl_foldl(List list, DoubleDoubleIntToDouble f, double state);
 
 /**
-Fold list from right to left. I.e., compute f(l0, f(l1,... f(ln, init)...)).
+Folds list from right to left. I.e., compute f(l0, f(l1,... f(ln, init)...)).
 @code{.c}
 double f(double element, double state, int index) {}
 @endcode
@@ -350,6 +371,7 @@ double f(double element, double state, int index) {}
 @param[in] f a function that is called for each element of input list
 @param[in] state provided to each invocation of f
 @return the accumulated state
+@pre "not null", f
 
 <b>Step by step:</b><br/>
 state := f(list[n-1], state, n-1)<br/>
@@ -386,7 +408,7 @@ double double_mult(double x, double y, int index);
 double double_div(double x, double y, int index);
 
 /**
-Create a new list with only those elements of list that satisfy the predicate.
+Creates a new list with only those elements of list that satisfy the predicate.
 The original list is not modified.
 @code{.c}
 bool predicate(double element, int index, double x) {}
@@ -396,11 +418,12 @@ bool predicate(double element, int index, double x) {}
 @param[in] predicate predicate function, returns true iff element should be included
 @param[in] x given to each invocation of predicate
 @return filtered list
+@pre "not null", predicate
 */
 List dl_filter(List list, DoubleIntDoubleToBool predicate, double x);
 
 /**
-Create a new list with only those elements of list that satisfy the predicate.
+Creates a new list with only those elements of list that satisfy the predicate.
 The original list is not modified.
 @code{.c}
 bool predicate(double element, int index, double x, Any state) {}
@@ -411,11 +434,12 @@ bool predicate(double element, int index, double x, Any state) {}
 @param[in] x given to each invocation of predicate
 @param[in] state given to each invocation of predicate (may be NULL)
 @return filtered list
+@pre "not null", predicate
 */
 List dl_filter_state(List list, DoubleIntDoubleAnyToBool predicate, double x, Any state);
 
 /**
-Filter and map list using f. The original list is not modified.
+Filters and maps list using f. The original list is not modified.
 @code{.c}
 DoubleOption f(double element, int index, double x) {}
 @endcode
@@ -424,6 +448,7 @@ DoubleOption f(double element, int index, double x) {}
 @param[in] f mapping function, returns the mapped element or <code>none</code> if the element should not be included in the result
 @param[in] x given to each invocation of predicate
 @return filtered and mapped list
+@pre "not null", f
 
 Example:
 @code{.c}
@@ -442,7 +467,7 @@ List b = dl_choose(a, gt3_times_x, 4);
 List dl_choose(List list, DoubleIntDoubleToDoubleOption f, double x);
 
 /**
-Filter and map list using f. The original list is not modified.
+Filters and maps list using f. The original list is not modified.
 @code{.c}
 DoubleOption f(double element, int index, double x) {}
 @endcode
@@ -452,6 +477,7 @@ DoubleOption f(double element, int index, double x) {}
 @param[in] x given to each invocation of predicate
 @param[in] state given to each invocation of predicate (may be NULL)
 @return filtered and mapped list
+@pre "not null", f
 
 Example:
 @code{.c}
@@ -479,6 +505,7 @@ bool predicate(double element, int index, double x) {}
 @param[in] predicate predicate function
 @param[in] x given to each invocation of predicate
 @return true iff at least one element satisfies predicate
+@pre "not null", predicate
 */
 bool dl_exists(List list, DoubleIntDoubleToBool predicate, double x);
 
@@ -493,6 +520,7 @@ bool predicate(double element, int index, double x, Any state) {}
 @param[in] x given to each invocation of predicate
 @param[in] state given to each invocation of predicate (may be NULL)
 @return true iff at least one element satisfies predicate
+@pre "not null", predicate
 */
 bool dl_exists_state(List list, DoubleIntDoubleAnyToBool predicate, double x, Any state);
 
@@ -506,6 +534,7 @@ bool predicate(double element, int index, double x) {}
 @param[in] predicate predicate function
 @param[in] x given to each invocation of predicate
 @return true iff at all the elements satisfy predicate
+@pre "not null", predicate
 */
 bool dl_forall(List list, DoubleIntDoubleToBool predicate, double x);
 
@@ -520,11 +549,12 @@ bool predicate(double element, int index, double x, Any state) {}
 @param[in] x given to each invocation of predicate
 @param[in] state given to each invocation of predicate (may be NULL)
 @return true iff at all the elements satisfy predicate
+@pre "not null", predicate
 */
 bool dl_forall_state(List list, DoubleIntDoubleAnyToBool predicate, double x, Any state);
 
 /**
-Test for double lists.
+Test involving double lists.
 @param[in] ac actual result list
 @param[in] ex expected result list
 @returns true iff actual equals expected list
@@ -533,7 +563,7 @@ Test for double lists.
     dl_test_within_file_line(__FILE__, __func__, __LINE__, ac, ex, EPSILON)
 
 /**
-Test for double lists.
+Test involving double lists.
 @param[in] file source file name
 @param[in] function function name
 @param[in] line line number
@@ -541,6 +571,7 @@ Test for double lists.
 @param[in] ex expected result list
 @param[in] epsilon tolerance around expected values
 @returns true iff actual equals expected list
+@pre "positive", epsilon > 0
 */
 bool dl_test_within_file_line(const char *file, const char *function, int line, List ac, List ex, double epsilon);
 

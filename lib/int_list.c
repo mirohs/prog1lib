@@ -1,6 +1,6 @@
 /*
 @author Michael Rohs
-@date 15.10.2015
+@date 15.10.2015, 6.10.2020
 @copyright Apache License, Version 2.0
 */
 
@@ -18,6 +18,8 @@ List il_create() {
 }
 
 List il_of_buffer(Any buffer, int n) {
+    require_not_null(buffer);
+    require("not negative", n >= 0);
     return l_of_buffer(buffer, n, sizeof(int));
 }
 
@@ -44,7 +46,7 @@ static void il_repeat_test(void) {
 }
 
 List il_repeat(int n, int value) {
-    require("non-negative length", n >= 0);
+    require("not negative", n >= 0);
     ListHead *lh = xcalloc(1, sizeof(ListHead));
     lh->s = sizeof(value); // content size
     for (int i = 0; i < n; i++) {
@@ -232,7 +234,7 @@ static void il_fn_test(void) {
 
 List il_fn(int n, IntIntToInt init, int x) {
     require_not_null(init);
-    require("non-negative length", n >= 0);
+    require("not negative", n >= 0);
     List result = il_create();
     for (int i = 0; i < n; i++) {
         il_append(result, init(i, x));
@@ -272,8 +274,7 @@ int il_get(List list, int index) {
             return node->value;
         }
     }
-    fprintf(stderr, "%s, line %d: %s's precondition \"index in range\" violated: index == %d\n", __FILE__, __LINE__, __func__, index);
-    exit(EXIT_FAILURE);
+    require_x("index in range", false, "index == %d", index);
     return 0;
 }
 
@@ -287,8 +288,7 @@ void il_set(List list, int index, int value) {
             return;
         }
     }
-    fprintf(stderr, "%s, line %d: %s's precondition \"index in range\" violated: index == %d\n", __FILE__, __LINE__, __func__, index);
-    exit(EXIT_FAILURE);
+    require_x("index in range", false, "index == %d", index);
 }
 
 void il_inc(List list, int index, int value) {
@@ -301,8 +301,7 @@ void il_inc(List list, int index, int value) {
             return;
         }
     }
-    fprintf(stderr, "%s, line %d: %s's precondition \"index in range\" violated: index == %d\n", __FILE__, __LINE__, __func__, index);
-    exit(EXIT_FAILURE);
+    require_x("index in range", false, "index == %d", index);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -343,10 +342,7 @@ static void il_iterator_test(void) {
 }
 
 int il_next(ListIterator *iter) {
-    if (*iter == NULL) {
-        printf("%s: iterator does not have a next value\n", __func__);
-        exit(EXIT_FAILURE);
-    }
+    require("iterator has more values", *iter);
     int value = VALUE(*iter);
     *iter = (*iter)->next;
     return value;
@@ -786,8 +782,8 @@ static void il_insert_test(void) {
     
     ac = il_of_string("1");
     il_insert(ac, -1, 9);
-    ex = il_of_string("1");
-    il_test_equal(ac, ex);
+    ex = il_of_string("9, 1");
+    il_test_equal(ac, ex); // ---
     l_free(ac);
     l_free(ex);
     
@@ -841,7 +837,7 @@ static void il_remove_test(void) {
     
     ac = il_of_string("1");
     il_remove(ac, -1);
-    ex = il_of_string("1");
+    ex = il_of_string("");
     il_test_equal(ac, ex);
     l_free(ac);
     l_free(ex);
