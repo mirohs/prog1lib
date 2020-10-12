@@ -1,6 +1,6 @@
 CC = gcc
 LINKER = gcc
-CFLAGS = -std=c99 -Wall -Werror -Wpointer-arith -Wfatal-errors
+CFLAGS = -std=c99 -fpack-struct=4 -Wall -Werror -Wpointer-arith -Wfatal-errors
 DEBUG = -g
 
 # disable default suffixes

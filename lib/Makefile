@@ -22,7 +22,7 @@
 
 CC = gcc
 LINKER = gcc
-CFLAGS = -std=c99 -Wall -Werror -Wpointer-arith -Wfatal-errors
+CFLAGS = -std=c99 -fpack-struct=4 -Wall -Werror -Wpointer-arith -Wfatal-errors
 DEBUG = -g
 LIBRARY = libprog1.a
 SRCS = base.c basedefs.c string.c array.c int_array.c double_array.c string_array.c pointer_array.c byte_array.c list.c int_list.c double_list.c string_list.c pointer_list.c 

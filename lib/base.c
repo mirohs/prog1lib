@@ -437,7 +437,9 @@ String s_read_file(String name) {
         base_exit(EXIT_FAILURE);
     }
     long sizeRead = fread(s, 1, size, f);
-    if (sizeRead != size) {
+    // assert: size >= sizeRead (> if file contains \r characters)
+    // printf("size = %lu, sizeRead = %lu, feof = %d\n", size, sizeRead, feof(f));
+    if (sizeRead < size && feof(f) == 0) {
         fprintf(stderr, "%s: Cannot read file %s to end.\n", (String)__func__, name); 
         base_exit(EXIT_FAILURE);
     }

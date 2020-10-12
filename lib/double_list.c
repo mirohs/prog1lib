@@ -9,11 +9,6 @@
 #include "double_list.h"
 #include "array.h"
 
-/*
- * Access the content of a DoubleListNode
- */
-#define VALUE(node) (*(double*)(((ListNode*)(node)) + 1))
-
 List dl_create() {
     ListHead *lh = xcalloc(1, sizeof(ListHead));
     lh->s = sizeof(double); // content size
@@ -194,7 +189,8 @@ List dl_of_string(String s) {
         if (isdigit(*t)) {
             if (t > s && *(t - 1) == '.') t--; // check for '.'
             if (t > s && *(t - 1) == '-') t--; // check for '-'
-            dl_append(list, strtod(t, &endp)); // convert digit string to int
+            double d = strtod(t, &endp);
+            dl_append(list, d); // convert digit string to int
             t = endp;
         } else {
             // assert: *t is not a digit, *t is not '\0'
@@ -319,14 +315,14 @@ static void dl_iterator_test(void) {
     
     ListIterator iter = l_iterator(ac);
     while (l_has_next(iter)) {
-        double i = dl_next(&iter);
-        printiln(i);
+        double d = dl_next(&iter);
+        printdln(d);
     }
     
     // DoubleListNode *first = (DoubleListNode*)ac->first;
     for (DoubleListNode *node = ac->first; node != NULL; node = node->next) {
         double d = node->value;
-        printiln(d);
+        printdln(d);
     }
     
 #if 0
@@ -346,7 +342,8 @@ static void dl_iterator_test(void) {
 
 double dl_next(ListIterator *iter) {
     require("iterator has more values", *iter);
-    double value = VALUE(*iter);
+    DoubleListNode** node = (DoubleListNode**)iter;
+    double value = (*node)->value;
     *iter = (*iter)->next;
     return value;
 }
@@ -373,7 +370,7 @@ void dl_append(List list, double value) {
     require_not_null(list);
     require_element_size_double(list);
     // allocate memory for next-pointer and content
-    DoubleListNode *node = xcalloc(1, sizeof(ListNode*) + sizeof(value));
+    DoubleListNode *node = xcalloc(1, sizeof(DoubleListNode));
     // copy content, leave next-pointer NULL
     node->value = value;
     // if this is the first element of the list set first pointer
@@ -393,7 +390,7 @@ void dl_prepend(List list, double value) {
     require_not_null(list);
     require_element_size_double(list);
     // allocate memory for next-pointer and content
-    DoubleListNode *node = xcalloc(1, sizeof(ListNode*) + sizeof(value));
+    DoubleListNode *node = xcalloc(1, sizeof(DoubleListNode));
     // copy content, leave next-pointer NULL
     node->value = value;
     node->next = list->first;
@@ -406,14 +403,14 @@ void dl_prepend(List list, double value) {
 void dl_print(List list) {
     require_not_null(list);
     require_element_size_double(list);
-    ListNode *node = list->first;
+    DoubleListNode *node = list->first;
     printf("[");
     if (node != NULL) {
-        printf("%g", VALUE(node));
+        printf("%g", node->value);
         node = node->next;
     }
     for (; node != NULL; node = node->next) {
-        printf(", %g", VALUE(node));
+        printf(", %g", node->value);
     }
     printf("]");
 }
@@ -687,7 +684,20 @@ static void dl_sort_test(void) {
 List dl_sort(List list) {
     require_not_null(list);
     require_element_size_double(list);
-    return l_sort(list, double_compare);
+    int n = l_length(list);
+    Array a = a_create(n, list->s);
+    int i = 0;
+    for (DoubleListNode *node = list->first; node != NULL; node = node->next, i++) {
+        a_set(a, i, &(node->value));
+    }
+    qsort(a->a, a->n, a->s, double_compare);
+    List result = l_create(list->s);
+    for (i = 0; i < n; i++) {
+		double d = *(double*)a_get(a, i);
+        dl_append(result, d);
+    }
+    a_free(a);
+    return result;
 }
 
 static CmpResult double_compare_dec(ConstAny a, ConstAny b) {
@@ -738,7 +748,21 @@ static void dl_sort_dec_test(void) {
 List dl_sort_dec(List list) {
     require_not_null(list);
     require_element_size_double(list);
-    return l_sort(list, double_compare_dec);
+
+    int n = l_length(list);
+    Array a = a_create(n, list->s);
+    int i = 0;
+    for (DoubleListNode *node = list->first; node != NULL; node = node->next, i++) {
+        a_set(a, i, &(node->value));
+    }
+    qsort(a->a, a->n, a->s, double_compare_dec);
+    List result = l_create(list->s);
+    for (i = 0; i < n; i++) {
+		double d = *(double*)a_get(a, i);
+        dl_append(result, d);
+    }
+    a_free(a);
+	return result;
 }
 
 static void dl_insert_test(void) {
@@ -791,7 +815,23 @@ static void dl_insert_test(void) {
 void dl_insert(List list, int index, double value) {
     require_not_null(list);
     require_element_size_double(list);
-    l_insert(list, index, &value);
+    if (index <= 0) {
+        dl_prepend(list, value);
+        return;
+    }
+    // assert: index > 0
+    DoubleListNode *node = list->first;
+    int k = 1;
+    while (node != NULL && k < index) {
+        node = node->next;
+        k++;
+    }
+    if (node != NULL) {
+        DoubleListNode *new_node = xcalloc(1, sizeof(DoubleListNode));
+		new_node->value = value;
+        new_node->next = node->next;
+        node->next = new_node;
+    }
 }
 
 static void dl_remove_test(void) {
@@ -1044,12 +1084,15 @@ double dl_foldr(List list, DoubleDoubleIntToDouble f, double init) {
     require_not_null(f);
     require_not_null(list);
     require_element_size_double(list);
-    List rev = l_reverse(list);
+    List reversed = dl_create();
+    for (DoubleListNode* node = list->first; node != NULL; node = node->next) {
+        dl_prepend(reversed, node->value);
+    }
     int i = l_length(list) - 1;
-    for (DoubleListNode *node = rev->first; node != NULL; node = node->next, i--) {
+    for (DoubleListNode* node = reversed->first; node != NULL; node = node->next, i--) {
         init = f(node->value, init, i);
     }
-    l_free(rev);
+    l_free(reversed);
     return init;
 }
 
@@ -1292,12 +1335,12 @@ bool dl_test_within_file_line(const char *file, const char *function, int line, 
                 file, line, e->s);
         return false;
     }
-    ListNode *an = a->first;
-    ListNode *en = e->first;
+    DoubleListNode *an = a->first;
+    DoubleListNode *en = e->first;
     int i = 0;
     for (; an != NULL && en != NULL; an = an->next, en = en->next, i++) {
-        double av = *(double*)(an + 1);
-        double ev = *(double*)(en + 1);
+        double av = an->value;
+        double ev = en->value;
         if (fabs(av - ev) > epsilon) {
             printf("%s, line %d: Actual value %g differs from expected value %g at index %d.\n", 
                     file, line, av, ev, i);

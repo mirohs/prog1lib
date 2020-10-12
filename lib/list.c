@@ -1237,7 +1237,7 @@ static void l_map_test(void) {
 List l_map(List list, AnyFn f, int mapped_element_size, Any state) {
     require_not_null(list);
     require_not_null(f);
-    require("positive size", mapped_element_size > 0);
+    require("positive", mapped_element_size > 0);
     AnyIntAnyAnyToVoid ff = f;
     List result = l_create(mapped_element_size);
     int i = 0;
@@ -1296,6 +1296,7 @@ List l_map2(AnyAnyIntAnyAnyToVoid f, int mapped_element_size, Any state, List l1
     require_not_null(f);
     require_not_null(l1);
     require_not_null(l2);
+    require("positive", mapped_element_size > 0);
     List result = l_create(mapped_element_size);
     int i = 0;
     ListNode *n1 = l1->first;
@@ -1377,6 +1378,7 @@ List l_map3(AnyAnyAnyIntAnyAnyToVoid f, int mapped_element_size,
     require_not_null(l1);
     require_not_null(l2);
     require_not_null(l3);
+    require("positive", mapped_element_size > 0);
     List result = l_create(mapped_element_size);
     int i = 0;
     ListNode *n1 = l1->first;
@@ -1562,7 +1564,6 @@ static void l_foldr_test(void) {
     
     int n = 0;
     l_foldr(ac, l_minus_j, &n);
-    
     test_equal_i(n, 10 - (20 - (30 - 0)));
     
     l_free(ac);
@@ -1572,15 +1573,16 @@ void l_foldr(List list, AnyFn f, Any state) {
     require_not_null(list);
     require_not_null(f);
     AnyAnyIntToVoid ff = f;
-    List elements = l_create(sizeof(Any));
+    List reversed = l_create(list->s);
+    // assert_x("same size", reversed->s == list->s, "list->s = %d, element->s = %d", list->s, reversed->s);
     for (ListNode *node = list->first; node != NULL; node = node->next) {
-        l_prepend(elements, node + 1);
+        l_prepend(reversed, node + 1);
     }
     int i = 0;
-    for (ListNode *node = elements->first; node != NULL; node = node->next, i++) {
+    for (ListNode *node = reversed->first; node != NULL; node = node->next, i++) {
         ff(node + 1, state, i);
     }
-    l_free(elements);
+    l_free(reversed);
 }
 
 List l_filter(List list, AnyFn predicate, Any state);
@@ -1672,6 +1674,7 @@ static void l_choose_test(void) {
 List l_choose(List list, AnyIntAnyAnyToBool f, int mapped_element_size, Any state) {
     require_not_null(f);
     require_not_null(list);
+    require("positive", mapped_element_size > 0);
     List result = l_create(mapped_element_size);
     Any mapped_content = xcalloc(1, mapped_element_size);
     int i = 0;
@@ -1681,18 +1684,6 @@ List l_choose(List list, AnyIntAnyAnyToBool f, int mapped_element_size, Any stat
         }
     }
     free(mapped_content);
-    return result;
-}
-
-List l_choose_evens_times3(List list) {
-    List result = l_create(sizeof(int));
-    for (ListNode *node = list->first; node != NULL; node = node->next) {
-        int e = *(int*)(node + 1);
-        if ((e % 2) == 0) {
-            e = 3 * e;
-            l_append(result, &e);
-        }
-    }
     return result;
 }
 

@@ -132,11 +132,13 @@ See test functions in .c file for more examples.
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stddef.h>
 #include <string.h>
 #include <ctype.h>
 #include <math.h>
 #include <time.h>
 #include <stdbool.h>
+// #include <execinfo.h> // stack traces
 #include "basedefs.h"
 
 
@@ -294,6 +296,31 @@ if (!(condition)) {\
     fprintf(stderr, "%s, line %d: %s's precondition \"%s\" violated: ", __FILE__, __LINE__, __func__, description);\
     fprintf(stderr, __VA_ARGS__);\
     fprintf(stderr, "\n");\
+    exit(EXIT_FAILURE);\
+}
+#endif
+
+#if 0
+// print stack trace using gcc, requires
+// #include <execinfo.h>
+
+#include <execinfo.h>
+#define require_x(description, condition, ...) \
+if (!(condition)) {\
+    fprintf(stderr, "%s, line %d: %s's precondition \"%s\" violated: ", __FILE__, __LINE__, __func__, description);\
+    fprintf(stderr, __VA_ARGS__);\
+    fprintf(stderr, "\n");\
+    void *buffer[10];\
+    int size = backtrace(buffer, 10);\
+    char** strings = backtrace_symbols(buffer, size);\
+    if (strings != NULL) {\
+        for (int i = 1; i < size - 1; i++) {\
+            String s = strings[i] + 59;\
+            String t = strchr(s, ' ');\
+            int n = t ? t - s : strlen(s);\
+            printf ("    is called from %.*s\n", n, s);\
+        }\
+    }\
     exit(EXIT_FAILURE);\
 }
 #endif
