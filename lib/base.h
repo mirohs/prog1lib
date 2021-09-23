@@ -551,7 +551,7 @@ Allocates a block of size bytes with xmalloc. Exits with an error message on fai
 #define xmalloc(size) base_malloc(__FILE__, __func__, __LINE__, size)
 
 /**
-Reallocates a block of size bztes using @c realloc. Exists with error message on failure. The contents of the allocated memory block is not initialized (i.e., the memory block contains arbitrary values).
+Reallocates a block of size bytes using @c realloc. Exits with error message on failure. The contents of the allocated memory block is not initialized (i.e., the memory block contains arbitrary values).
 @param[in] file file name of source code
 @param[in] function function name of source code
 @param[in] line line number in source code
