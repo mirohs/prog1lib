@@ -546,9 +546,32 @@ Any base_malloc(const char *file, const char *function, int line, size_t size);
 Allocates a block of size bytes with xmalloc. Exits with an error message on failure. The contents of the allocated memory block is not initialized (i.e., the memory block contains arbitrary values).
 @param[in] size number of bytes to allocate
 @return pointer to the allocated memory block
-@see xcalloc, free
+@see xrealloc, xcalloc, free
 */
 #define xmalloc(size) base_malloc(__FILE__, __func__, __LINE__, size)
+
+/**
+Reallocates a block of size bytes using @c realloc. Exits with error message on failure. The contents of the allocated memory block is not initialized (i.e., the memory block contains arbitrary values).
+@param[in] file file name of source code
+@param[in] function function name of source code
+@param[in] line line number in source code
+@param[in] ptr pointer to reallocate
+@param[in] size number of bytes to allocate
+@return pointer to the reallocated memory block
+@see xrealloc
+@private
+*/
+Any base_realloc(const char *file, const char *function, int line, Any ptr, size_t size);
+
+/**
+Reallocates a block of size bytes using @c realloc. Exits with error message on failure. The contents of the allocated memory block is not initialized (i.e., the memory block contains arbitrary values).
+@param[in] ptr pointer to reallocate
+@param[in] size number of bytes to allocate
+@return pointer to the reallocated memory block
+@see xcalloc, xmalloc, free
+*/
+#define xrealloc(ptr, size) base_realloc(__FILE__, __func__, __LINE__, ptr, size)
+
 
 /**
 Allocates a block of (num * size) bytes using @c calloc. Exits with error message on failure. The allocated bytes are set to zero (the initial @c c in @c calloc stands for <i>clear<i>).
@@ -569,7 +592,7 @@ Allocates a block of (num * size) bytes with @c calloc. Exits with error message
 @param[in] num number of elements
 @param[in] size size (in bytes) of each element
 @return pointer to the allocated memory block
-@see xmalloc, free
+@see xrealloc, xmalloc, free
 */
 #define xcalloc(num, size) base_calloc(__FILE__, __func__, __LINE__, num, size)
 

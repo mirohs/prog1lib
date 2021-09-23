@@ -125,6 +125,27 @@ Any base_malloc(const char *file, const char *function, int line, size_t size) {
     return p;
 }
 
+Any base_realloc(const char *file, const char *function, int line, Any ptr, size_t size) {
+    Any p = realloc(ptr, size);
+    if (p == NULL) {
+        fprintf(stderr, "%s, line %d: malloc(%lu) called in base_realloc returned NULL!\n",
+                file, line, (unsigned long)size);
+        base_exit(EXIT_FAILURE);
+    }
+    BaseAllocInfo *ai = base_alloc_info;
+    while(ai && ai->p != ptr) ai = ai->next;
+    if (ai == NULL) {
+        ai = malloc(sizeof(BaseAllocInfo));
+        ai->next = base_alloc_info;
+        base_alloc_info = ai;
+    }
+    ai->p = p;
+    ai->size = size;
+    ai->file = file;
+    ai->function = function;
+    ai->line = line;
+    return p;
+}
 Any base_calloc(const char *file, const char *function, int line, size_t num, size_t size) {
     // printf("%s, line %d: xcalloc(%lu, %lu)\n", file, line, (unsigned long)num, (unsigned long)size);
     Any p = calloc(num, size);
