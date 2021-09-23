@@ -556,7 +556,7 @@ Reallocates a block of size bytes using @c realloc. Exits with error message on 
 @param[in] function function name of source code
 @param[in] line line number in source code
 @param[in] ptr pointer to reallocate
-@param[in] size number of bztes to allocate
+@param[in] size number of bytes to allocate
 @return pointer to the reallocated memory block
 @see xrealloc
 @private
@@ -564,9 +564,9 @@ Reallocates a block of size bytes using @c realloc. Exits with error message on 
 Any base_realloc(const char *file, const char *function, int line, Any ptr, size_t size);
 
 /**
-Reallocates a block of size bztes using @c realloc. Exists with error message on failure. The contents of the allocated memory block is not initialized (i.e., the memory block contains arbitrary values).
+Reallocates a block of size bytes using @c realloc. Exits with error message on failure. The contents of the allocated memory block is not initialized (i.e., the memory block contains arbitrary values).
 @param[in] ptr pointer to reallocate
-@param[in] size number of bztes to allocate
+@param[in] size number of bytes to allocate
 @return pointer to the reallocated memory block
 @see xcalloc, xmalloc, free
 */
