@@ -203,7 +203,7 @@ Array da_of_string(String s) {
     char *t = s;
     char *endp;
     while (*t != '\0') {
-        if (isdigit(*t)) {
+        if (isdigit((int)(*t))) {
             n++; // one more int found
             if (t > s && *(t - 1) == '.') t--; // check for '.'
             if (t > s && *(t - 1) == '-') t--; // check for '-'
@@ -220,7 +220,7 @@ Array da_of_string(String s) {
     t = s;
     int i = 0;
     while (*t != '\0') {
-        if (isdigit(*t)) {
+        if (isdigit((int)(*t))) {
             if (t > s && *(t - 1) == '.') t--; // check for '.'
             if (t > s && *(t - 1) == '-') t--; // check for '-'
             a[i++] = strtod(t, &endp); // convert digit string to int
@@ -1228,7 +1228,7 @@ bool da_test_within_file_line(const char *file, const char *function, int line, 
             return false;
         }
     }
-    printf("%s, line %d: Check passed.\n", file, line);
+    printf("%s, line %d: Test passed.\n", file, line);
     base_count_success();
     return true;
 }

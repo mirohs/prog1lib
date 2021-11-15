@@ -186,7 +186,7 @@ List dl_of_string(String s) {
     char *t = s;
     char *endp;
     while (*t != '\0') {
-        if (isdigit(*t)) {
+        if (isdigit((int)(*t))) {
             if (t > s && *(t - 1) == '.') t--; // check for '.'
             if (t > s && *(t - 1) == '-') t--; // check for '-'
             double d = strtod(t, &endp);
@@ -1351,7 +1351,7 @@ bool dl_test_within_file_line(const char *file, const char *function, int line, 
         printf("%s, line %d: Actual and expected lengths differ\n", file, line);
         return false;
     }
-    printf("%s, line %d: Check passed.\n", file, line);
+    printf("%s, line %d: Test passed.\n", file, line);
     base_count_success();
     return true;
 }

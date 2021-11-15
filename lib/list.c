@@ -1796,7 +1796,7 @@ bool l_test_equal_file_line(const char *file, const char *function, int line, Li
         return false;
     }
 
-    printf("%s, line %d: Check passed.\n", file, line);
+    printf("%s, line %d: Test passed.\n", file, line);
     base_count_success();
     return true;
 }

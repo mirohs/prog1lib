@@ -86,7 +86,6 @@ static void keep_if_contains_test(void) {
 }
 
 int main(void) {
-    base_init();
     report_memory_leaks(true);
 //  keep_strings();
     keep_if_contains_test();

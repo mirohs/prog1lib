@@ -68,7 +68,6 @@ void lists_map_filter_fold_test(void) {
 }
 
 int main(void) {
-    base_init();
     report_memory_leaks(true);
     lists_map_filter_fold_test();
     return 0;

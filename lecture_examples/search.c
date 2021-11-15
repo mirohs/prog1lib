@@ -137,6 +137,7 @@ int binary_search2(int a[], int n, int x) {
 // Wirth: Programming in Oberon, 2014
 // WRONG
 int binary_search2(int a[], int n, int x) {
+    require("sorted", forall(i, n - 1, a[i] <= a[i+1]));
     if (a == NULL || n <= 0) return -1;
     int i = 0;
     int j = n;
@@ -158,12 +159,12 @@ int main(void) {
     binary_search_test();
     binary_search_test2();
 
-    int n = 10000000;
+    int n = 10000;
     int* a = xmalloc(n * sizeof(int));
     for (int i = 0; i < n; i++) a[i] = i;
 
     clock_t t = clock();
-	int sum = 0;
+    int sum = 0;
     for (int i = 0; i < n; i++) {
         int j = binary_search2(a, n, i);
         sum += j;

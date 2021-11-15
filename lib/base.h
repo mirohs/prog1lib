@@ -164,19 +164,19 @@ void report_memory_leaks(bool do_check);
 
 /**
 Switching assertion checking on and off.
-If @cn NO_ASSERT is defined, then assertions will not be compiled.
+If @c NO_ASSERT is defined, then assertions will not be compiled.
 */
 #define NO_ASSERT_DOC
 
 /**
 Switching assertion checking on and off.
-If @cn NO_REQUIRE is defined, then preconditions will not be compiled.
+If @c NO_REQUIRE is defined, then preconditions will not be compiled.
 */
 #define NO_REQUIRE_DOC
 
 /**
 Switching assertion checking on and off.
-If @cn NO_ENSURE is defined, then postconditions will not be compiled.
+If @c NO_ENSURE is defined, then postconditions will not be compiled.
 */
 #define NO_ENSURE_DOC
 
@@ -184,7 +184,7 @@ If @cn NO_ENSURE is defined, then postconditions will not be compiled.
 #define assert(description, condition)
 #else
 /**
-Checks the given condition. If the condition is true, do nothing. If the condition is false, reports the file and line of the assertion and stops the program. Assertions are used to check for conditions that have to be valid at a particular point.
+Checks the given condition. If the condition is true, does nothing. If the condition is false, reports the file and line of the assertion and stops the program. Assertions are conditions that have to be valid at a particular point. If an assertion is false this indicates a bug in the program.
 
 Example use of an assertion:
 @code{.c}
@@ -193,10 +193,10 @@ Example use of an assertion:
     ...
 @endcode
 
-Example output of failed preconditions:
+Example output of failed assertions:
 
-    myfile.c, line 18: assertion "not too large" (x < 3) violated
-    myfile.c, line 18: assertion "sorted" (forall(int i = 0, i < n-1, i++, a[i] <= a[i+1])) violated
+    myfile.c, line 12: assertion "not too large" (x < 3) violated
+    myfile.c, line 12: assertion "sorted" (forall(int i = 0, i < n-1, i++, a[i] <= a[i+1])) violated
 
 @param[in] description String a description of the condition that has to be valid
 @param[in] condition boolean the condition to check
@@ -209,10 +209,10 @@ if (!(condition)) {\
 #endif
 
 #ifdef NO_ASSERT
-#define assert_x(description, condition)
+#define assert_x(description, condition, ...)
 #else
 /**
-Checks the given condition. If the condition is true, do nothing. If the condition is false, reports the file and line of the assertion and stops the program. Assertions are used to check for conditions that have to be valid at a particular point.
+Checks the given condition. If the condition is true, does nothing. If the condition is false, reports the file and line of the assertion and stops the program. Assertions are conditions that have to be valid at a particular point. If an assertion is false this indicates a bug in the program.
 
 Example use of an assertion:
 @code{.c}
@@ -221,10 +221,10 @@ Example use of an assertion:
     ...
 @endcode
 
-Example output of failed preconditions:
+Example output of failed assertions:
 
-    myfile.c, line 18: assertion "not too large" violated: x == 3
-    myfile.c, line 18: assertion "sorted" violated: a[2] == 5 && a[3] == 4
+    myfile.c, line 12: assertion "not too large" violated: x == 3
+    myfile.c, line 12: assertion "sorted" violated: a[2] == 5 && a[3] == 4
 
 @param[in] description String a description of the condition that has to be valid
 @param[in] condition boolean the condition to check
@@ -238,13 +238,55 @@ if (!(condition)) {\
 }
 #endif
 
+#ifdef NO_ASSERT
+#define assert_not_null(pointer)
+#else
+/**
+Checks that the given pointer is not NULL. If so, does nothing. Otherwise reports the location of the assertion and stops the program. Assertions are conditions that have to be valid at a particular point. If an assertion is false this indicates a bug in the program.
+
+Example use of an assertion:
+@code{.c}
+    ...
+    assert_not_null(s);
+    ...
+@endcode
+
+Example output of failed assertion:
+
+    myfile.c, line 12: assertion "not null" (s) violated
+
+@param[in] pointer a pointer that must not be null
+*/
+#define assert_not_null(pointer) \
+if (pointer == NULL) {\
+    fprintf(stderr, "%s, line %d: assertion \"not null\" (" #pointer ") violated\n", __FILE__, __LINE__);\
+    exit(EXIT_FAILURE);\
+}
+#endif
+
+/**
+Allows writing code that is meant for use in an assertion. The code is removed if NO_ASSERT is defined.
+
+Example:
+@code{.c}
+    assert_code(int old_x = x); // save old value for assertion
+    x = x + 1;
+    assert("incremented", x == old_x + 1); // check whether new value is as expected
+@endcode
+*/
+#ifdef NO_ASSERT
+#define assert_code(x)
+#else
+#define assert_code(x) x
+#endif
+
 
 
 #ifdef NO_REQUIRE
 #define require(description, condition)
 #else
 /**
-Checks the given precondition. If the condition is true, do nothing. If the condition is false, reports the location of the precondition and stops the program. A precondition is a special type of assertion that has to be valid at the beginning of a function.
+Checks the given precondition. If the condition is true, does nothing. If the condition is false, reports the location of the precondition and stops the program. A precondition is a special type of assertion that has to be valid at the beginning of a function.
 
 Example use of a precondition:
 @code{.c}
@@ -256,8 +298,8 @@ Example use of a precondition:
 
 Example output of failed preconditions:
 
-    myfile.c, line 18: myfunction's precondition "not too large" (x < 3) violated
-    myfile.c, line 18: myfunction's precondition "sorted" (forall(int i = 0, i < n-1, i++, a[i] <= a[i+1])) violated
+    myfile.c, line 12: myfunction's precondition "not too large" (x < 3) violated
+    myfile.c, line 12: myfunction's precondition "sorted" (forall(int i = 0, i < n-1, i++, a[i] <= a[i+1])) violated
 
 @param[in] description String a description of the condition that has to be valid
 @param[in] condition boolean the condition to check
@@ -270,10 +312,10 @@ if (!(condition)) {\
 #endif
 
 #ifdef NO_REQUIRE
-#define require_x(description, condition)
+#define require_x(description, condition, ...)
 #else
 /**
-Checks the given precondition. If the condition is true, do nothing. If the condition is false, reports the location of the precondition and stops the program. A precondition is a special type of assertion that has to be valid at the beginning of a function.
+Checks the given precondition. If the condition is true, does nothing. If the condition is false, reports the location of the precondition and stops the program. A precondition is a special type of assertion that has to be valid at the beginning of a function.
 
 Example use of a precondition:
 @code{.c}
@@ -285,8 +327,8 @@ Example use of a precondition:
 
 Example output of failed preconditions:
 
-    myfile.c, line 18: myfunction's precondition "not too large" violated: x == 3
-    myfile.c, line 18: myfunction's precondition "sorted" violated: a[2] == 5 && a[3] == 4
+    myfile.c, line 12: myfunction's precondition "not too large" violated: x == 3
+    myfile.c, line 12: myfunction's precondition "sorted" violated: a[2] == 5 && a[3] == 4
 
 @param[in] description String a description of the condition that has to be valid
 @param[in] condition boolean the condition to check
@@ -329,7 +371,7 @@ if (!(condition)) {\
 #define require_not_null(argument)
 #else
 /**
-Checks that the given argument is not NULL. If so, do nothing. Otherwise reports the location of the precondition and stops the program. A precondition is a special type of assertion that has to be valid at the beginning of a function.
+Checks that the given argument is not NULL. If so, does nothing. Otherwise reports the location of the precondition and stops the program. A precondition is a special type of assertion that has to be valid at the beginning of a function.
 
 Example use of a precondition:
 @code{.c}
@@ -341,7 +383,7 @@ Example use of a precondition:
 
 Example output of failed preconditions:
 
-    myfile.c, line 18: myfunction's precondition "not null" (s) violated
+    myfile.c, line 12: myfunction's precondition "not null" (s) violated
 
 @param[in] argument pointer a pointer that must not be null
 */
@@ -358,7 +400,7 @@ if (argument == NULL) {\
 #define ensure(description, condition)
 #else
 /**
-Checks the given postcondition. If the condition is true, do nothing. If the condition is false, reports the location of the postcondition and stops the program. A postcondition is a special type of assertion that has to be valid before returning from a function.
+Checks the given postcondition. If the condition is true, does nothing. If the condition is false, reports the location of the postcondition and stops the program. A postcondition is a special type of assertion that has to be valid before returning from a function.
 
 Example use of a postcondition:
 @code{.c}
@@ -372,8 +414,8 @@ Example use of a postcondition:
 
 Example output of failed postconditions:
 
-    myfile.c, line 18: myfunction's postcondition "not negative" (result >= 0) violated
-    myfile.c, line 18: myfunction's postcondition "sorted" (forall(int i = 0, i < n-1, i++, a[i] <= a[i+1])) violated
+    myfile.c, line 12: myfunction's postcondition "not negative" (result >= 0) violated
+    myfile.c, line 12: myfunction's postcondition "sorted" (forall(int i = 0, i < n-1, i++, a[i] <= a[i+1])) violated
 
 @param[in] description String a description of the condition that has to be valid
 @param[in] condition boolean the condition to check
@@ -386,10 +428,10 @@ if (!(condition)) {\
 #endif
 
 #ifdef NO_ENSURE
-#define ensure_x(description, condition)
+#define ensure_x(description, condition, ...)
 #else
 /**
-Checks the given postcondition. If the condition is true, do nothing. If the condition is false, reports the location of the postcondition and stops the program. A postcondition is a special type of assertion that has to be valid before returning from a function.
+Checks the given postcondition. If the condition is true, does nothing. If the condition is false, reports the location of the postcondition and stops the program. A postcondition is a special type of assertion that has to be valid before returning from a function.
 
 Example use of a postcondition:
 @code{.c}
@@ -403,8 +445,8 @@ Example use of a postcondition:
 
 Example output of failed postconditions:
 
-    myfile.c, line 18: myfunction's postcondition "not negative" (result >= 0) violated
-    myfile.c, line 18: myfunction's postcondition "sorted" violated: a[2] == 5 && a[3] == 4
+    myfile.c, line 12: myfunction's postcondition "not negative" (result >= 0) violated
+    myfile.c, line 12: myfunction's postcondition "sorted" violated: a[2] == 5 && a[3] == 4
 
 
 @param[in] description String a description of the condition that has to be valid
@@ -438,24 +480,85 @@ Example:
 #define ensure_code(x) x
 #endif
 
+#ifdef NO_ENSURE
+#define ensure_not_null(pointer)
+#else
+/**
+Checks that the given pointer is not NULL. If so, does nothing. Otherwise reports the location of the postcondition and stops the program. A postcondition is a special type of assertion that has to be valid before returning from a function.
+
+Example use of a postcondition:
+@code{.c}
+    ...
+    ensure_not_null(s);
+    ...
+@endcode
+
+Example output of failed postcondition:
+
+    myfile.c, line 12: myfunction's postcondition "not null" (s) violated
+
+@param[in] pointer a pointer that must not be null
+*/
+#define ensure_not_null(pointer) \
+if (pointer == NULL) {\
+    fprintf(stderr, "%s, line %d: %s's postcondition \"not null\" (" #pointer ") violated\n", __FILE__, __LINE__, __func__);\
+    exit(EXIT_FAILURE);\
+}
+#endif
+
+/**
+Checks whether the given condition is true for all steps of an iteration. Primarily for use in assertions, preconditions, and postconditions.
+@param[in] i name of iteration variable
+@param[in] length number of iteration steps, i in [0, length)
+@param[in] condition boolean expression to check for each iteration step
+@return true if the condition is true for all steps of the iteration, false otherwise
+
+Example: Checking whether an array is sorted:
+@code{.c}
+    bool is_sorted = forall(k, arr_length - 1, arr[k] <= arr[k+1]);
+@endcode
+ */
+#define forall(i, length, condition) ({\
+   bool _forall_result = true;\
+   for (int i = 0; i < length; i++) { if (!(condition)) { _forall_result = false; break; } }\
+   _forall_result;\
+})
 
 /**
 Checks whether the given condition is true for all steps of an iteration. Primarily for use in assertions, preconditions, and postconditions.
 @param[in] init initialization expression
 @param[in] has_more_steps boolean expression for continuing the iteration
 @param[in] do_step advance the iteration state
-@param[in] condition boolean expression
+@param[in] condition boolean expression to check for each iteration step
 @return true if the condition is true for all steps of the iteration, false otherwise
 
 Example: Checking whether an array is sorted:
 @code{.c}
-    bool is_sorted = forall(int i = 0, i < arr_length - 1, i++, arr[i] <= arr[i+1]);
+    bool is_sorted = forall_x(int i = 0, i < arr_length - 1, i++, arr[i] <= arr[i+1]);
 @endcode
  */
-#define forall(init, has_more_steps, do_step, condition) ({\
-   bool result = true;\
-   for (init; has_more_steps; do_step) { if (!(condition)) { result = false; break; } }\
-   result;\
+#define forall_x(init, has_more_steps, do_step, condition) ({\
+   bool _forall_result = true;\
+   for (init; has_more_steps; do_step) { if (!(condition)) { _forall_result = false; break; } }\
+   _forall_result;\
+})
+
+/**
+Checks whether the given condition is true for at least one step of an iteration. Primarily for use in assertions, preconditions, and postconditions.
+@param[in] i name of iteration variable
+@param[in] length number of iteration steps, i in [0, length)
+@param[in] condition boolean expression to check for each iteration step
+@return true if the condition is true for at least one step of the iteration, false otherwise
+
+Example: Checking whether an array contains negative elements:
+@code{.c}
+    bool has_negative_elements = exists(k, arr_length, arr[k] < 0);
+@endcode
+ */
+#define exists(i, length, condition) ({\
+   bool _exists_result = false;\
+   for (int i = 0; i < length; i++) { if (condition) { _exists_result = true; break; } }\
+   _exists_result;\
 })
 
 /**
@@ -463,18 +566,18 @@ Checks whether the given condition is true for at least one step of an iteration
 @param[in] init initialization expression
 @param[in] has_more_steps boolean expression for continuing the iteration
 @param[in] do_step advance the iteration state
-@param[in] condition boolean expression
+@param[in] condition boolean expression to check for each iteration step
 @return true if the condition is true for at least one step of the iteration, false otherwise
 
 Example: Checking whether an array contains negative elements:
 @code{.c}
-    bool has_negative_elements = exists(int i = 0, i < arr_length, i++, arr[i] < 0);
+    bool has_negative_elements = exists_x(int i = 0, i < arr_length, i++, arr[i] < 0);
 @endcode
  */
-#define exists(init, has_more_steps, do_step, condition) ({\
-   bool result = false;\
-   for (init; has_more_steps; do_step) { if (condition) { result = true; break; } }\
-   result;\
+#define exists_x(init, has_more_steps, do_step, condition) ({\
+   bool _exists_result = false;\
+   for (init; has_more_steps; do_step) { if (condition) { _exists_result = true; break; } }\
+   _exists_result;\
 })
 
 /**
@@ -491,9 +594,9 @@ Example: Count the number of non-zero array elements:
 @endcode
  */
 #define countif(init, has_more_steps, do_step, condition) ({\
-   int result = 0;\
-   for (init; has_more_steps; do_step) { if (condition) { result++; } }\
-   result;\
+   int _countif_result = 0;\
+   for (init; has_more_steps; do_step) { if (condition) { _countif_result++; } }\
+   _countif_result;\
 })
 
 

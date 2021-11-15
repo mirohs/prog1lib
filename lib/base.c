@@ -146,6 +146,7 @@ Any base_realloc(const char *file, const char *function, int line, Any ptr, size
     ai->line = line;
     return p;
 }
+
 Any base_calloc(const char *file, const char *function, int line, size_t num, size_t size) {
     // printf("%s, line %d: xcalloc(%lu, %lu)\n", file, line, (unsigned long)num, (unsigned long)size);
     Any p = calloc(num, size);
@@ -640,7 +641,7 @@ bool base_test_equal_b(const char *file, int line, bool a, bool e) {
     base_init();
     base_check_count++;
     if (a == e) {
-        printf("%s, line %d: Check passed.\n", file, line);
+        printf("%s, line %d: Test passed.\n", file, line);
         base_check_success_count++;
         return true;
     } else {
@@ -657,7 +658,7 @@ bool base_test_equal_i(const char *file, int line, int a, int e) {
     base_init();
     base_check_count++;
     if (a == e) {
-        printf("%s, line %d: Check passed.\n", file, line);
+        printf("%s, line %d: Test passed.\n", file, line);
         base_check_success_count++;
         return true;
     } else {
@@ -670,7 +671,7 @@ bool base_test_within_d(const char *file, int line, double a, double e, double e
     base_init();
     base_check_count++;
     if (fabs(a - e) <= epsilon) {
-        printf("%s, line %d: Check passed.\n", file, line);
+        printf("%s, line %d: Test passed.\n", file, line);
         base_check_success_count++;
         return true;
     } else {
@@ -683,7 +684,7 @@ bool base_test_within_i(const char *file, int line, int a, int e, int epsilon) {
     base_init();
     base_check_count++;
     if (abs(a - e) <= epsilon) {
-        printf("%s, line %d: Check passed.\n", file, line);
+        printf("%s, line %d: Test passed.\n", file, line);
         base_check_success_count++;
         return true;
     } else {
@@ -696,7 +697,7 @@ bool base_test_equal_c(const char *file, int line, char a, char e) {
     base_init();
     base_check_count++;
     if (a == e) {
-        printf("%s, line %d: Check passed.\n", file, line);
+        printf("%s, line %d: Test passed.\n", file, line);
         base_check_success_count++;
         return true;
     } else {
@@ -708,8 +709,8 @@ bool base_test_equal_c(const char *file, int line, char a, char e) {
 bool base_test_equal_s(const char *file, int line, String a, String e) {
     base_init();
     base_check_count++;
-    if (strcmp(a, e) == 0) {
-        printf("%s, line %d: Check passed.\n", file, line);
+    if ((a != NULL && e != NULL && strcmp(a, e) == 0) || (a == NULL && e == NULL)) {
+        printf("%s, line %d: Test passed.\n", file, line);
         base_check_success_count++;
         return true;
     } else {
@@ -758,7 +759,7 @@ bool base_test_equal_ca(const char *file, int line, Array a, char *e, int ne) {
             return false;
         }
     }
-    printf("%s, line %d: Check passed.\n", file, line);
+    printf("%s, line %d: Test passed.\n", file, line);
     base_check_success_count++;
     return true;
 }
@@ -803,7 +804,7 @@ bool base_test_equal_boa(const char *file, int line, Array a, bool *e, int ne) {
             return false;
         }
     }
-    printf("%s, line %d: Check passed.\n", file, line);
+    printf("%s, line %d: Test passed.\n", file, line);
     base_check_success_count++;
     return true;
 }
@@ -815,11 +816,11 @@ bool base_test_equal_struct(const char *file, int line,
     base_init();
     base_check_count++;
     if (pred(actual, expected)) {
-        printf("%s, line %d: Check passed.\n", file, line);
+        printf("%s, line %d: Test passed.\n", file, line);
         base_check_success_count++;
         return true;
     } else {
-        printf("%s, line %d: Actual value differs from expected value.\n", file, line);
+        printf("%s, line %d: Test failed. Actual value differs from expected value.\n", file, line);
         return false;
     }
 }

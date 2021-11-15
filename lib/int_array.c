@@ -193,10 +193,10 @@ Array ia_of_string(String s) {
     int n = 0; // array length
     char *t = s;
     while (*t != '\0') {
-        if (isdigit(*t)) { // found start of int
+        if (isdigit((int)(*t))) { // found start of int
             n++; // one more int found
             t++; // assert: *t is a digit, skip it
-            while (isdigit(*t)) t++; // skip int
+            while (isdigit((int)(*t))) t++; // skip int
             // assert: *t is not a digit, *t may be '\0'
         } else {
             // assert: *t is not a digit, *t is not '\0'
@@ -209,11 +209,11 @@ Array ia_of_string(String s) {
     t = s;
     int i = 0;
     while (*t != '\0') {
-        if (isdigit(*t)) {
+        if (isdigit((int)(*t))) {
             if ((t > s) && (*(t - 1) == '-')) t--; // check for minus sign, no whitespace between '-' and digit
             a[i++] = atoi(t); // convert digit string to int
             t++; // assert: *t is a digit or '-', skip
-            while (isdigit(*t)) t++; // skip int
+            while (isdigit((int)(*t))) t++; // skip int
             // assert: *t is not a digit, *t may be '\0'
         } else {
             // assert: *t is not a digit, *t is not '\0'
@@ -1351,7 +1351,7 @@ bool ia_test_equal_file_line(const char *file, const char *function, int line, A
             return false;
         }
     }
-    printf("%s, line %d: Check passed.\n", file, line);
+    printf("%s, line %d: Test passed.\n", file, line);
     base_count_success();
     return true;
 }

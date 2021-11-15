@@ -182,11 +182,11 @@ List il_of_string(String s) {
 
     char *t = s;
     while (*t != '\0') {
-        if (isdigit(*t)) {
+        if (isdigit((int)(*t))) {
             if ((t > s) && (*(t - 1) == '-')) t--; // check for minus sign, no whitespace between '-' and digit
             il_append(list, atoi(t)); // convert digit string to int
             t++; // assert: *t is a digit or '-', skip
-            while (isdigit(*t)) t++; // skip int
+            while (isdigit((int)(*t))) t++; // skip int
             // assert: *t is not a digit, *t may be '\0'
         } else {
             // assert: *t is not a digit, *t is not '\0'
@@ -1329,7 +1329,7 @@ bool il_test_equal_file_line(const char *file, const char *function, int line, L
         printf("%s, line %d: Actual and expected lengths differ\n", file, line);
         return false;
     }
-    printf("%s, line %d: Check passed.\n", file, line);
+    printf("%s, line %d: Test passed.\n", file, line);
     base_count_success();
     return true;
 }
