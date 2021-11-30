@@ -399,7 +399,12 @@ void printboaln(bool *a, int n) {
 void get_line(char *line, int n) {
     require_not_null(line);
     require("not too small", n >= 8);
-    fgets(line, n, stdin);
+
+    if(fgets(line, n, stdin) == NULL) {
+        fprintf(stderr, "get_line has failed: fgets() returned NULL!\n");
+        exit(EXIT_FAILURE);
+    }
+
     n = strlen(line);
     if (n >= 1 && (line[n-1] == '\n' || line[n-1] == '\r')) line[n-1] = '\0'; 
     if (n >= 2 && (line[n-2] == '\n' || line[n-2] == '\r')) line[n-2] = '\0'; 
@@ -411,7 +416,12 @@ String s_input(int n) {
     if (n < 8) n = 8;
     char *line = base_malloc(__FILE__, __func__, __LINE__, n);
     *line = '\0';
-    fgets(line, n, stdin);
+
+    if(fgets(line, n, stdin) == NULL) {
+        fprintf(stderr, "s_input has failed: fgets() returned NULL!\n");
+        exit(EXIT_FAILURE);
+    }
+
     n = strlen(line);
     if (n >= 1 && (line[n-1] == '\n' || line[n-1] == '\r')) line[n-1] = '\0'; 
     if (n >= 2 && (line[n-2] == '\n' || line[n-2] == '\r')) line[n-2] = '\0'; 
