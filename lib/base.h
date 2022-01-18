@@ -717,7 +717,7 @@ Our own version of exit. Remembers the exit status before calling the ``real'' e
 @param[in] status exit status of the process
 @private
 */
-void base_exit(int status);
+void __attribute__((noreturn)) base_exit(int status);
 
 /**
 Exits the process and returns the given status to the operating system.
