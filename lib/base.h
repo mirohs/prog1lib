@@ -1,17 +1,5 @@
 /*
 base +
-string +
-array +
-  int_array + 
-  double_array +
-  string_array +
-  pointer_array +
-  byte_array +
-list +
-  int_list +
-  double_list +
-  string_list +
-  pointer_list +
 */
 
 /** @file
@@ -19,11 +7,11 @@ Base functions for Programming I Library. Here you find basic functions for outp
 
 <h3>Naming Conventions</h3>
 
-Types names are written in upper camel case, such as @c String or @c StringList, except for predefined type names such as @c int, @c double, and @c bool. This library does not cover type @c float. This library does not deal with @c unsigned types.
+Types names are written in upper camel case, such as @c String, except for predefined type names such as @c int, @c double, and @c bool. This library does not cover type @c float. This library does not deal with @c unsigned types.
 
 Function names are written in lower case. Parts within function names are separated with an underscore character, such as in @c base_init. This makes function names distinguishable from type names.
 
-Constants, such as @c NULL or @c EQ, are written in upper case. This is independent of whether they have been defined as C constants or with preprocessor @c define statements.
+Constants, such as @c NULL, are written in upper case. This is independent of whether they have been defined as C constants or with preprocessor @c define statements.
 
 <h3>Type Declarations</h3>
 
@@ -55,7 +43,7 @@ Output:
 @endcode
 
 
-<h4>Example 2: Reading a text file into a list of strings</h4>
+<h4>Example 2: Reading a text file</h4>
 Let @c example.txt be
 @code{.c}
 line 1
@@ -63,34 +51,14 @@ line II
 my line 3
 last line
 @endcode
-To read this file into a list of strings:
+To read this file:
 @code{.c}
 String s = s_read_file("example.txt"); // read the complete file
-List sl = sl_split(s, '\n'); // split file contents into lines
-s_free(s); // free the string
-sl_println(sl); // print the list of strings
-sl_free(sl); // free the list and its elements
+printsln(s);
+free(s); // free the string
 @endcode
 
 Output:
-@code{.c}
-[line 1, line II, my line 3, last line]
-@endcode
-
-<h4>Example 2: Write a list of strings to a text file</h4>
-@code{.c}
-List list = sl_create();
-sl_append(list, "line 1");
-sl_append(list, "line II");
-sl_append(list, "my line 3");
-sl_append(list, "last line");
-String s = s_join(list, '\n');
-l_free(list); // free list
-s_write_file("example.txt", s);
-s_free(s); // free joined string
-@endcode
-
-Output (into file @c example.txt):
 @code{.c}
 line 1
 line II
@@ -98,32 +66,11 @@ my line 3
 last line
 @endcode
 
-<h4>Example 3: Write 100 random double values between 0 and 10 to a file</h4>
-@code{.c}
-List list = sl_create();
-for (int i = 0; i < 100; i++) {
-    double d = d_rnd(10);
-    sl_append(list, s_of_double(d));
-}
-String s = s_join(list, '\n');
-sl_free(list); // free list and elements
-s_write_file("random-doubles.txt", s);
-s_free(s); // joined string
-@endcode
-
-Output (into file @c random-doubles.txt):
-@code{.c}
-8.650181371707539
-...
-2.228865998398248
-@endcode
-
-
 
 See test functions in .c file for more examples.
 
 @author Michael Rohs
-@date 15.10.2015, 22.09.2020
+@date 15.10.2015, 22.09.2020, 25.09.2023
 @copyright Apache License, Version 2.0
 */
 
@@ -590,42 +537,91 @@ Counts the number of iteration steps for which the given condition is true. Prim
 
 Example: Count the number of non-zero array elements:
 @code{.c}
-    int n_non_zero = countif(int i = 0, i < arr_length, i++, arr[i] != 0);
+    int n_non_zero = count_if(int i = 0, i < arr_length, i++, arr[i] != 0);
 @endcode
  */
-#define countif(init, has_more_steps, do_step, condition) ({\
-   int _countif_result = 0;\
-   for (init; has_more_steps; do_step) { if (condition) { _countif_result++; } }\
-   _countif_result;\
+#define count_if(init, has_more_steps, do_step, condition) ({\
+   int _count_if_result = 0;\
+   for (init; has_more_steps; do_step) { if (condition) { _count_if_result++; } }\
+   _count_if_result;\
 })
 
+////////////////////////////////////////////////////////////////////////////
+// Exit on Failure
 
+/**
+Exits the program if the failure condition is true. The further arguments
+contain the reason for exiting the program, using a format string.
+*/
+#define exit_if(condition, ...) \
+if (condition) {\
+    flockfile(stderr);\
+    fprintf(stderr, __VA_ARGS__);\
+    fprintf(stderr, "\n");\
+    funlockfile(stderr);\
+    exit(EXIT_FAILURE);\
+}
+
+/**
+Exits the program. The arguments contain the reason for the panic, using a
+format string. Reports the line number and the reason for the failure.
+*/
+#define panic(...) {\
+    flockfile(stderr);\
+    fprintf(stderr, "%s:%d, %s: ", __FILE__, __LINE__, __func__);\
+    fprintf(stderr, __VA_ARGS__);\
+    fprintf(stderr, "\n");\
+    funlockfile(stderr);\
+    exit(EXIT_FAILURE);\
+}
+
+/**
+Exits the program if the failure condition is true. The further arguments
+contain the reason for the panic, using a format string. Reports the line
+number and the reason for the failure.
+*/
+#define panic_if(condition, ...) \
+if (condition) {\
+    flockfile(stderr);\
+    fprintf(stderr, "%s:%d, %s: ", __FILE__, __LINE__, __func__);\
+    fprintf(stderr, __VA_ARGS__);\
+    fprintf(stderr, "\n");\
+    funlockfile(stderr);\
+    exit(EXIT_FAILURE);\
+}
 
 ////////////////////////////////////////////////////////////////////////////
 // Timing
 
-/**
-Switching timing measurements on and off.
-If @c NO_TIMING is defined, then timing code will not be compiled.
-@see time_function
-*/
-#define NO_TIMING_DOC
+/// A structure for storing time values.
+typedef struct timespec timespec;
 
-#ifdef NO_TIMING
-#define time_function(f);
+/// Gets the current time.
+timespec time_now(void);
+
+/// Computes the time difference in milliseconds between now and the given time.
+double time_ms_since(timespec t);
+
+////////////////////////////////////////////////////////////////////////////
+// Debugging
+
+#ifdef NO_DEBUG
+    #define PL
+    #define PLi(i)
+    #define PLs(s)
+    #define PLf(...)
 #else
-/**
-Prints the execution time of a function (in milliseconds).
-@param[in] f function to time
-*/
-#define time_function(f) {\
-    clock_t t = clock();\
-    f;\
-    t = clock() - t;\
-    printf("time: %g ms\n", t * 1000.0 / CLOCKS_PER_SEC);\
-}
+    /** Print line number. Example: PL; */
+    #define PL printf("%s:%d\n", __func__, __LINE__)
+    /** Print line number and integer. Example: PL(1); */
+    #define PLi(i) printf("%s:%d: %d\n", __func__, __LINE__, i)
+    /** Print line number and format string. Example: PLf("i = %d", 123); */
+    #define PLf(...) {\
+        fprintf(stderr, "%s:%d: ", __func__, __LINE__);\
+        fprintf(stderr, __VA_ARGS__);\
+        fprintf(stderr, "\n");\
+    }
 #endif
-
 
 ////////////////////////////////////////////////////////////////////////////
 // Memory
@@ -677,7 +673,7 @@ Reallocates a block of size bytes using @c realloc. Exits with error message on 
 
 
 /**
-Allocates a block of (num * size) bytes using @c calloc. Exits with error message on failure. The allocated bytes are set to zero (the initial @c c in @c calloc stands for <i>clear<i>).
+Allocates a block of (num * size) bytes using @c calloc. Exits with error message on failure. The allocated bytes are set to zero (the initial @c c in @c calloc stands for <i>clear</i>).
 Stores file name and line number for error reporting.
 @param[in] file file name of source code
 @param[in] function function name
@@ -691,7 +687,7 @@ Stores file name and line number for error reporting.
 Any base_calloc(const char *file, const char *function, int line, size_t num, size_t size);
 
 /**
-Allocates a block of (num * size) bytes with @c calloc. Exits with error message on failure. The allocated bytes are set to zero (the initial @c c in @c calloc stands for <i>clear<i>).
+Allocates a block of (num * size) bytes with @c calloc. Exits with error message on failure. The allocated bytes are set to zero (the initial @c c in @c calloc stands for <i>clear</i>).
 @param[in] num number of elements
 @param[in] size size (in bytes) of each element
 @return pointer to the allocated memory block
@@ -725,6 +721,57 @@ Exits the process and returns the given status to the operating system.
 */
 #define exit base_exit
 
+////////////////////////////////////////////////////////////////////////////
+// Strings
+
+/**
+Creates a copy of the given string.
+Memory of copy is dynamically allocated.
+@param[in] s input string
+@return copy of input string
+*/
+String s_copy(String s);
+
+/**
+Returns character at index @c i.
+@param[in] s input string
+@param[in] i index of character to return
+@return character at index i
+@pre "index in range", i >= 0 && i < length
+*/
+char s_get(String s, int i);
+
+/** 
+Sets s element at index i to value v.
+@param[in,out] s input string
+@param[in] i index of character to set
+@param[in] c character to set
+@pre "index in range", i >= 0 && i < length
+*/
+void s_set(String s, int i, char c);
+
+/**
+Returns the length of the string (number of characters).
+@param[in] s input string
+@return number of characters
+*/
+int s_length(String s);
+
+/**
+Returns true iff @c s and @c t are equal.
+@param[in] s input string
+@param[in] t input string
+@return true iff @c s and @c t are equal
+*/
+bool s_equals(String s, String t);
+
+/**
+Returns true iff @c s contains part.
+@param[in] s input string
+@param[in] part input string
+@return true iff s contains part
+*/
+bool s_contains(String s, String part);
 
 ////////////////////////////////////////////////////////////////////////////
 // Conversion
@@ -734,9 +781,6 @@ int i_of_s(String s);
 
 /** Converts a String to a double. */
 double d_of_s(String s);
-
-/** Converts part of a String to a double. Index @c start is inclusive, index @c end is exclusive. */
-double d_of_s_sub(String s, int start, int end);
 
 ////////////////////////////////////////////////////////////////////////////
 // Output
@@ -904,22 +948,6 @@ bool b_rnd(void);
 
 
 ////////////////////////////////////////////////////////////////////////////
-// Array and List types
-
-/**
-Switching element size checking for arrays and lists on and off.
-If @c NO_CHECK_ELEMENT_SIZE is defined, then element size checking will not be performed.
-*/
-#define NO_CHECK_ELEMENT_SIZE_DOC
-
-/**
-If @c NO_GET_SET is defined, then use direct array access instead of accessor functions. Accessor functions perform bounds checking, but are less efficient than unchecked array element access.
-*/
-#define NO_GET_SET_DOC
-
-
-
-////////////////////////////////////////////////////////////////////////////
 // Testing
 
 /** A very small positive value.*/
@@ -942,12 +970,6 @@ bool base_test_equal_c(const char *file, int line, char a, char e);
 
 /** Checks whether the actual value @c a is equal to the expected value @c e. */
 bool base_test_equal_s(const char *file, int line, String a, String e);
-
-/** Checks whether the elements of @c a are equal to the elements of @c e. */
-bool base_test_equal_ca(const char *file, int line, Array a, char *e, int ne);
-
-/** Checks whether the elements of @c a are equal to the elements of @c e. */
-bool base_test_equal_boa(const char *file, int line, Array a, bool *e, int ne);
 
 /** Checks whether the members of struct @c a are equal to the members of struct @c e. Uses the given @c predicate function to perform the comparison. */
 bool base_test_equal_struct(const char *file, int line, 
@@ -997,21 +1019,5 @@ Called from within test_* to count the number of successful tests.
 @private
 */
 void base_count_success(void);
-
-////////////////////////////////////////////////////////////////////////////
-// Convenience includes (so users just need to include base.h)
-
-#include "string.h"
-#include "array.h"
-#include "int_array.h"
-#include "double_array.h"
-#include "string_array.h"
-#include "pointer_array.h"
-#include "byte_array.h"
-#include "list.h"
-#include "int_list.h"
-#include "double_list.h"
-#include "string_list.h"
-#include "pointer_list.h"
 
 #endif

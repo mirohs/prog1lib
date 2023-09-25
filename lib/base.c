@@ -1,12 +1,10 @@
 /*
 @author Michael Rohs
-@date 15.10.2015. 26.09.2020
+@date 15.10.2015. 26.09.2020, 25.09.2022
 @copyright Apache License, Version 2.0
 */
 
 #include "base.h"
-#include "string.h"
-#include "list.h"
 #undef free // use the 'real' free here
 #undef exit // use the 'real' exit here
 //#undef xmalloc
@@ -198,6 +196,48 @@ static void base_check_memory(void) {
 
 
 ////////////////////////////////////////////////////////////////////////////
+// Strings
+
+String s_copy(String s) {
+    require_not_null(s);
+    int n = (strlen(s) + 1) * sizeof(char); // + 1 for '\0' termination
+    char *a = xmalloc(n);
+    memcpy(a, s, n);
+    return a;
+}
+
+char s_get(String s, int i) {
+    require_not_null(s);
+    int n = strlen(s);
+    require_x("index in range", i >= 0 && i < n, "index == %d, length == %d", i, n);
+    return s[i];
+}
+
+void s_set(String s, int i, char v) {
+    require_not_null(s);
+    int n = strlen(s);
+    require_x("index in range", i >= 0 && i < n, "index == %d, length == %d", i, n);
+    s[i] = v;
+}
+
+int s_length(String s) {
+    require_not_null(s);
+    return strlen(s);
+}
+
+bool s_equals(String s, String t) {
+    require_not_null(s);
+    require_not_null(t);
+    return strcmp(s, t) == 0;
+}
+
+bool s_contains(String s, String part) {
+    require_not_null(s);
+    require_not_null(part);
+    return strstr(s, part) != NULL;
+}
+
+////////////////////////////////////////////////////////////////////////////
 // Conversion
 
 int i_of_s(String s) {
@@ -209,17 +249,6 @@ double d_of_s(String s) {
     require_not_null(s);
     return atof(s);
 }
-
-double d_of_s_sub(String s, int start, int end) {
-    require_not_null(s);
-    int n = s_length(s);
-    if (n <= 0 || end <= 0 || start >= n || start >= end) return 0.0;
-    String t = s_sub(s, start, end);
-    double d = atof(t);
-    s_free(t);
-    return d;
-}
-
 
 ////////////////////////////////////////////////////////////////////////////
 // Output
@@ -435,14 +464,14 @@ String s_input(int n) {
 int i_input(void) {
     String s = s_input(100);
     int i = i_of_s(s);
-    s_free(s);
+    free(s);
     return i;
 }
 
 double d_input(void) {
     String s = s_input(100);
     double d = d_of_s(s);
-    s_free(s);
+    free(s);
     return d;
 }
 
@@ -521,7 +550,23 @@ void write_file_data(String name, Byte *data, int n_data) {
     fclose(f);
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Time taking
+// https://en.cppreference.com/w/c/chrono/clock
 
+timespec time_now(void) {
+    timespec now;
+    clock_gettime(CLOCK_MONOTONIC, &now);
+    return now;
+}
+
+double time_ms_since(timespec t) {
+    timespec now;
+    clock_gettime(CLOCK_MONOTONIC, &now);
+    double duration =  1000.0 * now.tv_sec + 1e-6 * now.tv_nsec
+                     - (1000.0 * t.tv_sec + 1e-6*t.tv_nsec);
+    return duration;
+}
 
 ////////////////////////////////////////////////////////////////////////////
 // Random numbers
@@ -727,96 +772,6 @@ bool base_test_equal_s(const char *file, int line, String a, String e) {
         printf("%s, line %d: Actual value \"%s\" differs from expected value \"%s\".\n", file, line, a, e);
         return false;
     }
-}
-
-bool base_test_equal_ca(const char *file, int line, Array a, char *e, int ne) {
-    base_init();
-    base_check_count++;
-    if (a->n != ne) {
-        printf("%s, line %d: Actual length %d "
-            "differs from expected length %d\n", file, line, a->n, ne);
-        return false;
-    }
-    if (a->s != sizeof(char)) {
-        printf("%s, line %d: Actual element size %d "
-            "differs from expected element size %lu\n", file, line, a->s, (unsigned long)sizeof(char));
-        return false;
-    }
-    if (a->n < 0) {
-        printf("%s, line %d: Invalid lengths %d\n", file, line, a->n);
-        return false;       
-    }
-    if (ne < 0) {
-        printf("%s, line %d: Invalid lengths %d\n", file, line, ne);
-        return false;       
-    }
-    if (a->n > 0 && a->a == NULL) {
-        printf("%s, line %d: Actual value array is NULL\n", file, line);
-        return false;       
-    }
-    if (ne > 0 && e == NULL) {
-        printf("%s, line %d: Expected value array is NULL\n", file, line);
-        return false;       
-    }
-    char *ca = a->a;
-    for (int i = 0; i < a->n; i++) {
-        if (ca[i] != e[i]) {
-            printf("%s, line %d: Actual value ", file, line);
-            printca(ca, a->n);
-            prints(" differs from expected value ");
-            printca(e, ne);
-            printf(" at index %d.\n", i);
-            return false;
-        }
-    }
-    printf("%s, line %d: Test passed.\n", file, line);
-    base_check_success_count++;
-    return true;
-}
-
-bool base_test_equal_boa(const char *file, int line, Array a, bool *e, int ne) {
-    base_init();
-    base_check_count++;
-    if (a->n != ne) {
-        printf("%s, line %d: Actual length %d "
-            "differs from expected length %d\n", file, line, a->n, ne);
-        return false;
-    }
-    if (a->s != sizeof(bool)) {
-        printf("%s, line %d: Actual element size %d "
-            "differs from expected element size %lu\n", file, line, a->s, (unsigned long)sizeof(bool));
-        return false;
-    }
-    if (a->n < 0) {
-        printf("%s, line %d: Invalid lengths %d\n", file, line, a->n);
-        return false;       
-    }
-    if (ne < 0) {
-        printf("%s, line %d: Invalid lengths %d\n", file, line, ne);
-        return false;       
-    }
-    if (a->n > 0 && a->a == NULL) {
-        printf("%s, line %d: Actual value array is NULL\n", file, line);
-        return false;       
-    }
-    if (ne > 0 && e == NULL) {
-        printf("%s, line %d: Expected value array is NULL\n", file, line);
-        return false;       
-    }
-    bool *ba = a->a;
-    for (int i = 0; i < a->n; i++) {
-        if (ba[i] != e[i]) {
-            printf("%s, line %d: Actual value ", file, line);
-            printboa(ba, a->n);
-            prints(" differs from expected value ");
-            printboa(e, ne);
-            printf(" at index %d.\n", i);
-            return false;
-        }
-    }
-    printf("%s, line %d: Test passed.\n", file, line);
-    base_check_success_count++;
-    return true;
 }
 
 bool base_test_equal_struct(const char *file, int line, 

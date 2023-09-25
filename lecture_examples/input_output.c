@@ -13,7 +13,7 @@ int main(void) {
     printsln(s);
 
     prints("Number of characters: ");
-    printiln(s_length(s));
+    printiln(strlen(s));
 
     return 0;
 }

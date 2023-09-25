@@ -2,7 +2,7 @@
 Type definitions for Programming I Library. 
 
 @author Michael Rohs
-@date 15.10.2015, 26.09.2020
+@date 15.10.2015, 26.09.2020, 25.09.2023
 @copyright Apache License, Version 2.0
 */
 
@@ -135,8 +135,7 @@ An integer option represents either an integer or nothing. Option types are typi
 
 Example:
 @code{.c}
-Array array = ia_of_string("1, 2, 3, 4, 5, 6");
-IntOption op = ia_index_option(array, 0); // index of value 0?
+IntOption op = index_of_int_value(array, 123); // index of value 123?
 if (op.none) {
     printsln("value not found");
 } else {
@@ -157,8 +156,7 @@ A byte option represents either a byte or nothing. Option types are typically us
 
 Example:
 @code{.c}
-Array array = ba_of_string("1, 2, 3, 4, 5, 6");
-ByteOption op = ba_index_option(array, 0); // index of value 0?
+ByteOption op = index_of_byte_value(array, 123); // index of value 123?
 if (op.none) {
     printsln("value not found");
 } else {
@@ -179,8 +177,7 @@ A double option represents either an double or nothing. Option types are typical
 
 Example:
 @code{.c}
-Array array = da_of_string("1, 2, 3, 4, 5, 6");
-DoubleOption op = da_index_option(array, 0.5, EPSILON); // index of value 0.5?
+DoubleOption op = index_of_double_value(array, 0.5, EPSILON); // index of value 0.5?
 if (op.none) {
     printsln("value not found");
 } else {
@@ -206,159 +203,6 @@ typedef struct StringOption {
     bool none;
     String some;
 } StringOption;
-
-// Function type declarations
-
-typedef Any (*AnyAnyIntToAny)(Any, Any, int);
-typedef Any (*AnyIntAnyAnyToAny)(Any, int, Any, Any);
-typedef Any (*AnyIntAnyToAny)(Any, int, Any);
-typedef Any (*AnyIntToAny)(Any, int);
-typedef bool (*AnyIntAnyAnyToBool)(Any, int, Any, Any);
-typedef bool (*AnyIntAnyToBool)(Any, int, Any);
-typedef bool (*AnyIntToBool)(Any, int);
-typedef bool (*ByteIntAnyToBool)(Byte, int, Any);
-typedef bool (*ByteIntByteAnyToBool)(Byte, int, Byte, Any);
-typedef bool (*ByteIntByteToBool)(Byte, int, Byte);
-typedef bool (*DoubleDoubleDoubleToBool)(double, double, double);
-typedef bool (*DoubleDoubleToBool)(double, double);
-typedef bool (*DoubleIntDoubleAnyToBool) (double, int, double, Any);
-typedef bool (*DoubleIntDoubleToBool)(double, int, double);
-typedef bool (*DoubleIntToBool)(double, int);
-typedef bool (*DoubleToBool)(double);
-typedef bool (*IntIntIntAnyToBool)(int, int, int, Any);
-typedef bool (*IntIntIntToBool)(int, int, int);
-typedef bool (*IntIntToBool)(int, int);
-typedef bool (*IntToBool)(int);
-typedef bool (*StringIntAnyToBool)(String, int, Any);
-typedef bool (*StringIntStringAnyToBool)(String, int, String, Any);
-typedef bool (*StringIntStringToBool)(String, int, String);
-typedef bool (*StringIntToBool)(String, int);
-typedef Byte (*ByteByteByteIntAnyToByte)(Byte, Byte, Byte, int, Any);
-typedef Byte (*ByteByteIntAnyToByte)(Byte, Byte, int, Any);
-typedef Byte (*ByteByteIntToByte)(Byte, Byte, int);
-typedef Byte (*ByteIntAnyToByte)(Byte, int, Any);
-typedef Byte (*ByteIntByteAnyToByte)(Byte, int, Byte, Any);
-typedef Byte (*ByteIntByteToByte)(Byte, int, Byte);
-typedef Byte (*IntAnyToByte)(int, Any);
-typedef Byte (*IntByteToByte)(int, Byte);
-typedef ByteOption (*ByteIntByteAnyToByteOption)(Byte, int, Byte, Any);
-typedef ByteOption (*ByteIntByteToByteOption)(Byte, int, Byte);
-typedef double (*DoubleDoubleDoubleToDouble)(double, double, double);
-typedef double (*DoubleDoubleIntToDouble)(double, double, int);
-typedef double (*DoubleDoubleToDouble)(double, double);
-typedef double (*DoubleIntDoubleAnyToDouble)(double, int, double, Any);
-typedef double (*DoubleIntDoubleToDouble)(double, int, double);
-typedef double (*DoubleIntToDouble)(double, int);
-typedef double (*DoubleToDouble)(double);
-typedef double (*IntDoubleToDouble)(int, double);
-typedef DoubleOption (*DoubleIntDoubleAnyToDoubleOption) (double, int, double, Any);
-typedef DoubleOption (*DoubleIntDoubleToDoubleOption)(double, int, double);
-typedef DoubleOption (*DoubleIntToDoubleOption)(double, int);
-typedef int (*IntIntAnyToInt)(int, int, Any);
-typedef int (*IntIntIntAnyToInt)(int, int, int, Any);
-typedef int (*IntIntIntToInt)(int, int, int);
-typedef int (*IntIntToInt)(int, int);
-typedef int (*IntToInt)(int);
-typedef IntOption (*IntIntIntAnyToIntOption)(int, int, int, Any);
-typedef IntOption (*IntIntIntToIntOption)(int, int, int);
-typedef IntOption (*IntIntToIntOption)(int, int);
-typedef String (*IntStringToString)(int, String);
-typedef String (*StringIntAnyToString)(String, int, Any);
-typedef String (*StringIntStringAnyToString)(String, int, String, Any);
-typedef String (*StringIntStringToString)(String, int, String);
-typedef String (*StringIntToString)(String, int);
-typedef String (*StringStringIntToString)(String, String, int);
-typedef String (*StringStringToString)(String, String);
-typedef StringOption (*StringIntStringAnyToStringOption)(String, int, String, Any);
-typedef StringOption (*StringIntStringToStringOption)(String, int, String);
-typedef StringOption (*StringIntToStringOption)(String, int);
-typedef void (*AnyAnyAnyAnyIntToVoid)(Any, Any, Any, Any, int);
-typedef void (*AnyAnyAnyIntAnyAnyToVoid)(Any, Any, Any, int, Any, Any);
-typedef void (*AnyAnyAnyIntAnyToVoid)(Any, Any, Any, int, Any);
-typedef void (*AnyAnyAnyIntToVoid)(Any, Any, Any, int);
-typedef void (*AnyAnyIntAnyAnyToVoid)(Any, Any, int, Any, Any);
-typedef void (*AnyAnyIntAnyToVoid)(Any, Any, int, Any);
-typedef void (*AnyAnyIntToVoid)(Any, Any, int);
-typedef void (*AnyByteByteByteIntToVoid)(Any, Byte, Byte, Byte, int);
-typedef void (*AnyByteByteIntToVoid)(Any, Byte, Byte, int);
-typedef void (*AnyByteIntToVoid)(Any, Byte, int);
-typedef void (*AnyIntAnyAnyToVoid)(Any, int, Any, Any);
-typedef void (*AnyIntAnyToVoid)(Any, int, Any);
-typedef void (*AnyIntIntToVoid)(Any, int, int);
-typedef void (*AnyIntToVoid)(Any, int);
-typedef void (*AnyStringIntToVoid)(Any, String, int);
-typedef void (*AnyStringStringToVoid)(Any, String, String);
-typedef void (*AnyToVoid)(Any);
-typedef void (*ByteAnyIntToVoid)(Byte, Any, int);
-
-/**
-Contains information about an array.
-*/
-typedef struct ArrayHead {
-    int n; ///< number of elements
-    int s; ///< element size (in bytes)
-    Any a; ///< pointer to actual data
-} ArrayHead;
-
-typedef struct ArrayHead * Array;
-
-/**
-Represents an unspecified list node. The next pointer is the first element of list nodes of any type. @c ListNode does not further specify the kind of data that the node holds.
-*/
-typedef struct ListNode { 
-    struct ListNode *next; ///< next list node (or NULL)
-} ListNode;
-
-/**
-Contains information about a list.
-@see ListNode, IntListNode, DoubleListNode, StringListNode, PointerListNode
-*/
-typedef struct ListHead { 
-    int s; ///< element size (in bytes)
-    Any first; ///< pointer to first list node (or NULL); type is ListNode*, IntListNode*, etc.
-    Any last; ///< pointer to last list node (or NULL); type is ListNode*, IntListNode*, etc.
-} ListHead;
-
-typedef struct ListHead * List;
-
-/**
-Represents the state for iterating through a list.
-*/
-typedef ListNode* ListIterator;
-
-/**
-Represents a list node that holds an integer.
-*/
-typedef struct IntListNode {
-    struct IntListNode *next; ///< next list node (or NULL)
-    int value; ///< value that the node holds
-} IntListNode;
-
-/**
-Represents list node that holds a double.
-*/
-typedef struct DoubleListNode {
-    struct DoubleListNode *next; ///< next list node (or NULL)
-    double value; ///< value that the node holds
-} DoubleListNode;
-
-/**
-Represents a list node that holds a String.
-*/
-typedef struct StringListNode {
-    struct StringListNode *next; ///< next list node (or NULL)
-    String value; ///< value that the node holds
-} StringListNode;
-
-/**
-Represents a list node that holds a pointer. The type of the data pointed to is not specified.
-*/
-typedef struct PointerListNode {
-    struct PointerListNode *next; ///< next list node (or NULL)
-    Any value; ///< value that the node holds
-} PointerListNode;
-
-
 
 ////////////////////////////////////////////////////////////////////////////
 // Constructors

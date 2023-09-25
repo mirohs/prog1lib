@@ -23,7 +23,6 @@ bool test_equal_point(int line, Point a, Point b) {
 
 int main(void) {
     test_equal_point(__LINE__, make_point(10, 20), make_point(5 + 5, 2 * 10));
-    test_equal_point(__LINE__, make_point(10, 20), make_point(11, 21));
-
+    test_equal_point(__LINE__, make_point(10, 20), make_point(11, 21)); // this test fails
     return 0;
 }

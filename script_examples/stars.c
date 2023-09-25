@@ -24,13 +24,13 @@ void stars_test(void) {
     // would violate precondition:
     // test_equal_s(s = stars(-1), "");
     test_equal_s(s = stars(0), "");
-    s_free(s);
+    free(s);
     test_equal_s(s = stars(1), "*");
-    s_free(s);
+    free(s);
     test_equal_s(s = stars(2), "**");
-    s_free(s);
+    free(s);
     test_equal_s(s = stars(3), "***");
-    s_free(s);
+    free(s);
 }
 
 int main(void) {

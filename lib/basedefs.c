@@ -1,6 +1,6 @@
 /*
 @author Michael Rohs
-@date 26.09.2020
+@date 26.09.2020, 25.09.2023
 @copyright Apache License, Version 2.0
 */
 
@@ -86,11 +86,6 @@ StringPair make_string_pair(String a, String b) {
 
 StringTriple make_string_triple(String a, String b, String c) {
     StringTriple result = { a, b, c };
-    return result;
-}
-
-ListHead make_list_head(int s, ListNode *first, ListNode *last) {
-    ListHead result = { s, first, last };
     return result;
 }
 

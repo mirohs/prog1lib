@@ -1,32 +1,16 @@
 # @author Michael Rohs
-# @date 15.10.2015
+# @date 15.10.2015, 25.9.2023
 # @copyright Apache License, Version 2.0
 # 
 # base.c
-# string.c
-# 
-# array.c
-# int_array.c
-# double_array.c
-# string_array.c
-# pointer_array.c
-# byte_array.c
-# 
-# list.c
-# int_list.c
-# double_list.c
-# string_list.c
-# pointer_list.c
-
-# gcc -std=c99 -Wall -Werror -Wpointer-arith -Wfatal-errors -g base.c string.c array.c int_array.c double_array.c string_array.c pointer_array.c byte_array.c list.c int_list.c double_list.c string_list.c pointer_list.c -o a.out && ./a.out
 
 CC = gcc
 LINKER = gcc
 CFLAGS = -std=c99 -Wall -Werror -Wpointer-arith -Wfatal-errors
 DEBUG = -g
 LIBRARY = libprog1.a
-SRCS = base.c basedefs.c string.c array.c int_array.c double_array.c string_array.c pointer_array.c byte_array.c list.c int_list.c double_list.c string_list.c pointer_list.c 
-OBJS = $(SRCS:.c=.o) # base.o string.o...
+SRCS = base.c basedefs.c
+OBJS = $(SRCS:.c=.o)
 
 # disable default suffixes
 .SUFFIXES:

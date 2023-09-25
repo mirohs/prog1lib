@@ -77,15 +77,15 @@ bool is_unknown_character(char c) {
 
 Token next_token(String s, int start) {
     int i = start;
-    int n = s_length(s);
+    int n = strlen(s);
     if (start >= n || n <= 0) return make_token(UNKNOWN, n, n);
     // assert: start < n && n > 0
     // skip whitespace
-    while (i < n && is_whitespace(s_get(s, i))) i++;
+    while (i < n && is_whitespace(s[i])) i++;
     // end of string reached while skipping whitespace?
     if (i >= n) return make_token(UNKNOWN, start, n);
     // assert: i < n
-    char c = s_get(s, i);
+    char c = s[i];
     if (is_operator(c)) { // we only have single-character operators
         return make_token(OPERATOR, i, i + 1);
     }
@@ -94,7 +94,7 @@ Token next_token(String s, int start) {
         while (is_float_character(c)) {
             j++;
             if (j >= n) break;
-            c = s_get(s, j);
+            c = s[j];
         }
         // assert: j >= n || !is_float_character(s_get(s, j))
         return make_token(OPERAND, i, j);
@@ -104,7 +104,7 @@ Token next_token(String s, int start) {
     while (is_unknown_character(c)) {
         j++;
         if (j >= n) break;
-        c = s_get(s, j);
+        c = s[j];
     }
     // assert: j >= n || !is_unknown_character(s_get(s, j))
     return make_token(UNKNOWN, start, j);
@@ -140,13 +140,13 @@ void evaluate_test(void) {
 
 double evaluate(String expression) {
     Token token = make_token(UNKNOWN, 0, 0);
-    while (token.end < s_length(expression)) {
+    while (token.end < strlen(expression)) {
         token = next_token(expression, token.end);
         if (token.type == OPERAND) {
-            double operand = d_of_s_sub(expression, token.start, token.end);
+            double operand = d_of_s(expression + token.start);
             push(operand);
         } else if (token.type == OPERATOR) {
-            char operator = s_get(expression, token.start);
+            char operator = expression[token.start];
             double operand2 = pop();
             double operand1 = pop();
             apply(operator, operand1, operand2);
@@ -159,7 +159,7 @@ double evaluate(String expression) {
 int main(void) {
     evaluate_test();
     String expression;
-    while (!s_contains(expression = s_input(100), "exit")) {
+    while (strcmp(expression = s_input(100), "exit") != 0) {
         printdln(evaluate(expression));
     }
     return 0;

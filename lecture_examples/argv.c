@@ -10,7 +10,12 @@ make argv && ./argv 1 2 3
 // int main(int argc, char * argv[]) {
 int main(int argc, String argv[]) {
     for (int i = 0; i <= argc; i++) {
-        printsln(argv[i]);
+        String s = argv[i];
+        if (s == NULL) {
+            printsln("(NULL)");
+        } else {
+            printsln(argv[i]);
+        }
     }
     return 0;
 }

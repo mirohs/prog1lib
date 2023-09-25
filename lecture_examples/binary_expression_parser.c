@@ -62,17 +62,17 @@ void next_token_test() {
 
 Token next_token(String s, int start) {
     int i = start;
-	int n = s_length(s);
+	int n = strlen(s);
 	if (n <= 0 || i >= n) return make_token(UNKNOWN, n, n);
 	// assert: n > 0 && start < n
 
 	// skip unknown characters (whitespace, letters, etc.)
-	while (i < n && is_unknown_character(s_get(s, i))) i++;
+	while (i < n && is_unknown_character(s[i])) i++;
 
 	// end of string reached while skipping whitespace?
 	if (i >= n) return make_token(UNKNOWN, start, n);
 	// assert: i < n
-	char c = s_get(s, i);
+	char c = s[i];
 	if (is_operator(c)) { // we only have single-character operators
 		return make_token(OPERATOR, i, i + 1);
 	}
@@ -81,7 +81,7 @@ Token next_token(String s, int start) {
 		while (is_operand_character(c)) {
 			j++;
 			if (j >= n) break;
-			c = s_get(s, j);
+			c = s[j];
 		}
 		// assert: j >= n || !is_operand_character(s_get(s, j))
 		return make_token(OPERAND, i, j);
@@ -107,11 +107,9 @@ double evaluate(String expression) {
     if (token1.type != OPERAND) printsln("Error: The first token is not an operand!");
     if (token2.type != OPERATOR) printsln("Error: The second token is not an operator!");
     if (token3.type != OPERAND) printsln("Error: The third token is not an operand!");
-    String s = s_sub(expression, token1.start, token1.end);
-    double operand1 = d_of_s(s);
-    char operator = s_get(expression, token2.start);
-    s = s_sub(expression, token3.start, token3.end);
-    double operand2 = d_of_s(s);
+    double operand1 = d_of_s(expression + token1.start);
+    char operator = expression[token2.start];
+    double operand2 = d_of_s(expression + token3.start);
     // printf("%g %c %g\n", operand1, operator, operand2);
     switch (operator) {
         case '+': return operand1 + operand2;
@@ -126,7 +124,7 @@ int main(void) {
     next_token_test();
     evaluate_test();
     String expression;
-    while (!s_contains(expression = s_input(100), "exit")) {
+    while (strcmp(expression = s_input(100), "exit") != 0) {
         prints("= ");
         printdln(evaluate(expression));
     }

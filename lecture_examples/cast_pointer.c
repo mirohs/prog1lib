@@ -39,7 +39,7 @@ int main(void) {
     char v[] = "hello";
     printbln(u == v); // output: false
     
-    printbln(s_equals(u, v)); // output: true
+    printbln(strcmp(u, v) == 0); // output: true
     v[0] = 'i';
     printiln(strcmp(u, v));
     

@@ -24,7 +24,7 @@ int main(void) {
 int main(void) {
     prints("> ");
     String s = s_input(100);
-    while (!s_contains(s, "exit")) {
+    while (strcmp(s, "exit") != 0) {
         prints("executing ");
         printsln(s);
         prints("> ");
