@@ -1,6 +1,6 @@
 CC = gcc
 LINKER = gcc
-CFLAGS = -std=c99 -Wall -Wpointer-arith -Werror -Wfatal-errors
+CFLAGS = -std=gnu11 -Wall -Wpointer-arith -Werror -Wfatal-errors
 DEBUG = -g
 PROG1LIBNAME = prog1
 PROG1LIBDIR = ../lib
