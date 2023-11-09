@@ -6,7 +6,7 @@
 
 CC = gcc
 LINKER = gcc
-CFLAGS = -std=c99 -Wall -Werror -Wpointer-arith -Wfatal-errors
+CFLAGS = -std=gnu11 -Wall -Werror -Wpointer-arith -Wfatal-errors
 DEBUG = -g
 LIBRARY = libprog1.a
 SRCS = base.c basedefs.c
