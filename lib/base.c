@@ -553,7 +553,7 @@ void write_file_data(String name, Byte *data, int n_data) {
 ///////////////////////////////////////////////////////////////////////////////
 // Time taking
 // https://en.cppreference.com/w/c/chrono/clock
-
+/*
 timespec time_now(void) {
     timespec now;
     clock_gettime(CLOCK_MONOTONIC, &now);
@@ -567,6 +567,7 @@ double time_ms_since(timespec t) {
                      - (1000.0 * t.tv_sec + 1e-6*t.tv_nsec);
     return duration;
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////
 // Random numbers

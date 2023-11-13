@@ -593,6 +593,7 @@ if (condition) {\
 ////////////////////////////////////////////////////////////////////////////
 // Timing
 
+/*
 /// A structure for storing time values.
 typedef struct timespec timespec;
 
@@ -601,6 +602,7 @@ timespec time_now(void);
 
 /// Computes the time difference in milliseconds between now and the given time.
 double time_ms_since(timespec t);
+*/
 
 ////////////////////////////////////////////////////////////////////////////
 // Debugging
